@@ -30,7 +30,7 @@ public class MoradorController {
 	private MoradorRepository moradorRepository;
 	
 	@Autowired
-	private CadastroMoradorService cadastroMorador;
+	private CadastroMoradorService moradorService;
 
 	@GetMapping
 	public List<Morador> listar() {
@@ -40,18 +40,16 @@ public class MoradorController {
 	@GetMapping("/{moradorId}")
 	public ResponseEntity<Morador> buscar(@PathVariable Long moradorId) {
 		Optional<Morador> morador = moradorRepository.findById(moradorId);
-		
 		if(morador.isPresent()) {
 			return ResponseEntity.ok(morador.get());
 		}
-		
 		return ResponseEntity.notFound().build();
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Morador adicionar(@Valid @RequestBody Morador morador) {
-		return cadastroMorador.salvar(morador);
+		return moradorService.salvar(morador);
 	}
 	
 	@PutMapping("/{moradorId}")
@@ -59,25 +57,18 @@ public class MoradorController {
 		if(!moradorRepository.existsById(moradorId)) {
 			return ResponseEntity.notFound().build();
 		} 
-		
 		morador.setId(moradorId);
-		morador = cadastroMorador.salvar(morador);
-		
+		morador = moradorService.salvar(morador);
 		return ResponseEntity.ok(morador);
-		
 	}
 	
 	@DeleteMapping("/{moradorId}")
 	public ResponseEntity<Void> remover(@PathVariable Long moradorId){
-		
 		if(!moradorRepository.existsById(moradorId)) {
 			return ResponseEntity.notFound().build();
 		} 
-		
-		cadastroMorador.excluir(moradorId);
-		
+		moradorService.excluir(moradorId);
 		return ResponseEntity.noContent().build();
-		
 	}
 	
 }

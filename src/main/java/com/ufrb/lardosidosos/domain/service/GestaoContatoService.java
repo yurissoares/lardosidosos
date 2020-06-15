@@ -19,12 +19,16 @@ public class GestaoContatoService {
 	@Autowired
 	private MoradorRepository moradorRepository;
 	
-	public Contato criar(Contato contato) {
+	public Contato salvar(Contato contato) {
 		Morador morador = moradorRepository.findById(contato.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 		
 		contato.setMorador(morador);
 		contato.setParentesco(Parentesco.OUTRO);
 		return contatoRepository.save(contato);
+	}
+	
+	public void excluir(Long id) {
+		contatoRepository.deleteById(id);
 	}
 }
