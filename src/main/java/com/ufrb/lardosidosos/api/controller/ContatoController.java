@@ -18,11 +18,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ufrb.lardosidosos.domain.model.Contato;
+import com.ufrb.lardosidosos.domain.model.Parentesco;
 import com.ufrb.lardosidosos.domain.repository.ContatoRepository;
 import com.ufrb.lardosidosos.domain.service.GestaoContatoService;
 
 @RestController
-@RequestMapping("/contatos")
+@RequestMapping("/contato")
 public class ContatoController {
 
 	@Autowired
@@ -48,7 +49,10 @@ public class ContatoController {
 			return ResponseEntity.notFound().build();
 		}
 		contato.setId(contatoId);
-		contato = contatoService.salvar(contato);
+		// para teste
+		contato.setParentesco(Parentesco.OUTRO);
+		
+		contato = contatoRepository.save(contato);
 		return ResponseEntity.ok(contato);
 	}
 	

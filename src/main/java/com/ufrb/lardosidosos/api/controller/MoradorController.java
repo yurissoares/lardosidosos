@@ -1,5 +1,6 @@
 package com.ufrb.lardosidosos.api.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ufrb.lardosidosos.domain.model.EstadoCivil;
 import com.ufrb.lardosidosos.domain.model.Morador;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 import com.ufrb.lardosidosos.domain.service.CadastroMoradorService;
@@ -58,7 +60,12 @@ public class MoradorController {
 			return ResponseEntity.notFound().build();
 		} 
 		morador.setId(moradorId);
-		morador = moradorService.salvar(morador);
+		//APENAS PARA TESTES
+		morador.setEstadoCivil(EstadoCivil.OUTRO);
+		morador.setDataEntrada(LocalDateTime.now());
+		morador.setDataNascimento(LocalDateTime.now());
+		
+		morador = moradorRepository.save(morador);
 		return ResponseEntity.ok(morador);
 	}
 	
