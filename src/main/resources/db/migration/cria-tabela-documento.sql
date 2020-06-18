@@ -1,7 +1,8 @@
 create table documento (
 	id bigint not null auto_increment,
 	morador_id bigint not null,
-	informacoes text not null,
+	data datetime,
+	informacoes text,
 	
 	primary key(id)
 );
