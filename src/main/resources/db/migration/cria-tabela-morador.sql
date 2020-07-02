@@ -1,15 +1,15 @@
 create table morador (
-  id bigint not null auto_increment,
-  nome text not null,
-  data_entrada datetime,
-  data_nascimento datetime,
-  estado_civil text,
+  id bigint unsigned not null auto_increment,
+  nome varchar(255) not null,
+  data_entrada datetime now(),
+  data_nascimento datetime not null,
+  estado_civil enum('CASADO', 'SOLTEIRO', 'OUTRO') not null,
   qtd_filhos int,
-  naturalidade text,
-  endereco text,
-  cidade text,
-  cep text,
-  estado text,
+  naturalidade varchar(255) ,
+  endereco varchar(255) ,
+  cidade varchar(255) ,
+  cep varchar(255) ,
+  estado varchar(255) ,
 
   primary key(id)
 );

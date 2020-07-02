@@ -1,6 +1,6 @@
 create table documento (
-	id bigint not null auto_increment,
-	morador_id bigint not null,
+	id bigint unsigned not null auto_increment,
+	morador_id bigint unsigned not null,
 	data datetime,
 	informacoes text,
 	

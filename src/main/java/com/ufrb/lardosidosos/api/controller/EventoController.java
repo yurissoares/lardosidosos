@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,8 @@ import com.ufrb.lardosidosos.domain.service.GestaoEventoService;
 
 @RestController
 @RequestMapping("/evento")
-public class EventoController {
+public class EventoController 
+{
 	
 	@Autowired
 	private EventoRepository eventoRepository;
@@ -32,19 +34,25 @@ public class EventoController {
 	private GestaoEventoService eventoService;
 	
 	@GetMapping
-	public List<Evento> listar() {
+	public List<Evento> listar() 
+	{
 		return eventoRepository.findAll();
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Evento criar(@RequestBody Evento evento) {
+	@Transactional
+	public Evento criar(@RequestBody Evento evento) 
+	{
 		return eventoService.salvar(evento);
 	}
 	
 	@PutMapping("/{eventoId}")
-	public ResponseEntity<Evento> atualizar(@PathVariable Long eventoId, @RequestBody Evento evento){
-		if(!eventoRepository.existsById(eventoId)) {
+	@Transactional
+	public ResponseEntity<Evento> atualizar(@PathVariable Long eventoId, @RequestBody Evento evento)
+	{
+		if(!eventoRepository.existsById(eventoId)) 
+		{
 			return ResponseEntity.notFound().build();
 		}
 		
@@ -57,8 +65,10 @@ public class EventoController {
 	}
 	
 	@DeleteMapping("/{eventoId}")
-	public ResponseEntity<Void> remover(@PathVariable Long eventoId){
-		if(!eventoRepository.existsById(eventoId)) {
+	public ResponseEntity<Void> remover(@PathVariable Long eventoId)
+	{
+		if(!eventoRepository.existsById(eventoId)) 
+		{
 			return ResponseEntity.notFound().build();
 		}
 		

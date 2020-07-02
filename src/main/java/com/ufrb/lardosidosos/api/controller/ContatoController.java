@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +25,8 @@ import com.ufrb.lardosidosos.domain.service.GestaoContatoService;
 
 @RestController
 @RequestMapping("/contato")
-public class ContatoController {
+public class ContatoController 
+{
 
 	@Autowired
 	private ContatoRepository contatoRepository;
@@ -33,23 +35,28 @@ public class ContatoController {
 	private GestaoContatoService contatoService;
 	
 	@GetMapping
-	public List<Contato> listar() {
+	public List<Contato> listar() 
+	{
 		return contatoRepository.findAll();
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Contato criar(@RequestBody Contato contato) {
+	@Transactional
+	public Contato criar(@RequestBody Contato contato) 
+	{
 		return contatoService.salvar(contato);
 	}
 	
 	@PutMapping("/{contatoId}")
-	public ResponseEntity<Contato> atualizar(@PathVariable Long contatoId, @Valid @RequestBody Contato contato) {
-		if(!contatoRepository.existsById(contatoId)) {
+	@Transactional
+	public ResponseEntity<Contato> atualizar(@PathVariable Long contatoId, @Valid @RequestBody Contato contato) 
+	{
+		if(!contatoRepository.existsById(contatoId)) 
+		{
 			return ResponseEntity.notFound().build();
 		}
 		contato.setId(contatoId);
-		// para teste
 		contato.setParentesco(Parentesco.OUTRO);
 		
 		contato = contatoRepository.save(contato);
@@ -57,8 +64,10 @@ public class ContatoController {
 	}
 	
 	@DeleteMapping("/{contatoId}")
-	public ResponseEntity<Void> remover(@PathVariable Long contatoId){
-		if(!contatoRepository.existsById(contatoId)) {
+	public ResponseEntity<Void> remover(@PathVariable Long contatoId)
+	{
+		if(!contatoRepository.existsById(contatoId)) 
+		{
 			return ResponseEntity.notFound().build();
 		}
 		contatoService.excluir(contatoId);

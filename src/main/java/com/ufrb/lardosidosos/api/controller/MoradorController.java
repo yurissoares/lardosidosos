@@ -1,14 +1,20 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,14 +41,21 @@ public class MoradorController {
 	private CadastroMoradorService moradorService;
 
 	@GetMapping
-	public List<Morador> listar() {
-		return moradorRepository.findAll();
+	@Cacheable(value = "listarTodosMoradores")
+	public Page<Morador> listar(@PageableDefault(page = 0, size = 10, sort = "nome", direction = Direction.ASC) 
+		Pageable paginacao) 
+	{
+		Page<Morador> moradores = moradorRepository.findAll(paginacao);
+
+		return moradores;
 	}
 	
 	@GetMapping("/{moradorId}")
-	public ResponseEntity<Morador> buscar(@PathVariable Long moradorId) {
+	public ResponseEntity<Morador> buscar(@PathVariable Long moradorId) 
+	{
 		Optional<Morador> morador = moradorRepository.findById(moradorId);
-		if(morador.isPresent()) {
+		if(morador.isPresent()) 
+		{
 			return ResponseEntity.ok(morador.get());
 		}
 		return ResponseEntity.notFound().build();
@@ -50,17 +63,23 @@ public class MoradorController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Morador adicionar(@Valid @RequestBody Morador morador) {
+	@Transactional
+	@CacheEvict(value = "listarTodosMoradores", allEntries = true)
+	public Morador adicionar(@Valid @RequestBody Morador morador) 
+	{
 		return moradorService.salvar(morador);
 	}
 	
 	@PutMapping("/{moradorId}")
-	public ResponseEntity<Morador> atualizar(@PathVariable Long moradorId, @Valid @RequestBody Morador morador) {
-		if(!moradorRepository.existsById(moradorId)) {
+	@Transactional
+	@CacheEvict(value = "listarTodosMoradores", allEntries = true)
+	public ResponseEntity<Morador> atualizar(@PathVariable Long moradorId, @Valid @RequestBody Morador morador)
+	{
+		if(!moradorRepository.existsById(moradorId)) 
+		{
 			return ResponseEntity.notFound().build();
 		} 
 		morador.setId(moradorId);
-		//APENAS PARA TESTES
 		morador.setEstadoCivil(EstadoCivil.OUTRO);
 		morador.setDataEntrada(LocalDateTime.now());
 		morador.setDataNascimento(LocalDateTime.now());
@@ -70,8 +89,11 @@ public class MoradorController {
 	}
 	
 	@DeleteMapping("/{moradorId}")
-	public ResponseEntity<Void> remover(@PathVariable Long moradorId){
-		if(!moradorRepository.existsById(moradorId)) {
+	@CacheEvict(value = "listarTodosMoradores", allEntries = true)
+	public ResponseEntity<Void> remover(@PathVariable Long moradorId)
+	{
+		if(!moradorRepository.existsById(moradorId)) 
+		{
 			return ResponseEntity.notFound().build();
 		} 
 		moradorService.excluir(moradorId);
