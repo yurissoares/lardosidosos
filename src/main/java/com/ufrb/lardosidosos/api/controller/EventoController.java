@@ -3,6 +3,8 @@ package com.ufrb.lardosidosos.api.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Evento;
+import com.ufrb.lardosidosos.domain.model.Morador;
 import com.ufrb.lardosidosos.domain.model.TipoEvento;
 import com.ufrb.lardosidosos.domain.repository.EventoRepository;
-import com.ufrb.lardosidosos.domain.service.GestaoEventoService;
+import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
 @RestController
 @RequestMapping("/evento")
@@ -31,7 +35,7 @@ public class EventoController
 	private EventoRepository eventoRepository;
 	
 	@Autowired
-	private GestaoEventoService eventoService;
+	private MoradorRepository moradorRepository;
 	
 	@GetMapping
 	public List<Evento> listar() 
@@ -42,25 +46,29 @@ public class EventoController
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public Evento criar(@RequestBody Evento evento) 
+	public Evento criar(@Valid @RequestBody Evento evento) 
 	{
-		return eventoService.salvar(evento);
+		Morador morador = moradorRepository.findById(evento.getMorador().getId())
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
+		evento.setMorador(morador);
+		evento.setData(LocalDateTime.now());
+		evento.setTipo(TipoEvento.ENTRADA);
+		return eventoRepository.save(evento);
 	}
 	
 	@PutMapping("/{eventoId}")
 	@Transactional
-	public ResponseEntity<Evento> atualizar(@PathVariable Long eventoId, @RequestBody Evento evento)
+	public ResponseEntity<Evento> atualizar(@PathVariable Long eventoId, @Valid @RequestBody Evento evento)
 	{
-		if(!eventoRepository.existsById(eventoId)) 
-		{
-			return ResponseEntity.notFound().build();
-		}
+		moradorRepository.findById(evento.getMorador().getId())
+			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 		
 		evento.setId(eventoId);
 		evento.setData(LocalDateTime.now());
 		evento.setTipo(TipoEvento.ENTRADA);
-		evento = eventoRepository.save(evento);
 		
+		evento = eventoRepository.save(evento);
 		return ResponseEntity.ok(evento);
 	}
 	
@@ -72,7 +80,7 @@ public class EventoController
 			return ResponseEntity.notFound().build();
 		}
 		
-		eventoService.excluir(eventoId);
+		eventoRepository.deleteById(eventoId);
 		return ResponseEntity.noContent().build();
 	}
 }

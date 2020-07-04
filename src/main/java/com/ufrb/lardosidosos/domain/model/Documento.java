@@ -1,6 +1,6 @@
 package com.ufrb.lardosidosos.domain.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ public class Documento {
 	@ManyToOne
 	private Morador morador;
 
-	private LocalDate data;
+	private LocalDateTime data;
 	
 	private String informacoes;
 
@@ -38,11 +38,11 @@ public class Documento {
 		this.morador = morador;
 	}
 	
-	public LocalDate getData() {
+	public LocalDateTime getData() {
 		return data;
 	}
 
-	public void setData(LocalDate data) {
+	public void setData(LocalDateTime data) {
 		this.data = data;
 	}
 

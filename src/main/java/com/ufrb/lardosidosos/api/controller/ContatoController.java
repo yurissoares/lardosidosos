@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Contato;
+import com.ufrb.lardosidosos.domain.model.Morador;
 import com.ufrb.lardosidosos.domain.model.Parentesco;
 import com.ufrb.lardosidosos.domain.repository.ContatoRepository;
-import com.ufrb.lardosidosos.domain.service.GestaoContatoService;
+import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
 @RestController
 @RequestMapping("/contato")
@@ -32,7 +34,7 @@ public class ContatoController
 	private ContatoRepository contatoRepository;
 	
 	@Autowired
-	private GestaoContatoService contatoService;
+	private MoradorRepository moradorRepository;
 	
 	@GetMapping
 	public List<Contato> listar() 
@@ -43,19 +45,25 @@ public class ContatoController
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public Contato criar(@RequestBody Contato contato) 
+	public Contato criar(@Valid @RequestBody Contato contato) 
 	{
-		return contatoService.salvar(contato);
+		Morador morador = 
+				moradorRepository.findById(contato.getMorador().getId())
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
+		contato.setMorador(morador);
+		contato.setParentesco(Parentesco.OUTRO);
+		return contatoRepository.save(contato);
 	}
 	
 	@PutMapping("/{contatoId}")
 	@Transactional
 	public ResponseEntity<Contato> atualizar(@PathVariable Long contatoId, @Valid @RequestBody Contato contato) 
 	{
-		if(!contatoRepository.existsById(contatoId)) 
-		{
-			return ResponseEntity.notFound().build();
-		}
+
+		moradorRepository.findById(contato.getMorador().getId())
+			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
 		contato.setId(contatoId);
 		contato.setParentesco(Parentesco.OUTRO);
 		
@@ -70,7 +78,7 @@ public class ContatoController
 		{
 			return ResponseEntity.notFound().build();
 		}
-		contatoService.excluir(contatoId);
+		contatoRepository.deleteById(contatoId);
 		return ResponseEntity.noContent().build();
 	}
 }

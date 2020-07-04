@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -18,6 +19,7 @@ public class Morador {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank
 	private String nome;
 	
 	private LocalDateTime dataEntrada;
@@ -39,6 +41,7 @@ public class Morador {
 	@Size(min = 8, max = 8)
 	private String cep;
 	
+	@Size(min = 2, max = 2)
 	private String estado;
 
 	public Long getId() {

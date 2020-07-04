@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Contato {
@@ -18,6 +19,7 @@ public class Contato {
 	@ManyToOne
 	private Morador morador;
 	
+	@NotBlank
 	private String nome;
 	
 	@Enumerated(EnumType.STRING)

@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.EstadoCivil;
 import com.ufrb.lardosidosos.domain.model.Morador;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
-import com.ufrb.lardosidosos.domain.service.CadastroMoradorService;
 
 @RestController
 @RequestMapping("/morador")
@@ -36,9 +36,6 @@ public class MoradorController {
 	
 	@Autowired
 	private MoradorRepository moradorRepository;
-	
-	@Autowired
-	private CadastroMoradorService moradorService;
 
 	@GetMapping
 	@Cacheable(value = "listarTodosMoradores")
@@ -67,7 +64,16 @@ public class MoradorController {
 	@CacheEvict(value = "listarTodosMoradores", allEntries = true)
 	public Morador adicionar(@Valid @RequestBody Morador morador) 
 	{
-		return moradorService.salvar(morador);
+		Morador moradorExistente = moradorRepository.findByNome(morador.getNome());
+		if(moradorExistente != null && !moradorExistente.equals(morador)) {
+			throw new NegocioException("Já existe um morador com este nome.");
+		}
+				
+		morador.setEstadoCivil(EstadoCivil.OUTRO);
+		morador.setDataEntrada(LocalDateTime.now());
+		morador.setDataNascimento(LocalDateTime.now());
+		return moradorRepository.save(morador);
+
 	}
 	
 	@PutMapping("/{moradorId}")
@@ -96,7 +102,7 @@ public class MoradorController {
 		{
 			return ResponseEntity.notFound().build();
 		} 
-		moradorService.excluir(moradorId);
+		moradorRepository.deleteById(moradorId);
 		return ResponseEntity.noContent().build();
 	}
 	
