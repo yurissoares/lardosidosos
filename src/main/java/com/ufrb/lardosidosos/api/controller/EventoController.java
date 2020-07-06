@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Evento;
 import com.ufrb.lardosidosos.domain.model.Morador;
-import com.ufrb.lardosidosos.domain.model.TipoEvento;
+import com.ufrb.lardosidosos.domain.model.enums.TipoEvento;
 import com.ufrb.lardosidosos.domain.repository.EventoRepository;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 

@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
-import com.ufrb.lardosidosos.domain.model.EstadoCivil;
 import com.ufrb.lardosidosos.domain.model.Morador;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
@@ -69,7 +68,6 @@ public class MoradorController {
 			throw new NegocioException("Já existe um morador com este nome.");
 		}
 				
-		morador.setEstadoCivil(EstadoCivil.OUTRO);
 		morador.setDataEntrada(LocalDateTime.now());
 		morador.setDataNascimento(LocalDateTime.now());
 		return moradorRepository.save(morador);
@@ -86,7 +84,7 @@ public class MoradorController {
 			return ResponseEntity.notFound().build();
 		} 
 		morador.setId(moradorId);
-		morador.setEstadoCivil(EstadoCivil.OUTRO);
+
 		morador.setDataEntrada(LocalDateTime.now());
 		morador.setDataNascimento(LocalDateTime.now());
 		

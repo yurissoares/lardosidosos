@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 
+import com.ufrb.lardosidosos.domain.model.enums.Parentesco;
+
 @Entity
 public class Contato {
 	

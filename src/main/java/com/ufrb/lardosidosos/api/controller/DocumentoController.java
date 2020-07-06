@@ -36,6 +36,8 @@ public class DocumentoController
 	@Autowired
 	private MoradorRepository moradorRepository;
 	
+	
+	
 	@GetMapping
 	public List<Documento> listar() 
 	{
@@ -47,8 +49,9 @@ public class DocumentoController
 	@Transactional
 	public Documento criar(@Valid @RequestBody Documento documento) 
 	{
+				
 		Morador morador = moradorRepository.findById(documento.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 		
 		documento.setMorador(morador);
 		documento.setData(LocalDateTime.now());

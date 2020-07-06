@@ -17,12 +17,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 
 @ControllerAdvice
-public class ApiExceptionHandler extends ResponseEntityExceptionHandler 
-{
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(NegocioException.class)
-	public ResponseEntity<Object> handleNegocio(NegocioException ex, WebRequest request) 
-	{
+	public ResponseEntity<Object> handleNegocio(NegocioException ex, WebRequest request) {
 		var status = HttpStatus.BAD_REQUEST;
 		var problema = new Problema();
 		problema.setStatus(status.value());
@@ -34,12 +32,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler
 	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request) 
-	{
-		
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		var campos = new ArrayList<Problema.Campo>();
-		for(ObjectError error : ex.getBindingResult().getAllErrors()) 
-		{
+		
+		for(ObjectError error : ex.getBindingResult().getAllErrors()) {
 			String nome = ((FieldError) error).getField();
 			String mensagem = error.getDefaultMessage();
 			

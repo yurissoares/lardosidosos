@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Contato;
 import com.ufrb.lardosidosos.domain.model.Morador;
-import com.ufrb.lardosidosos.domain.model.Parentesco;
+import com.ufrb.lardosidosos.domain.model.enums.Parentesco;
 import com.ufrb.lardosidosos.domain.repository.ContatoRepository;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
@@ -47,9 +47,8 @@ public class ContatoController
 	@Transactional
 	public Contato criar(@Valid @RequestBody Contato contato) 
 	{
-		Morador morador = 
-				moradorRepository.findById(contato.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		Morador morador = moradorRepository.findById(contato.getMorador().getId())
+			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 		
 		contato.setMorador(morador);
 		contato.setParentesco(Parentesco.OUTRO);

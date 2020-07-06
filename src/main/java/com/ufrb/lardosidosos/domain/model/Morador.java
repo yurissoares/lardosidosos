@@ -12,6 +12,11 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.ufrb.lardosidosos.domain.model.enums.EstadoCivil;
+import com.ufrb.lardosidosos.domain.model.enums.Estados;
+import com.ufrb.lardosidosos.domain.model.enums.Parentesco;
+import com.ufrb.lardosidosos.domain.model.enums.TipoAposentadoria;
+
 @Entity
 public class Morador {
 	
@@ -33,16 +38,62 @@ public class Morador {
 	private int qtdFilhos;
 	
 	private String naturalidade;
-	
 	private String endereco;
-	
 	private String cidade;
 	
 	@Size(min = 8, max = 8)
 	private String cep;
 	
-	@Size(min = 2, max = 2)
-	private String estado;
+	@Enumerated(EnumType.STRING)
+	private Estados estado;
+	
+	//novos
+	@Size(min = 11, max = 11)
+	private String nmCpf;
+	
+	@Size(min = 10, max = 10)
+	private String nmRg;
+	
+	private String nmCtps;
+	private String nmBeneficio;
+	
+	private boolean ehAposentado;
+	
+	@Enumerated(EnumType.STRING)
+	private TipoAposentadoria tipoAposentadoria;
+	
+	private boolean temEmprestimo;
+	private String medicacoes;
+	private String motivoEntrada;
+	
+	@NotBlank
+	private String nomeResponsavel;
+	
+	@NotBlank
+	private String endResponsavel;
+	
+	@NotBlank
+	private String cidadeResponsavel;
+	
+	@NotBlank
+	@Size(min = 8, max = 8)
+	private String cepResponsavel;
+	
+	@Enumerated(EnumType.STRING)
+	private Estados estadoResponsavel;
+	
+	@Size(min = 11, max = 11)
+	private String nmCpfResponsavel;
+	
+	@Size(min = 10, max = 10)
+	private String nmRgResponsavel;
+	
+	private String telResponsavel;
+	
+	@Enumerated(EnumType.STRING)
+	private Parentesco parentescoResponsavel;
+	
+	private String obsResponsavel;
 
 	public Long getId() {
 		return id;
@@ -124,12 +175,164 @@ public class Morador {
 		this.cep = cep;
 	}
 
-	public String getEstado() {
+	public Estados getEstado() {
 		return estado;
 	}
 
-	public void setEstado(String estado) {
+	public void setEstado(Estados estado) {
 		this.estado = estado;
+	}
+
+	public String getNmCpf() {
+		return nmCpf;
+	}
+
+	public void setNmCpf(String nmCpf) {
+		this.nmCpf = nmCpf;
+	}
+
+	public String getNmRg() {
+		return nmRg;
+	}
+
+	public void setNmRg(String nmRg) {
+		this.nmRg = nmRg;
+	}
+
+	public String getNmCtps() {
+		return nmCtps;
+	}
+
+	public void setNmCtps(String nmCtps) {
+		this.nmCtps = nmCtps;
+	}
+
+	public String getNmBeneficio() {
+		return nmBeneficio;
+	}
+
+	public void setNmBeneficio(String nmBeneficio) {
+		this.nmBeneficio = nmBeneficio;
+	}
+
+	public boolean isEhAposentado() {
+		return ehAposentado;
+	}
+
+	public void setEhAposentado(boolean ehAposentado) {
+		this.ehAposentado = ehAposentado;
+	}
+
+	public TipoAposentadoria getTipoAposentadoria() {
+		return tipoAposentadoria;
+	}
+
+	public void setTipoAposentadoria(TipoAposentadoria tipoAposentadoria) {
+		this.tipoAposentadoria = tipoAposentadoria;
+	}
+
+	public boolean isTemEmprestimo() {
+		return temEmprestimo;
+	}
+
+	public void setTemEmprestimo(boolean temEmprestimo) {
+		this.temEmprestimo = temEmprestimo;
+	}
+
+	public String getMedicacoes() {
+		return medicacoes;
+	}
+
+	public void setMedicacoes(String medicacoes) {
+		this.medicacoes = medicacoes;
+	}
+
+	public String getMotivoEntrada() {
+		return motivoEntrada;
+	}
+
+	public void setMotivoEntrada(String motivoEntrada) {
+		this.motivoEntrada = motivoEntrada;
+	}
+
+	public String getNomeResponsavel() {
+		return nomeResponsavel;
+	}
+
+	public void setNomeResponsavel(String nomeResponsavel) {
+		this.nomeResponsavel = nomeResponsavel;
+	}
+
+	public String getEndResponsavel() {
+		return endResponsavel;
+	}
+
+	public void setEndResponsavel(String endResponsavel) {
+		this.endResponsavel = endResponsavel;
+	}
+
+	public String getCidadeResponsavel() {
+		return cidadeResponsavel;
+	}
+
+	public void setCidadeResponsavel(String cidadeResponsavel) {
+		this.cidadeResponsavel = cidadeResponsavel;
+	}
+
+	public String getCepResponsavel() {
+		return cepResponsavel;
+	}
+
+	public void setCepResponsavel(String cepResponsavel) {
+		this.cepResponsavel = cepResponsavel;
+	}
+
+	public Estados getEstadoResponsavel() {
+		return estadoResponsavel;
+	}
+
+	public void setEstadoResponsavel(Estados estadoResponsavel) {
+		this.estadoResponsavel = estadoResponsavel;
+	}
+
+	public String getNmCpfResponsavel() {
+		return nmCpfResponsavel;
+	}
+
+	public void setNmCpfResponsavel(String nmCpfResponsavel) {
+		this.nmCpfResponsavel = nmCpfResponsavel;
+	}
+
+	public String getNmRgResponsavel() {
+		return nmRgResponsavel;
+	}
+
+	public void setNmRgResponsavel(String nmRgResponsavel) {
+		this.nmRgResponsavel = nmRgResponsavel;
+	}
+
+	public String getTelResponsavel() {
+		return telResponsavel;
+	}
+
+	public void setTelResponsavel(String telResponsavel) {
+		this.telResponsavel = telResponsavel;
+	}
+
+	public Parentesco getParentescoResponsavel() {
+		return parentescoResponsavel;
+	}
+
+	public void setParentescoResponsavel(Parentesco parentescoResponsavel) {
+		this.parentescoResponsavel = parentescoResponsavel;
+	}
+
+	public String getObsResponsavel() {
+		return obsResponsavel;
+	}
+
+	public void setObsResponsavel(String obsResponsavel) {
+		this.obsResponsavel = obsResponsavel;
 	}
 
 	@Override
@@ -156,7 +359,5 @@ public class Morador {
 			return false;
 		return true;
 	}
-	
-	
-	
+		
 }

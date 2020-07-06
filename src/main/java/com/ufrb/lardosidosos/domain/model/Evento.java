@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.ufrb.lardosidosos.domain.model.enums.TipoEvento;
+
 @Entity
 public class Evento {
 	
