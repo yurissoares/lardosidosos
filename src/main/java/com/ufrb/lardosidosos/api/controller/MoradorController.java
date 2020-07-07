@@ -29,6 +29,11 @@ import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Morador;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @RequestMapping("/morador")
 public class MoradorController {
@@ -38,8 +43,13 @@ public class MoradorController {
 
 	@GetMapping
 	@Cacheable(value = "listarTodosMoradores")
-	public Page<Morador> listar(@PageableDefault(page = 0, size = 10, sort = "nome", direction = Direction.ASC) 
-		Pageable paginacao) 
+	@ApiOperation(value = "Listar moradores", notes = "Retorna uma lista com todos os moradores.")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "pageNumber", dataType = "long", paramType = "query",
+                value = "Resultado dividido por numero de páginas.", defaultValue = "0"),
+        @ApiImplicitParam(name = "pageSize", dataType = "long", paramType = "query",
+                value = "Número de moradores por página.", defaultValue = "10")})
+	public Page<Morador> listar(@PageableDefault(page = 0, size = 10, sort = "nome", direction = Direction.ASC) Pageable paginacao) 
 	{
 		Page<Morador> moradores = moradorRepository.findAll(paginacao);
 
@@ -47,7 +57,10 @@ public class MoradorController {
 	}
 	
 	@GetMapping("/{moradorId}")
-	public ResponseEntity<Morador> buscar(@PathVariable Long moradorId) 
+	@ApiOperation(value = "Busca morador", notes = "Busca por morador especificado pelo id.")
+	public ResponseEntity<Morador> buscar(
+			@ApiParam(name = "moradorId", value = "Id do morador.", required = true, type = "long")
+			@PathVariable Long moradorId) 
 	{
 		Optional<Morador> morador = moradorRepository.findById(moradorId);
 		if(morador.isPresent()) 
@@ -61,7 +74,9 @@ public class MoradorController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
 	@CacheEvict(value = "listarTodosMoradores", allEntries = true)
-	public Morador adicionar(@Valid @RequestBody Morador morador) 
+	@ApiOperation(value = "Cria morador", notes = "Cria um morador.")
+	public Morador adicionar(
+			@Valid @RequestBody Morador morador) 
 	{
 		Morador moradorExistente = moradorRepository.findByNome(morador.getNome());
 		if(moradorExistente != null && !moradorExistente.equals(morador)) {
@@ -77,7 +92,10 @@ public class MoradorController {
 	@PutMapping("/{moradorId}")
 	@Transactional
 	@CacheEvict(value = "listarTodosMoradores", allEntries = true)
-	public ResponseEntity<Morador> atualizar(@PathVariable Long moradorId, @Valid @RequestBody Morador morador)
+	@ApiOperation(value = "Edita morador", notes = "Edita morador especificado pelo id.")
+	public ResponseEntity<Morador> atualizar(
+			@ApiParam(name = "moradorId", value = "Id do morador.", required = true, type = "long")
+			@PathVariable Long moradorId, @Valid @RequestBody Morador morador)
 	{
 		if(!moradorRepository.existsById(moradorId)) 
 		{
@@ -94,7 +112,10 @@ public class MoradorController {
 	
 	@DeleteMapping("/{moradorId}")
 	@CacheEvict(value = "listarTodosMoradores", allEntries = true)
-	public ResponseEntity<Void> remover(@PathVariable Long moradorId)
+	@ApiOperation(value = "Deleta morador", notes = "Deleta morador especificado pelo id.")
+	public ResponseEntity<Void> remover(
+			@ApiParam(name = "moradorId", value = "Id do morador.", required = true, type = "long")
+			@PathVariable Long moradorId)
 	{
 		if(!moradorRepository.existsById(moradorId)) 
 		{
