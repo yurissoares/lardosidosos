@@ -10,16 +10,16 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Documento {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@ManyToOne
 	private Morador morador;
 
 	private LocalDateTime data;
-	
+
 	private String informacoes;
 
 	public Long getId() {
@@ -37,7 +37,7 @@ public class Documento {
 	public void setMorador(Morador morador) {
 		this.morador = morador;
 	}
-	
+
 	public LocalDateTime getData() {
 		return data;
 	}

@@ -7,5 +7,5 @@ import com.ufrb.lardosidosos.domain.model.Contato;
 
 @Repository
 public interface ContatoRepository extends JpaRepository<Contato, Long> {
-	
+
 }

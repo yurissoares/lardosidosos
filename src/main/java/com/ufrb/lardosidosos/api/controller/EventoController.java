@@ -2,6 +2,7 @@ package com.ufrb.lardosidosos.api.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -26,76 +27,75 @@ import com.ufrb.lardosidosos.domain.model.enums.TipoEvento;
 import com.ufrb.lardosidosos.domain.repository.EventoRepository;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @RequestMapping("/evento")
-public class EventoController 
-{
-	
+public class EventoController {
+
 	@Autowired
 	private EventoRepository eventoRepository;
-	
+
 	@Autowired
 	private MoradorRepository moradorRepository;
-	
+
 	@GetMapping
-	public List<Evento> listar() 
-	{
+	@ApiOperation(value = "Lista eventos", notes = "Retorna uma lista com todos os eventos dos moradores.")
+	public List<Evento> listaEventos() {
 		return eventoRepository.findAll();
 	}
-	
+
+	@GetMapping("/{eventoId}")
+	@ApiOperation(value = "Busca evento", notes = "Busca por um evento de um morador especificado pelo id do evento.")
+	public ResponseEntity<Evento> buscaEvento(
+			@ApiParam(name = "eventoId", value = "Id do evento.", required = true, type = "long") @PathVariable Long eventoId) {
+		Optional<Evento> evento = eventoRepository.findById(eventoId);
+		if (evento.isPresent())
+			return ResponseEntity.ok(evento.get());
+		return ResponseEntity.notFound().build();
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public Evento criar(@Valid @RequestBody Evento evento) 
-	{
+	@ApiOperation(value = "Cria evento", notes = "Cria um evento de um morador.")
+	public Evento salvaEvento(@Valid @RequestBody Evento evento) {
 		Morador morador = moradorRepository.findById(evento.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
+
 		evento.setMorador(morador);
 		evento.setData(LocalDateTime.now());
 		evento.setTipo(TipoEvento.ENTRADA);
 		return eventoRepository.save(evento);
 	}
-	
+
 	@PutMapping("/{eventoId}")
 	@Transactional
-	public ResponseEntity<Evento> atualizar(@PathVariable Long eventoId, @Valid @RequestBody Evento evento)
-	{
+	@ApiOperation(value = "Edita evento", notes = "Edita evento de um morador especificado pelo id do evento.")
+	public ResponseEntity<Evento> atualizaEvento(
+			@ApiParam(name = "eventoId", value = "Id do evento.", required = true, type = "long") @PathVariable Long eventoId,
+			@Valid @RequestBody Evento evento) {
 		moradorRepository.findById(evento.getMorador().getId())
-			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+
 		evento.setId(eventoId);
 		evento.setData(LocalDateTime.now());
 		evento.setTipo(TipoEvento.ENTRADA);
-		
+
 		evento = eventoRepository.save(evento);
 		return ResponseEntity.ok(evento);
 	}
-	
+
 	@DeleteMapping("/{eventoId}")
-	public ResponseEntity<Void> remover(@PathVariable Long eventoId)
-	{
-		if(!eventoRepository.existsById(eventoId)) 
-		{
+	@ApiOperation(value = "Deleta evento", notes = "Deleta evento especificado pelo id do evento.")
+	public ResponseEntity<Void> excluiEvento(
+			@ApiParam(name = "eventoId", value = "Id do evento.", required = true, type = "long") @PathVariable Long eventoId) {
+		if (!eventoRepository.existsById(eventoId)) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 		eventoRepository.deleteById(eventoId);
 		return ResponseEntity.noContent().build();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

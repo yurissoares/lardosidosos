@@ -7,6 +7,5 @@ import com.ufrb.lardosidosos.domain.model.Morador;
 
 @Repository
 public interface MoradorRepository extends JpaRepository<Morador, Long> {
-
-	Morador findByNome(String nome);
+//	Morador findByNome(String nome);
 }

@@ -18,7 +18,7 @@ import com.ufrb.lardosidosos.domain.exception.NegocioException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
-	
+
 	@ExceptionHandler(NegocioException.class)
 	public ResponseEntity<Object> handleNegocio(NegocioException ex, WebRequest request) {
 		var status = HttpStatus.BAD_REQUEST;
@@ -26,28 +26,28 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		problema.setStatus(status.value());
 		problema.setTitulo(ex.getMessage());
 		problema.setDataHora(LocalDateTime.now());
-		
+
 		return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
 	}
-	
+
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		var campos = new ArrayList<Problema.Campo>();
-		
-		for(ObjectError error : ex.getBindingResult().getAllErrors()) {
+
+		for (ObjectError error : ex.getBindingResult().getAllErrors()) {
 			String nome = ((FieldError) error).getField();
 			String mensagem = error.getDefaultMessage();
-			
+
 			campos.add(new Problema.Campo(nome, mensagem));
 		}
-		
+
 		var problema = new Problema();
 		problema.setStatus(status.value());
 		problema.setTitulo("Um ou mais campos estão inválidos. Preencha os campos corretamente e tente novamente.");
 		problema.setDataHora(LocalDateTime.now());
 		problema.setCampos(campos);
-		
+
 		return super.handleExceptionInternal(ex, problema, headers, status, request);
 	}
 }

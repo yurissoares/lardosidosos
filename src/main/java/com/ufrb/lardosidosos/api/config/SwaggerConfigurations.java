@@ -18,26 +18,19 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @Import(BeanValidatorPluginsConfiguration.class)
 public class SwaggerConfigurations {
-	
-	@Bean
-	public Docket lardosidososApi() {
-		return new Docket(DocumentationType.SWAGGER_2)
-			.select()
-				.apis(RequestHandlerSelectors.basePackage("com.ufrb.lardosidosos"))
-				.paths(PathSelectors.any())
-				.build()
-			.apiInfo(metaData());
-	}
-	
-	private ApiInfo metaData() {
 
-		return new ApiInfoBuilder()
-			.title("API Lar dos Idosos")
-			.description("API para o sistema de controle do Lar dos Idosos.")
-			.version("1.0")
-			.contact(new Contact("Yuri Soares","http://www.ufrb.edu.br","yurissoares@outlook.com"))
-			.license("Apache License Version 2.0")
-			.licenseUrl("https://www.apache.org/license/LICENSE-2.0")
-			.build();
+	@Bean
+	public Docket documentacaoApi() {
+		return new Docket(DocumentationType.SWAGGER_2).select()
+				.apis(RequestHandlerSelectors.basePackage("com.ufrb.lardosidosos")).paths(PathSelectors.any()).build()
+				.apiInfo(infoApi());
+	}
+
+	private ApiInfo infoApi() {
+
+		return new ApiInfoBuilder().title("API Lar dos Idosos")
+				.description("API para o sistema de controle do Lar dos Idosos.").version("1.0")
+				.contact(new Contact("Yuri Soares", "http://www.ufrb.edu.br", "yurissoares@outlook.com"))
+				.license("Apache License Version 2.0").licenseUrl("https://www.apache.org/license/LICENSE-2.0").build();
 	}
 }

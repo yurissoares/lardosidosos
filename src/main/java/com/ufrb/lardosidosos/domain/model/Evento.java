@@ -14,21 +14,21 @@ import com.ufrb.lardosidosos.domain.model.enums.TipoEvento;
 
 @Entity
 public class Evento {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@ManyToOne
 	private Morador morador;
-	
+
 	private LocalDateTime data;
-	
+
 	@Enumerated(EnumType.STRING)
 	private TipoEvento tipo;
-	
+
 	private String motivo;
-	
+
 	private String observacoes;
 
 	public Long getId() {
@@ -103,5 +103,5 @@ public class Evento {
 			return false;
 		return true;
 	}
-	
+
 }

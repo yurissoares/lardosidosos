@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.ufrb.lardosidosos.domain.model.Documento;
 
 @Repository
-public interface DocumentoRepository extends JpaRepository<Documento, Long>{
+public interface DocumentoRepository extends JpaRepository<Documento, Long> {
 
 }

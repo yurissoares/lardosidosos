@@ -12,6 +12,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import com.ufrb.lardosidosos.domain.model.enums.EstadoCivil;
 import com.ufrb.lardosidosos.domain.model.enums.Estados;
 import com.ufrb.lardosidosos.domain.model.enums.Parentesco;
@@ -19,80 +21,82 @@ import com.ufrb.lardosidosos.domain.model.enums.TipoAposentadoria;
 
 @Entity
 public class Morador {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotBlank
 	private String nome;
-	
+
 	private LocalDateTime dataEntrada;
-	
+
 	private LocalDateTime dataNascimento;
-	
+
 	@Enumerated(EnumType.STRING)
 	private EstadoCivil estadoCivil;
-	
+
 	@Max(value = 99)
 	private int qtdFilhos;
-	
+
 	private String naturalidade;
 	private String endereco;
 	private String cidade;
-	
+
 	@Size(min = 8, max = 8)
 	private String cep;
-	
+
 	@Enumerated(EnumType.STRING)
 	private Estados estado;
-	
-	//novos
+
+	// novos
+	@CPF
 	@Size(min = 11, max = 11)
 	private String nmCpf;
-	
+
 	@Size(min = 10, max = 10)
 	private String nmRg;
-	
+
 	private String nmCtps;
 	private String nmBeneficio;
-	
+
 	private boolean ehAposentado;
-	
+
 	@Enumerated(EnumType.STRING)
 	private TipoAposentadoria tipoAposentadoria;
-	
+
 	private boolean temEmprestimo;
 	private String medicacoes;
 	private String motivoEntrada;
-	
+
 	@NotBlank
 	private String nomeResponsavel;
-	
+
 	@NotBlank
 	private String endResponsavel;
-	
+
 	@NotBlank
 	private String cidadeResponsavel;
-	
+
 	@NotBlank
 	@Size(min = 8, max = 8)
 	private String cepResponsavel;
-	
+
 	@Enumerated(EnumType.STRING)
 	private Estados estadoResponsavel;
-	
+
+	@CPF
 	@Size(min = 11, max = 11)
 	private String nmCpfResponsavel;
-	
+
 	@Size(min = 10, max = 10)
 	private String nmRgResponsavel;
-	
+
 	private String telResponsavel;
-	
+
 	@Enumerated(EnumType.STRING)
 	private Parentesco parentescoResponsavel;
-	
+
 	private String obsResponsavel;
 
 	public Long getId() {
@@ -359,5 +363,5 @@ public class Morador {
 			return false;
 		return true;
 	}
-		
+
 }

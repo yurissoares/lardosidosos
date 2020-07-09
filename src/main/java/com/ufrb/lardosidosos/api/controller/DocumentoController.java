@@ -2,6 +2,7 @@ package com.ufrb.lardosidosos.api.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -25,100 +26,73 @@ import com.ufrb.lardosidosos.domain.model.Morador;
 import com.ufrb.lardosidosos.domain.repository.DocumentoRepository;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @RequestMapping("/documento")
-public class DocumentoController 
-{
-	
+public class DocumentoController {
+
 	@Autowired
 	private DocumentoRepository documentoRepository;
-	
+
 	@Autowired
 	private MoradorRepository moradorRepository;
-	
-	
-	
+
 	@GetMapping
-	public List<Documento> listar() 
-	{
+	@ApiOperation(value = "Lista documentos", notes = "Retorna uma lista com todos os documentos dos moradores.")
+	public List<Documento> listaDocumentos() {
 		return documentoRepository.findAll();
 	}
-	
+
+	@GetMapping("/{documentoId}")
+	@ApiOperation(value = "Busca documento", notes = "Busca por documento de um morador pelo id.")
+	public ResponseEntity<Documento> buscaDocumento(
+			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") @PathVariable Long documentoId) {
+		Optional<Documento> documento = documentoRepository.findById(documentoId);
+		if (documento.isPresent())
+			return ResponseEntity.ok(documento.get());
+		return ResponseEntity.notFound().build();
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public Documento criar(@Valid @RequestBody Documento documento) 
-	{
-				
+	@ApiOperation(value = "Cria documento", notes = "Cria documento de um morador.")
+	public Documento salvaDocumento(@Valid @RequestBody Documento documento) {
+
 		Morador morador = moradorRepository.findById(documento.getMorador().getId())
-			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+
 		documento.setMorador(morador);
 		documento.setData(LocalDateTime.now());
 		return documentoRepository.save(documento);
 	}
-	
+
 	@PutMapping("/{documentoId}")
 	@Transactional
-	public ResponseEntity<Documento> atualizar(@PathVariable Long documentoId, @Valid @RequestBody Documento documento)
-	{
+	@ApiOperation(value = "Edita documento", notes = "Edita documento de um morador especificado pelo id do documento.")
+	public ResponseEntity<Documento> editaDocumento(
+			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") @PathVariable Long documentoId,
+			@Valid @RequestBody Documento documento) {
 		moradorRepository.findById(documento.getMorador().getId())
-			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+
 		documento.setId(documentoId);
-		
+
 		documento = documentoRepository.save(documento);
 		return ResponseEntity.ok(documento);
 	}
-	
+
 	@DeleteMapping("/{documentoId}")
-	public ResponseEntity<Void> remover(@PathVariable Long documentoId)
-	{
-		if(!documentoRepository.existsById(documentoId)) 
-		{
+	@ApiOperation(value = "Deleta documento", notes = "Deleta documento de um morador especificado pelo id do documento.")
+	public ResponseEntity<Void> excluiDocumento(
+			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") @PathVariable Long documentoId) {
+		if (!documentoRepository.existsById(documentoId)) {
 			return ResponseEntity.notFound().build();
 		}
-		
+
 		documentoRepository.deleteById(documentoId);
 		return ResponseEntity.noContent().build();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

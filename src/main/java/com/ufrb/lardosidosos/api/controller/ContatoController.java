@@ -1,6 +1,7 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -25,56 +26,70 @@ import com.ufrb.lardosidosos.domain.model.enums.Parentesco;
 import com.ufrb.lardosidosos.domain.repository.ContatoRepository;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @RequestMapping("/contato")
-public class ContatoController 
-{
+public class ContatoController {
 
 	@Autowired
 	private ContatoRepository contatoRepository;
-	
+
 	@Autowired
 	private MoradorRepository moradorRepository;
-	
+
 	@GetMapping
-	public List<Contato> listar() 
-	{
+	@ApiOperation(value = "Lista contatos", notes = "Retorna uma lista com todos os contatos dos moradores.")
+	public List<Contato> listaContatos() {
 		return contatoRepository.findAll();
 	}
-	
+
+	@GetMapping("/{contatoId}")
+	@ApiOperation(value = "Busca contato", notes = "Busca por um contato de um morador especificado pelo id do contato.")
+	public ResponseEntity<Contato> buscaContato(
+			@ApiParam(name = "contatoId", value = "Id do contato.", required = true, type = "long") @PathVariable Long contatoId) {
+		Optional<Contato> contato = contatoRepository.findById(contatoId);
+		if (contato.isPresent())
+			return ResponseEntity.ok(contato.get());
+		return ResponseEntity.notFound().build();
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public Contato criar(@Valid @RequestBody Contato contato) 
-	{
+	@ApiOperation(value = "Cria contato", notes = "Cria um contato de um morador.")
+	public Contato salvaDocumento(@Valid @RequestBody Contato contato) {
 		Morador morador = moradorRepository.findById(contato.getMorador().getId())
-			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+
 		contato.setMorador(morador);
 		contato.setParentesco(Parentesco.OUTRO);
 		return contatoRepository.save(contato);
 	}
-	
+
 	@PutMapping("/{contatoId}")
 	@Transactional
-	public ResponseEntity<Contato> atualizar(@PathVariable Long contatoId, @Valid @RequestBody Contato contato) 
-	{
+	@ApiOperation(value = "Edita contato", notes = "Edita contato de um morador especificado pelo id do contato.")
+	public ResponseEntity<Contato> atualizaContato(
+			@ApiParam(name = "contatoId", value = "Id do contato.", required = true, type = "long") @PathVariable Long contatoId,
+			@Valid @RequestBody Contato contato) {
 
 		moradorRepository.findById(contato.getMorador().getId())
-			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+
 		contato.setId(contatoId);
 		contato.setParentesco(Parentesco.OUTRO);
-		
+
 		contato = contatoRepository.save(contato);
 		return ResponseEntity.ok(contato);
 	}
-	
+
 	@DeleteMapping("/{contatoId}")
-	public ResponseEntity<Void> remover(@PathVariable Long contatoId)
-	{
-		if(!contatoRepository.existsById(contatoId)) 
-		{
+	@ApiOperation(value = "Deleta contato", notes = "Deleta contato de um morador especificado pelo id do contato.")
+	public ResponseEntity<Void> excluiContato(
+			@ApiParam(name = "contatoId", value = "Id do contato.", required = true, type = "long") @PathVariable Long contatoId) {
+		if (!contatoRepository.existsById(contatoId)) {
 			return ResponseEntity.notFound().build();
 		}
 		contatoRepository.deleteById(contatoId);
