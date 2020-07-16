@@ -1,6 +1,6 @@
 package com.ufrb.lardosidosos.domain.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,7 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ufrb.lardosidosos.domain.model.enums.TipoEvento;
 
 @Entity
@@ -22,7 +24,9 @@ public class Evento {
 	@ManyToOne
 	private Morador morador;
 
-	private LocalDateTime data;
+	@NotNull
+	@JsonFormat(pattern = "dd-MM-yyyy")
+	private LocalDate data;
 
 	@Enumerated(EnumType.STRING)
 	private TipoEvento tipo;
@@ -47,11 +51,11 @@ public class Evento {
 		this.morador = morador;
 	}
 
-	public LocalDateTime getData() {
+	public LocalDate getData() {
 		return data;
 	}
 
-	public void setData(LocalDateTime data) {
+	public void setData(LocalDate data) {
 		this.data = data;
 	}
 

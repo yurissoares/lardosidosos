@@ -1,7 +1,7 @@
 create table documento (
 	id bigint unsigned not null auto_increment,
 	morador_id bigint unsigned not null,
-	data datetime,
+	data_entrega datetime,
 	informacoes text,
 	
 	primary key(id)

@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Contato;
 import com.ufrb.lardosidosos.domain.model.Morador;
-import com.ufrb.lardosidosos.domain.model.enums.Parentesco;
 import com.ufrb.lardosidosos.domain.repository.ContatoRepository;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
@@ -64,7 +63,6 @@ public class ContatoController {
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 
 		contato.setMorador(morador);
-		contato.setParentesco(Parentesco.OUTRO);
 		return contatoRepository.save(contato);
 	}
 
@@ -79,7 +77,6 @@ public class ContatoController {
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 
 		contato.setId(contatoId);
-		contato.setParentesco(Parentesco.OUTRO);
 
 		contato = contatoRepository.save(contato);
 		return ResponseEntity.ok(contato);

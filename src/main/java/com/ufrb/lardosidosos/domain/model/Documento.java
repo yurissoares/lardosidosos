@@ -1,12 +1,15 @@
 package com.ufrb.lardosidosos.domain.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class Documento {
@@ -18,7 +21,10 @@ public class Documento {
 	@ManyToOne
 	private Morador morador;
 
-	private LocalDateTime data;
+
+	@NotNull
+	@JsonFormat(pattern = "dd-MM-yyyy")
+	private LocalDate dataEntrega;
 
 	private String informacoes;
 
@@ -38,12 +44,12 @@ public class Documento {
 		this.morador = morador;
 	}
 
-	public LocalDateTime getData() {
-		return data;
+	public LocalDate getDataEntrega() {
+		return dataEntrega;
 	}
 
-	public void setData(LocalDateTime data) {
-		this.data = data;
+	public void setDataEntrega(LocalDate dataEntrega) {
+		this.dataEntrega = dataEntrega;
 	}
 
 	public String getInformacoes() {

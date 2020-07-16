@@ -1,6 +1,6 @@
 package com.ufrb.lardosidosos.domain.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -8,12 +8,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.br.CPF;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ufrb.lardosidosos.domain.model.enums.EstadoCivil;
 import com.ufrb.lardosidosos.domain.model.enums.Estados;
 import com.ufrb.lardosidosos.domain.model.enums.Parentesco;
@@ -29,29 +30,42 @@ public class Morador {
 	@NotBlank
 	private String nome;
 
-	private LocalDateTime dataEntrada;
-
-	private LocalDateTime dataNascimento;
+	@NotNull
+	@JsonFormat(pattern="dd-MM-yyyy")
+	private LocalDate dataEntrada;
+	
+	@NotNull
+	@JsonFormat(pattern="dd-MM-yyyy")
+	private LocalDate dataNascimento;
 
 	@Enumerated(EnumType.STRING)
 	private EstadoCivil estadoCivil;
 
-	@Max(value = 99)
 	private int qtdFilhos;
 
 	private String naturalidade;
-	private String endereco;
-	private String cidade;
+	
+	/*ENDEREÇO*****/
+	@NotBlank
+	private String endLogradouro;
+	
+	@NotBlank
+	private String endNumero;
+	
+	@NotBlank
+	private String endBairro;
+	
+	@NotBlank
+	private String endCidade;
+	
+	@Enumerated(EnumType.STRING)
+	private Estados endEstado;
 
 	@Size(min = 8, max = 8)
-	private String cep;
-
-	@Enumerated(EnumType.STRING)
-	private Estados estado;
-
-	// novos
+	private String endCep;
+	/*FIM-ENDEREÇO*****/
+	
 	@CPF
-	@Size(min = 11, max = 11)
 	private String nmCpf;
 
 	@Size(min = 10, max = 10)
@@ -72,21 +86,27 @@ public class Morador {
 	@NotBlank
 	private String nomeResponsavel;
 
+	/*ENDEREÇO*****/
 	@NotBlank
-	private String endResponsavel;
-
+	private String endLogradouroResponsavel;
+	
 	@NotBlank
-	private String cidadeResponsavel;
-
+	private String endNumeroResponsavel;
+	
 	@NotBlank
-	@Size(min = 8, max = 8)
-	private String cepResponsavel;
-
+	private String endBairroResponsavel;
+	
+	@NotBlank
+	private String endCidadeResponsavel;
+	
 	@Enumerated(EnumType.STRING)
-	private Estados estadoResponsavel;
+	private Estados endEstadoResponsavel;
+
+	@Size(min = 8, max = 8)
+	private String endCepResponsavel;
+	/*FIM-ENDEREÇO*****/
 
 	@CPF
-	@Size(min = 11, max = 11)
 	private String nmCpfResponsavel;
 
 	@Size(min = 10, max = 10)
@@ -115,19 +135,19 @@ public class Morador {
 		this.nome = nome;
 	}
 
-	public LocalDateTime getDataEntrada() {
+	public LocalDate getDataEntrada() {
 		return dataEntrada;
 	}
 
-	public void setDataEntrada(LocalDateTime dataEntrada) {
+	public void setDataEntrada(LocalDate dataEntrada) {
 		this.dataEntrada = dataEntrada;
 	}
 
-	public LocalDateTime getDataNascimento() {
+	public LocalDate getDataNascimento() {
 		return dataNascimento;
 	}
 
-	public void setDataNascimento(LocalDateTime dataNascimento) {
+	public void setDataNascimento(LocalDate dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 
@@ -155,36 +175,52 @@ public class Morador {
 		this.naturalidade = naturalidade;
 	}
 
-	public String getEndereco() {
-		return endereco;
+	public String getEndLogradouro() {
+		return endLogradouro;
 	}
 
-	public void setEndereco(String endereco) {
-		this.endereco = endereco;
+	public void setEndLogradouro(String endLogradouro) {
+		this.endLogradouro = endLogradouro;
 	}
 
-	public String getCidade() {
-		return cidade;
+	public String getEndNumero() {
+		return endNumero;
 	}
 
-	public void setCidade(String cidade) {
-		this.cidade = cidade;
+	public void setEndNumero(String endNumero) {
+		this.endNumero = endNumero;
 	}
 
-	public String getCep() {
-		return cep;
+	public String getEndBairro() {
+		return endBairro;
 	}
 
-	public void setCep(String cep) {
-		this.cep = cep;
+	public void setEndBairro(String endBairro) {
+		this.endBairro = endBairro;
 	}
 
-	public Estados getEstado() {
-		return estado;
+	public String getEndCidade() {
+		return endCidade;
 	}
 
-	public void setEstado(Estados estado) {
-		this.estado = estado;
+	public void setEndCidade(String endCidade) {
+		this.endCidade = endCidade;
+	}
+
+	public Estados getEndEstado() {
+		return endEstado;
+	}
+
+	public void setEndEstado(Estados endEstado) {
+		this.endEstado = endEstado;
+	}
+
+	public String getEndCep() {
+		return endCep;
+	}
+
+	public void setEndCep(String endCep) {
+		this.endCep = endCep;
 	}
 
 	public String getNmCpf() {
@@ -267,36 +303,52 @@ public class Morador {
 		this.nomeResponsavel = nomeResponsavel;
 	}
 
-	public String getEndResponsavel() {
-		return endResponsavel;
+	public String getEndLogradouroResponsavel() {
+		return endLogradouroResponsavel;
 	}
 
-	public void setEndResponsavel(String endResponsavel) {
-		this.endResponsavel = endResponsavel;
+	public void setEndLogradouroResponsavel(String endLogradouroResponsavel) {
+		this.endLogradouroResponsavel = endLogradouroResponsavel;
 	}
 
-	public String getCidadeResponsavel() {
-		return cidadeResponsavel;
+	public String getEndNumeroResponsavel() {
+		return endNumeroResponsavel;
 	}
 
-	public void setCidadeResponsavel(String cidadeResponsavel) {
-		this.cidadeResponsavel = cidadeResponsavel;
+	public void setEndNumeroResponsavel(String endNumeroResponsavel) {
+		this.endNumeroResponsavel = endNumeroResponsavel;
 	}
 
-	public String getCepResponsavel() {
-		return cepResponsavel;
+	public String getEndBairroResponsavel() {
+		return endBairroResponsavel;
 	}
 
-	public void setCepResponsavel(String cepResponsavel) {
-		this.cepResponsavel = cepResponsavel;
+	public void setEndBairroResponsavel(String endBairroResponsavel) {
+		this.endBairroResponsavel = endBairroResponsavel;
 	}
 
-	public Estados getEstadoResponsavel() {
-		return estadoResponsavel;
+	public String getEndCidadeResponsavel() {
+		return endCidadeResponsavel;
 	}
 
-	public void setEstadoResponsavel(Estados estadoResponsavel) {
-		this.estadoResponsavel = estadoResponsavel;
+	public void setEndCidadeResponsavel(String endCidadeResponsavel) {
+		this.endCidadeResponsavel = endCidadeResponsavel;
+	}
+
+	public Estados getEndEstadoResponsavel() {
+		return endEstadoResponsavel;
+	}
+
+	public void setEndEstadoResponsavel(Estados endEstadoResponsavel) {
+		this.endEstadoResponsavel = endEstadoResponsavel;
+	}
+
+	public String getEndCepResponsavel() {
+		return endCepResponsavel;
+	}
+
+	public void setEndCepResponsavel(String endCepResponsavel) {
+		this.endCepResponsavel = endCepResponsavel;
 	}
 
 	public String getNmCpfResponsavel() {

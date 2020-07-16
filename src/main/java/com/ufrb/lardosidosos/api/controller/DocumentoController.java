@@ -1,6 +1,5 @@
 package com.ufrb.lardosidosos.api.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,7 +64,6 @@ public class DocumentoController {
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 
 		documento.setMorador(morador);
-		documento.setData(LocalDateTime.now());
 		return documentoRepository.save(documento);
 	}
 
@@ -79,7 +77,6 @@ public class DocumentoController {
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 
 		documento.setId(documentoId);
-
 		documento = documentoRepository.save(documento);
 		return ResponseEntity.ok(documento);
 	}

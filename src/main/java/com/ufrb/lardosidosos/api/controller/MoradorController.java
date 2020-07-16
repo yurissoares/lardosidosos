@@ -1,6 +1,5 @@
 package com.ufrb.lardosidosos.api.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,8 +43,9 @@ public class MoradorController {
 	public ResponseEntity<Morador> buscaMorador(
 			@ApiParam(name = "moradorId", value = "Id do morador.", required = true, type = "long") @PathVariable Long moradorId) {
 		Optional<Morador> morador = moradorRepository.findById(moradorId);
-		if (morador.isPresent())
+		if (morador.isPresent()) {
 			return ResponseEntity.ok(morador.get());
+		}
 		return ResponseEntity.notFound().build();
 	}
 
@@ -54,12 +54,7 @@ public class MoradorController {
 	@Transactional
 	@ApiOperation(value = "Cria morador", notes = "Cria um morador.")
 	public Morador salvaMorador(@Valid @RequestBody Morador morador) {
-//		Morador moradorExistente = moradorRepository.findByNome(morador.getNome());
-//		if (moradorExistente != null && !moradorExistente.equals(morador)) {
-//			throw new NegocioException("Já existe um morador com este nome.");
-//		}
-		morador.setDataEntrada(LocalDateTime.now());
-		morador.setDataNascimento(LocalDateTime.now());
+		
 		return moradorRepository.save(morador);
 	}
 
@@ -69,13 +64,11 @@ public class MoradorController {
 	public ResponseEntity<Morador> atualizaMorador(
 			@ApiParam(name = "moradorId", value = "Id do morador.", required = true, type = "long") @PathVariable Long moradorId,
 			@Valid @RequestBody Morador morador) {
+		
 		if (!moradorRepository.existsById(moradorId)) {
 			return ResponseEntity.notFound().build();
 		}
 		morador.setId(moradorId);
-
-		morador.setDataEntrada(LocalDateTime.now());
-		morador.setDataNascimento(LocalDateTime.now());
 
 		morador = moradorRepository.save(morador);
 		return ResponseEntity.ok(morador);
