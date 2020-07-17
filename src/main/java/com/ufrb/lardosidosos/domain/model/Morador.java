@@ -68,7 +68,7 @@ public class Morador {
 	@CPF
 	private String nmCpf;
 
-	@Size(min = 10, max = 10)
+	@Size(min = 12, max = 12)
 	private String nmRg;
 
 	private String nmCtps;
@@ -109,7 +109,7 @@ public class Morador {
 	@CPF
 	private String nmCpfResponsavel;
 
-	@Size(min = 10, max = 10)
+	@Size(min = 12, max = 12)
 	private String nmRgResponsavel;
 
 	private String telResponsavel;

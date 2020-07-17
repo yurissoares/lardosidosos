@@ -13,8 +13,8 @@ create table morador (
   end_estado enum('AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO') not null,
   end_cep varchar(255) not null ,
   
-  nm_cpf varchar(11) not null,
-  nm_rg varchar(10) not null,
+  nm_cpf varchar(14) not null,
+  nm_rg varchar(12) not null,
   nm_ctps varchar(255),
   nm_beneficio varchar(255),
   
@@ -33,8 +33,8 @@ create table morador (
   end_estado_responsavel enum('AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'),
   end_cep_responsavel varchar(255) not null,
   
-  nm_cpf_responsavel varchar(11),
-  nm_rg_responsavel varchar(10),
+  nm_cpf_responsavel varchar(14),
+  nm_rg_responsavel varchar(12),
   tel_responsavel varchar(255),
   parentesco_responsavel enum('PAI', 'MAE', 'IRMAO', 'OUTRO') not null,
   obs_responsavel varchar(255),
