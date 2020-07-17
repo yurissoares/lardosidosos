@@ -26,6 +26,7 @@ import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+
 @CrossOrigin(origins = "http://localhost:8080", maxAge = 3600)
 @RestController
 @RequestMapping("/morador")
