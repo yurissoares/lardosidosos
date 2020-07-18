@@ -27,7 +27,7 @@ public class Evento {
 	private @ManyToOne Morador morador;
 
 	@NotNull
-	@JsonFormat(pattern = "dd-MM-yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate data;
 
 	private @Enumerated(EnumType.STRING) TipoEvento tipo;

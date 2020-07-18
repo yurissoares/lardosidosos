@@ -1,7 +1,6 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -30,11 +29,7 @@ import io.swagger.annotations.ApiParam;
 public class MoradorController {
 
 	@Autowired
-	private final MoradorRepository repository;
-	
-	MoradorController(MoradorRepository repository){
-		this.repository = repository;
-	}
+	private MoradorRepository repository;
 	
 	// raiz agregada
 
@@ -54,18 +49,32 @@ public class MoradorController {
 	
 	// item único
 
-	@ApiOperation(value = "Busca morador", notes = "Busca por morador especificado pelo id.")
-	@GetMapping("/{id}")
-	ResponseEntity<Morador> buscaMorador(
-			@ApiParam(name = "id", value = "Id do morador.", required = true, type = "long") 
-			@PathVariable Long id) {
+//	@ApiOperation(value = "Busca morador", notes = "Busca por morador especificado pelo id.")
+//	@GetMapping("/{id}")
+//	ResponseEntity<Morador> buscaMorador(
+//			@ApiParam(name = "id", value = "Id do morador.", required = true, type = "long") 
+//			@PathVariable Long id) {
+//		
+//		Optional<Morador> morador = repository.findById(id);
+//		
+//		if(morador.isPresent())
+//			return ResponseEntity.ok(morador.get());
+//
+//		return ResponseEntity.notFound().build();
+//	}
+	
+	@ApiOperation(value = "Busca morador(es)", notes = "Busca por morador(es) especificado pelo nome.")
+	@GetMapping("/{nome}")
+	ResponseEntity<List<Morador>> buscaMoradorPorNome(
+			@ApiParam(name = "nome", value = "Nome do morador.", required = true, type = "String") 
+			@PathVariable String nome) {
 		
-		Optional<Morador> morador = repository.findById(id);
+		List<Morador> morador = repository.findByNomeContaining(nome);
 		
-		if(morador.isPresent())
-			return ResponseEntity.ok(morador.get());
+		if(morador.isEmpty())
+			return ResponseEntity.notFound().build();
 
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.ok(morador);
 	}
 
 	@ApiOperation(value = "Edita morador", notes = "Edita morador especificado pelo id.")
