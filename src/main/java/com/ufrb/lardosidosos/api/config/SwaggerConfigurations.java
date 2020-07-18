@@ -27,7 +27,6 @@ public class SwaggerConfigurations {
 	}
 
 	private ApiInfo infoApi() {
-
 		return new ApiInfoBuilder().title("API Lar dos Idosos")
 				.description("API para o sistema de controle do Lar dos Idosos.").version("1.0")
 				.contact(new Contact("Yuri Soares", "http://www.ufrb.edu.br", "yurissoares@outlook.com"))

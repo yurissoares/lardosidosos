@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,69 +29,72 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 
-@CrossOrigin(origins = "http://localhost:8080", maxAge = 3600)
 @RestController
 @RequestMapping("/documento")
 public class DocumentoController {
 
-	@Autowired
-	private DocumentoRepository documentoRepository;
-
-	@Autowired
+	private DocumentoRepository repository;
 	private MoradorRepository moradorRepository;
 
+	@ApiOperation(value = "Lista todos os documentos", notes = "Retorna uma lista com todos os documentos dos moradores.")
 	@GetMapping
-	@ApiOperation(value = "Lista documentos", notes = "Retorna uma lista com todos os documentos dos moradores.")
-	public List<Documento> listaDocumentos() {
-		return documentoRepository.findAll();
+	List<Documento> listarDocumentos() {
+		return repository.findAll();
 	}
 
-	@GetMapping("/{documentoId}")
-	@ApiOperation(value = "Busca documento", notes = "Busca por documento de um morador pelo id.")
+	@ApiOperation(value = "Busca um documento", notes = "Busca por documento de um morador pelo id.")
+	@GetMapping("/{id}")
 	public ResponseEntity<Documento> buscaDocumento(
-			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") @PathVariable Long documentoId) {
-		Optional<Documento> documento = documentoRepository.findById(documentoId);
+			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") 
+			@PathVariable Long id) {
+		
+		Optional<Documento> documento = repository.findById(id);
+		
 		if (documento.isPresent())
 			return ResponseEntity.ok(documento.get());
+		
 		return ResponseEntity.notFound().build();
 	}
 
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
 	@ApiOperation(value = "Cria documento", notes = "Cria documento de um morador.")
-	public Documento salvaDocumento(@Valid @RequestBody Documento documento) {
+	@Transactional
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping
+	Documento salvaDocumento(@Valid @RequestBody Documento documento) {
 
 		Morador morador = moradorRepository.findById(documento.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 
 		documento.setMorador(morador);
-		return documentoRepository.save(documento);
+		return repository.save(documento);
 	}
 
-	@PutMapping("/{documentoId}")
+	@ApiOperation(value = "Edita um documento", notes = "Edita um documento de um morador especificado pelo id do documento.")
 	@Transactional
-	@ApiOperation(value = "Edita documento", notes = "Edita documento de um morador especificado pelo id do documento.")
-	public ResponseEntity<Documento> editaDocumento(
-			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") @PathVariable Long documentoId,
+	@PutMapping("/{id}")
+	ResponseEntity<Documento> editaDocumento(
+			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") 
+			@PathVariable Long id,
 			@Valid @RequestBody Documento documento) {
+		
 		moradorRepository.findById(documento.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 
-		documento.setId(documentoId);
-		documento = documentoRepository.save(documento);
+		documento.setId(id);
+		documento = repository.save(documento);
 		return ResponseEntity.ok(documento);
 	}
 
+	@ApiOperation(value = "Deleta um documento", notes = "Deleta um documento de um morador especificado pelo id do documento.")
 	@DeleteMapping("/{documentoId}")
-	@ApiOperation(value = "Deleta documento", notes = "Deleta documento de um morador especificado pelo id do documento.")
-	public ResponseEntity<Void> excluiDocumento(
-			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") @PathVariable Long documentoId) {
-		if (!documentoRepository.existsById(documentoId)) {
+	ResponseEntity<Void> excluiDocumento(
+			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") 
+			@PathVariable Long id) {
+		
+		if (!repository.existsById(id))
 			return ResponseEntity.notFound().build();
-		}
 
-		documentoRepository.deleteById(documentoId);
+		repository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 }

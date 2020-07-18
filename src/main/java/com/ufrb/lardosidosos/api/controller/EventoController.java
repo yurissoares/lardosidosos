@@ -5,11 +5,9 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,68 +27,70 @@ import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@CrossOrigin(origins = "http://localhost:8080", maxAge = 3600)
 @RestController
 @RequestMapping("/evento")
 public class EventoController {
 
-	@Autowired
-	private EventoRepository eventoRepository;
-
-	@Autowired
+	private EventoRepository repository;
 	private MoradorRepository moradorRepository;
 
-	@GetMapping
 	@ApiOperation(value = "Lista eventos", notes = "Retorna uma lista com todos os eventos dos moradores.")
-	public List<Evento> listaEventos() {
-		return eventoRepository.findAll();
+	@GetMapping
+	List<Evento> listarEventos() {
+		return repository.findAll();
+	}
+	
+	@ApiOperation(value = "Cria um novo evento", notes = "Cria um novo evento de um morador.")
+	@Transactional
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping
+	Evento novoEvento(@Valid @RequestBody Evento novoEvento) {
+		Morador morador = moradorRepository.findById(novoEvento.getMorador().getId())
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+
+		novoEvento.setMorador(morador);
+		return repository.save(novoEvento);
 	}
 
-	@GetMapping("/{eventoId}")
 	@ApiOperation(value = "Busca evento", notes = "Busca por um evento de um morador especificado pelo id do evento.")
-	public ResponseEntity<Evento> buscaEvento(
-			@ApiParam(name = "eventoId", value = "Id do evento.", required = true, type = "long") @PathVariable Long eventoId) {
-		Optional<Evento> evento = eventoRepository.findById(eventoId);
+	@GetMapping("/{id}")
+	ResponseEntity<Evento> buscarEvento(
+			@ApiParam(name = "id", value = "Id do evento.", required = true, type = "long") 
+			@PathVariable Long id) {
+		
+		Optional<Evento> evento = repository.findById(id);
+		
 		if (evento.isPresent())
 			return ResponseEntity.ok(evento.get());
+		
 		return ResponseEntity.notFound().build();
 	}
 
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
-	@ApiOperation(value = "Cria evento", notes = "Cria um evento de um morador.")
-	public Evento salvaEvento(@Valid @RequestBody Evento evento) {
-		Morador morador = moradorRepository.findById(evento.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-
-		evento.setMorador(morador);
-		return eventoRepository.save(evento);
-	}
-
-	@PutMapping("/{eventoId}")
-	@Transactional
 	@ApiOperation(value = "Edita evento", notes = "Edita evento de um morador especificado pelo id do evento.")
-	public ResponseEntity<Evento> atualizaEvento(
-			@ApiParam(name = "eventoId", value = "Id do evento.", required = true, type = "long") @PathVariable Long eventoId,
+	@Transactional
+	@PutMapping("/{id}")
+	ResponseEntity<Evento> atualizaEvento(
+			@ApiParam(name = "id", value = "Id do evento.", required = true, type = "long") 
+			@PathVariable Long id,
 			@Valid @RequestBody Evento evento) {
 		moradorRepository.findById(evento.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 
-		evento.setId(eventoId);
-		evento = eventoRepository.save(evento);
+		evento.setId(id);
+		evento = repository.save(evento);
 		return ResponseEntity.ok(evento);
 	}
 
-	@DeleteMapping("/{eventoId}")
-	@ApiOperation(value = "Deleta evento", notes = "Deleta evento especificado pelo id do evento.")
-	public ResponseEntity<Void> excluiEvento(
-			@ApiParam(name = "eventoId", value = "Id do evento.", required = true, type = "long") @PathVariable Long eventoId) {
-		if (!eventoRepository.existsById(eventoId)) {
+	@DeleteMapping("/{id}")
+	@ApiOperation(value = "Deleta um evento", notes = "Deleta um evento especificado pelo id do evento.")
+	ResponseEntity<Void> excluiEvento(
+			@ApiParam(name = "eventoId", value = "Id do evento.", required = true, type = "long") 
+			@PathVariable Long id) {
+		
+		if (!repository.existsById(id))
 			return ResponseEntity.notFound().build();
-		}
 
-		eventoRepository.deleteById(eventoId);
+		repository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 }
