@@ -33,7 +33,10 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping("/documento")
 public class DocumentoController {
 
+	@Autowired
 	private DocumentoRepository repository;
+	
+	@Autowired
 	private MoradorRepository moradorRepository;
 
 	@ApiOperation(value = "Lista todos os documentos", notes = "Retorna uma lista com todos os documentos dos moradores.")
@@ -45,7 +48,7 @@ public class DocumentoController {
 	@ApiOperation(value = "Busca um documento", notes = "Busca por documento de um morador pelo id.")
 	@GetMapping("/{id}")
 	public ResponseEntity<Documento> buscaDocumento(
-			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") 
+			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") 
 			@PathVariable Long id) {
 		
 		Optional<Documento> documento = repository.findById(id);
@@ -73,7 +76,7 @@ public class DocumentoController {
 	@Transactional
 	@PutMapping("/{id}")
 	ResponseEntity<Documento> editaDocumento(
-			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") 
+			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") 
 			@PathVariable Long id,
 			@Valid @RequestBody Documento documento) {
 		
@@ -86,7 +89,7 @@ public class DocumentoController {
 	}
 
 	@ApiOperation(value = "Deleta um documento", notes = "Deleta um documento de um morador especificado pelo id do documento.")
-	@DeleteMapping("/{documentoId}")
+	@DeleteMapping("/{id}")
 	ResponseEntity<Void> excluiDocumento(
 			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") 
 			@PathVariable Long id) {

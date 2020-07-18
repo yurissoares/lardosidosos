@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping("/morador")
 public class MoradorController {
 
+	@Autowired
 	private final MoradorRepository repository;
 	
 	MoradorController(MoradorRepository repository){

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,10 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping("/evento")
 public class EventoController {
 
+	@Autowired
 	private EventoRepository repository;
+	
+	@Autowired
 	private MoradorRepository moradorRepository;
 
 	@ApiOperation(value = "Lista eventos", notes = "Retorna uma lista com todos os eventos dos moradores.")
@@ -84,7 +88,7 @@ public class EventoController {
 	@DeleteMapping("/{id}")
 	@ApiOperation(value = "Deleta um evento", notes = "Deleta um evento especificado pelo id do evento.")
 	ResponseEntity<Void> excluiEvento(
-			@ApiParam(name = "eventoId", value = "Id do evento.", required = true, type = "long") 
+			@ApiParam(name = "id", value = "Id do evento.", required = true, type = "long") 
 			@PathVariable Long id) {
 		
 		if (!repository.existsById(id))

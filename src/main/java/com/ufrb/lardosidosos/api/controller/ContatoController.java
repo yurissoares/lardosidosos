@@ -32,13 +32,29 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping("/contato")
 public class ContatoController {
 
+	@Autowired
 	private ContatoRepository repository;
+	
+	@Autowired
 	private MoradorRepository moradorRepository;
 
 	@ApiOperation(value = "Lista todos os contatos", notes = "Retorna uma lista com todos os contatos dos moradores.")
 	@GetMapping
 	List<Contato> listarContatos() {
 		return repository.findAll();
+	}
+	
+	@ApiOperation(value = "Cria um novo contato", notes = "Cria um novo contato de um morador.")
+	@ResponseStatus(HttpStatus.CREATED)
+	@Transactional
+	@PostMapping
+	Contato salvaDocumento(@Valid @RequestBody Contato contato) {
+		
+		Morador morador = moradorRepository.findById(contato.getMorador().getId())
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+
+		contato.setMorador(morador);
+		return repository.save(contato);
 	}
 
 	@ApiOperation(value = "Busca contato", notes = "Busca por um contato de um morador especificado pelo id do contato.")
@@ -52,19 +68,6 @@ public class ContatoController {
 			return ResponseEntity.ok(contato.get());
 		
 		return ResponseEntity.notFound().build();
-	}
-
-	@ApiOperation(value = "Cria um novo contato", notes = "Cria um novo contato de um morador.")
-	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
-	@PostMapping
-	Contato salvaDocumento(@Valid @RequestBody Contato contato) {
-		
-		Morador morador = moradorRepository.findById(contato.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-
-		contato.setMorador(morador);
-		return repository.save(contato);
 	}
 
 	@ApiOperation(value = "Edita contato", notes = "Edita contato de um morador especificado pelo id do contato.")
