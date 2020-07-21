@@ -8,5 +8,5 @@ public enum Parentesco {
 	PRIMO,
 	VIZINHO,
 	CONHECIDO,
-	OUTRO
+	OUTRO;
 }

@@ -5,5 +5,5 @@ public enum TipoAposentadoria {
 	BPC,
 	FUNRURAL,
 	PENSIONISTA,
-	PRIVADA
+	PRIVADA;
 }
