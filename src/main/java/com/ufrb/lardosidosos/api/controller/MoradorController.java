@@ -69,7 +69,7 @@ public class MoradorController {
 			@ApiParam(name = "nome", value = "Nome do morador.", required = true, type = "String") 
 			@PathVariable String nome) {
 		
-		List<Morador> morador = repository.findByNomeContaining(nome);
+		List<Morador> morador = repository.findByNomeContainingOrderByNomeAsc(nome);
 		
 		if(morador.isEmpty())
 			return ResponseEntity.notFound().build();

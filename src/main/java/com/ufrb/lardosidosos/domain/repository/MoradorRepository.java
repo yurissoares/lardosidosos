@@ -9,5 +9,5 @@ import com.ufrb.lardosidosos.domain.model.Morador;
 
 @Repository
 public interface MoradorRepository extends JpaRepository<Morador, Long> {
-	List<Morador> findByNomeContaining(String nome);
+	List<Morador> findByNomeContainingOrderByNomeAsc(String nome);
 }
