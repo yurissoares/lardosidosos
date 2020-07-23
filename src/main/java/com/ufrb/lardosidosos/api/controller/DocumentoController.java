@@ -14,11 +14,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ufrb.lardosidosos.doctransfer.model.UploadDoc;
+import com.ufrb.lardosidosos.doctransfer.service.FileStorageService;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Documento;
 import com.ufrb.lardosidosos.domain.model.Morador;
@@ -28,16 +36,18 @@ import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-
 @RestController
 @RequestMapping("/documento")
 public class DocumentoController {
 
 	@Autowired
 	private DocumentoRepository repository;
-	
+
 	@Autowired
 	private MoradorRepository moradorRepository;
+
+	@Autowired
+	private FileStorageService fileStorageService;
 
 	@ApiOperation(value = "Lista todos os documentos", notes = "Retorna uma lista com todos os documentos dos moradores.")
 	@GetMapping
@@ -48,14 +58,13 @@ public class DocumentoController {
 	@ApiOperation(value = "Busca um documento", notes = "Busca por documento de um morador pelo id.")
 	@GetMapping("/{id}")
 	public ResponseEntity<Documento> buscaDocumento(
-			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") 
-			@PathVariable Long id) {
-		
+			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") @PathVariable Long id) {
+
 		Optional<Documento> documento = repository.findById(id);
-		
+
 		if (documento.isPresent())
 			return ResponseEntity.ok(documento.get());
-		
+
 		return ResponseEntity.notFound().build();
 	}
 
@@ -63,37 +72,74 @@ public class DocumentoController {
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	Documento salvaDocumento(@Valid @RequestBody Documento documento) {
+	public Documento salvaDocumento(@Valid @RequestPart("data") String documento,
+			@RequestPart(value = "file", required = false) MultipartFile file)
+			throws JsonMappingException, JsonProcessingException {
 
-		Morador morador = moradorRepository.findById(documento.getMorador().getId())
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		Documento docModel = mapper.readValue(documento, Documento.class);
+
+		Morador morador = moradorRepository.findById(docModel.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 
-		documento.setMorador(morador);
-		return repository.save(documento);
+		String fileName = fileStorageService.storeFile(file);
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/documento/file/downloadFile/").path(fileName).toUriString();
+
+		UploadDoc upDoc = new UploadDoc(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+
+		docModel.setMorador(morador);
+		docModel.setPathDoc(upDoc.getFileDownloadUri());
+
+		return repository.save(docModel);
 	}
 
 	@ApiOperation(value = "Edita um documento", notes = "Edita um documento de um morador especificado pelo id do documento.")
 	@Transactional
 	@PutMapping("/{id}")
-	ResponseEntity<Documento> editaDocumento(
-			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") 
-			@PathVariable Long id,
-			@Valid @RequestBody Documento documento) {
-		
-		moradorRepository.findById(documento.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+	public ResponseEntity<Documento> editaDocumento(
+			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") @PathVariable Long id,
+			@Valid @RequestPart("data") String documento, @RequestPart(value = "file", required = false) MultipartFile file) 
+					throws JsonMappingException, JsonProcessingException {
 
-		documento.setId(id);
-		documento = repository.save(documento);
-		return ResponseEntity.ok(documento);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		Documento docModel = mapper.readValue(documento, Documento.class);
+
+		moradorRepository.findById(docModel.getMorador().getId())
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
+		String fileName = fileStorageService.storeFile(file);
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+				.path("/documento/file/downloadFile/").path(fileName).toUriString();
+
+		UploadDoc upDoc = new UploadDoc(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+		
+		docModel.setPathDoc(upDoc.getFileDownloadUri());
+		docModel.setId(id);
+		docModel = repository.save(docModel);
+		return ResponseEntity.ok(docModel);
 	}
+
+//	public ResponseEntity<Documento> editaDocumento(
+//			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") 
+//			@PathVariable Long id,
+//			@Valid @RequestBody Documento documento) {
+//		
+//		moradorRepository.findById(documento.getMorador().getId())
+//				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+//
+//		documento.setId(id);
+//		documento = repository.save(documento);
+//		return ResponseEntity.ok(documento);
+//	}
 
 	@ApiOperation(value = "Deleta um documento", notes = "Deleta um documento de um morador especificado pelo id do documento.")
 	@DeleteMapping("/{id}")
 	ResponseEntity<Void> excluiDocumento(
-			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") 
-			@PathVariable Long id) {
-		
+			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") @PathVariable Long id) {
+
 		if (!repository.existsById(id))
 			return ResponseEntity.notFound().build();
 

@@ -4,6 +4,7 @@ create table documento (
 	data_entrega datetime not null,
 	tipo_documento enum('CPF', 'RG', 'CTPS', 'TITULO_ELEITOR', 'PLANO_FUNERARIO', 'CERTIDA_DE_NASCIMENTO', 
 	'CERTIDAO_DE_CASAMENTO', 'CERTIDAO_DE_OBITO_DO_CONJUGUE', 'CARTAO_DO_BENEFICIO', 'CARTAO_DO_SUS', 'CONTRATO') not null,
+	path_doc varchar(255),
 	
 	primary key(id)
 );

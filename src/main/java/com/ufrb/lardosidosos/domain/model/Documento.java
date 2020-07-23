@@ -30,6 +30,8 @@ public class Documento {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataEntrega;
 	
-	private @Enumerated(EnumType.STRING) TipoDocumento tipoDoc;
+	private @Enumerated(EnumType.STRING) TipoDocumento tipoDocumento;
+	
+	private String pathDoc;
 
 }
