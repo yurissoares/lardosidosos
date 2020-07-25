@@ -8,12 +8,12 @@ public class FileNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 	
-	public FileNotFoundException(String exception){
-		super(exception);
+	public FileNotFoundException(String mensagem){
+		super(mensagem);
 	}
 	
-	public FileNotFoundException(String exception, Throwable cause){
-		super(exception, cause);
+	public FileNotFoundException(String mensagem, Throwable cause){
+		super(mensagem, cause);
 	}
 	
 }

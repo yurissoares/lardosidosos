@@ -31,7 +31,5 @@ public class Documento {
 	private LocalDate dataEntrega;
 	
 	private @Enumerated(EnumType.STRING) TipoDocumento tipoDocumento;
-	
-	private String pathDoc;
 
 }

@@ -14,19 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.ufrb.lardosidosos.doctransfer.model.UploadDoc;
-import com.ufrb.lardosidosos.doctransfer.service.FileStorageService;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Documento;
 import com.ufrb.lardosidosos.domain.model.Morador;
@@ -45,9 +37,6 @@ public class DocumentoController {
 
 	@Autowired
 	private MoradorRepository moradorRepository;
-
-	@Autowired
-	private FileStorageService fileStorageService;
 
 	@ApiOperation(value = "Lista todos os documentos", notes = "Retorna uma lista com todos os documentos dos moradores.")
 	@GetMapping
@@ -72,68 +61,30 @@ public class DocumentoController {
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public Documento salvaDocumento(@Valid @RequestPart("data") String documento,
-			@RequestPart(value = "file", required = false) MultipartFile file)
-			throws JsonMappingException, JsonProcessingException {
+	public Documento salvaDocumento(@Valid @RequestBody Documento documento) {
 
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-		Documento docModel = mapper.readValue(documento, Documento.class);
-
-		Morador morador = moradorRepository.findById(docModel.getMorador().getId())
+		Morador morador = moradorRepository.findById(documento.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-
-		String fileName = fileStorageService.storeFile(file);
-		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-				.path("/documento/file/downloadFile/").path(fileName).toUriString();
-
-		UploadDoc upDoc = new UploadDoc(fileName, fileDownloadUri, file.getContentType(), file.getSize());
-
-		docModel.setMorador(morador);
-		docModel.setPathDoc(upDoc.getFileDownloadUri());
-
-		return repository.save(docModel);
+		
+		documento.setMorador(morador);
+		return repository.save(documento);
 	}
 
 	@ApiOperation(value = "Edita um documento", notes = "Edita um documento de um morador especificado pelo id do documento.")
 	@Transactional
 	@PutMapping("/{id}")
 	public ResponseEntity<Documento> editaDocumento(
-			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") @PathVariable Long id,
-			@Valid @RequestPart("data") String documento, @RequestPart(value = "file", required = false) MultipartFile file) 
-					throws JsonMappingException, JsonProcessingException {
+			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") 
+			@PathVariable Long id,
+			@Valid @RequestBody Documento documento) {
 
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-		Documento docModel = mapper.readValue(documento, Documento.class);
-
-		moradorRepository.findById(docModel.getMorador().getId())
+		moradorRepository.findById(documento.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 		
-		String fileName = fileStorageService.storeFile(file);
-		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-				.path("/documento/file/downloadFile/").path(fileName).toUriString();
-
-		UploadDoc upDoc = new UploadDoc(fileName, fileDownloadUri, file.getContentType(), file.getSize());
-		
-		docModel.setPathDoc(upDoc.getFileDownloadUri());
-		docModel.setId(id);
-		docModel = repository.save(docModel);
-		return ResponseEntity.ok(docModel);
+		documento.setId(id);
+		documento = repository.save(documento);
+		return ResponseEntity.ok(documento);
 	}
-
-//	public ResponseEntity<Documento> editaDocumento(
-//			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") 
-//			@PathVariable Long id,
-//			@Valid @RequestBody Documento documento) {
-//		
-//		moradorRepository.findById(documento.getMorador().getId())
-//				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-//
-//		documento.setId(id);
-//		documento = repository.save(documento);
-//		return ResponseEntity.ok(documento);
-//	}
 
 	@ApiOperation(value = "Deleta um documento", notes = "Deleta um documento de um morador especificado pelo id do documento.")
 	@DeleteMapping("/{id}")
