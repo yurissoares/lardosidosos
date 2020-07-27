@@ -40,7 +40,7 @@ public class ContatoController {
 
 	@ApiOperation(value = "Lista todos os contatos", notes = "Retorna uma lista com todos os contatos dos moradores.")
 	@GetMapping
-	List<Contato> listarContatos() {
+	public List<Contato> listarContatos() {
 		return repository.findAll();
 	}
 	
@@ -48,7 +48,7 @@ public class ContatoController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
 	@PostMapping
-	Contato salvaDocumento(@Valid @RequestBody Contato contato) {
+	public Contato salvaDocumento(@Valid @RequestBody Contato contato) {
 		
 		Morador morador = moradorRepository.findById(contato.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
