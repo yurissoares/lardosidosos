@@ -37,8 +37,19 @@ public class ContatoController {
 	
 	@Autowired
 	private MoradorRepository moradorRepository;
+	
+	@ApiOperation(value = "Lista contatos referente ao morador", notes = "Retorna uma lista com todos os contatos do morador")
+	@GetMapping("/morador/{moradorId}")
+	public ResponseEntity<List<Contato>> listarContatosDoMorador(
+			@ApiParam(name = "moradorId", value = "Id do morador.", required = true, type = "long") 
+			@PathVariable Long moradorId) 
+	{
+		moradorRepository.findById(moradorId).orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
+		return ResponseEntity.ok(repository.findByMoradorId(moradorId));
+	}
 
-	@ApiOperation(value = "Lista todos os contatos", notes = "Retorna uma lista com todos os contatos dos moradores.")
+	@ApiOperation(value = "Lista todos os contatos", notes = "Retorna uma lista com todos os contatos.")
 	@GetMapping
 	public List<Contato> listarContatos() {
 		return repository.findAll();
@@ -48,7 +59,7 @@ public class ContatoController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
 	@PostMapping
-	public Contato salvaDocumento(@Valid @RequestBody Contato contato) {
+	public Contato salvarContato(@Valid @RequestBody Contato contato) {
 		
 		Morador morador = moradorRepository.findById(contato.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
@@ -59,7 +70,7 @@ public class ContatoController {
 
 	@ApiOperation(value = "Busca contato", notes = "Busca por um contato de um morador especificado pelo id do contato.")
 	@GetMapping("/{id}")
-	ResponseEntity<Contato> buscaContato(
+	public ResponseEntity<Contato> buscaContato(
 			@ApiParam(name = "id", value = "Id do contato.", required = true, type = "long") 
 			@PathVariable Long id) {
 		
@@ -69,17 +80,17 @@ public class ContatoController {
 		
 		return ResponseEntity.notFound().build();
 	}
-
+	
 	@ApiOperation(value = "Edita contato", notes = "Edita contato de um morador especificado pelo id do contato.")
 	@Transactional
 	@PutMapping("/{id}")
-	ResponseEntity<Contato> atualizaContato(
+	public ResponseEntity<Contato> atualizaContato(
 			@ApiParam(name = "id", value = "Id do contato.", required = true, type = "long") 
 			@PathVariable Long id,
 			@Valid @RequestBody Contato contato) {
-
-		moradorRepository.findById(contato.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
+		if (!repository.existsById(id))
+			return ResponseEntity.notFound().build();
 
 		contato.setId(id);
 		contato = repository.save(contato);
@@ -88,7 +99,7 @@ public class ContatoController {
 
 	@DeleteMapping("/{id}")
 	@ApiOperation(value = "Deleta contato", notes = "Deleta contato de um morador especificado pelo id do contato.")
-	ResponseEntity<Void> excluiContato(
+	public ResponseEntity<Void> excluiContato(
 			@ApiParam(name = "contatoId", value = "Id do contato.", required = true, type = "long") 
 			@PathVariable Long id) {
 		

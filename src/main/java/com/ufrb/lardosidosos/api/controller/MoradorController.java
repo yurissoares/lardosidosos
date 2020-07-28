@@ -30,12 +30,10 @@ public class MoradorController {
 
 	@Autowired
 	private MoradorRepository repository;
-	
-	// raiz agregada
 
 	@ApiOperation(value = "Lista moradores", notes = "Retorna uma lista com todos os moradores.")
 	@GetMapping
-	List<Morador> listarMoradores() {
+	public List<Morador> listarMoradores() {
 		return repository.findAll();
 	}
 	
@@ -43,29 +41,13 @@ public class MoradorController {
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	Morador novoMorador(@Valid @RequestBody Morador novoMorador) {
+	public Morador novoMorador(@Valid @RequestBody Morador novoMorador) {
 		return repository.save(novoMorador);
 	}
 	
-	// item único
-
-//	@ApiOperation(value = "Busca morador", notes = "Busca por morador especificado pelo id.")
-//	@GetMapping("/{id}")
-//	ResponseEntity<Morador> buscaMorador(
-//			@ApiParam(name = "id", value = "Id do morador.", required = true, type = "long") 
-//			@PathVariable Long id) {
-//		
-//		Optional<Morador> morador = repository.findById(id);
-//		
-//		if(morador.isPresent())
-//			return ResponseEntity.ok(morador.get());
-//
-//		return ResponseEntity.notFound().build();
-//	}
-	
 	@ApiOperation(value = "Busca morador(es)", notes = "Busca por morador(es) especificado pelo nome.")
 	@GetMapping("/{nome}")
-	ResponseEntity<List<Morador>> buscaMoradorPorNome(
+	public ResponseEntity<List<Morador>> buscaMoradorPorNome(
 			@ApiParam(name = "nome", value = "Nome do morador.", required = true, type = "String") 
 			@PathVariable String nome) {
 		
@@ -80,7 +62,7 @@ public class MoradorController {
 	@ApiOperation(value = "Edita morador", notes = "Edita morador especificado pelo id.")
 	@Transactional
 	@PutMapping("/{id}")
-	ResponseEntity<Morador> atualizaMorador(
+	public ResponseEntity<Morador> atualizaMorador(
 			@ApiParam(name = "id", value = "Id do morador.", required = true, type = "long") 
 			@PathVariable Long id,
 			@Valid @RequestBody Morador morador) {
@@ -96,7 +78,7 @@ public class MoradorController {
 	
 	@ApiOperation(value = "Deleta morador", notes = "Deleta morador especificado pelo id.")
 	@DeleteMapping("/{id}")
-	ResponseEntity<Void> excluirMorador(
+	public ResponseEntity<Void> excluirMorador(
 			@ApiParam(name = "id", value = "Id do morador.", required = true, type = "long") 
 			@PathVariable Long id) {
 		

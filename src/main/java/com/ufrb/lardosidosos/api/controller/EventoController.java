@@ -40,7 +40,7 @@ public class EventoController {
 
 	@ApiOperation(value = "Lista eventos", notes = "Retorna uma lista com todos os eventos dos moradores.")
 	@GetMapping
-	List<Evento> listarEventos() {
+	public List<Evento> listarEventos() {
 		return repository.findAll();
 	}
 	
@@ -48,7 +48,7 @@ public class EventoController {
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	Evento novoEvento(@Valid @RequestBody Evento novoEvento) {
+	public Evento novoEvento(@Valid @RequestBody Evento novoEvento) {
 		Morador morador = moradorRepository.findById(novoEvento.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 
@@ -58,7 +58,7 @@ public class EventoController {
 
 	@ApiOperation(value = "Busca evento", notes = "Busca por um evento de um morador especificado pelo id do evento.")
 	@GetMapping("/{id}")
-	ResponseEntity<Evento> buscarEvento(
+	public ResponseEntity<Evento> buscarEvento(
 			@ApiParam(name = "id", value = "Id do evento.", required = true, type = "long") 
 			@PathVariable Long id) {
 		
@@ -73,7 +73,7 @@ public class EventoController {
 	@ApiOperation(value = "Edita evento", notes = "Edita evento de um morador especificado pelo id do evento.")
 	@Transactional
 	@PutMapping("/{id}")
-	ResponseEntity<Evento> atualizaEvento(
+	public ResponseEntity<Evento> atualizaEvento(
 			@ApiParam(name = "id", value = "Id do evento.", required = true, type = "long") 
 			@PathVariable Long id,
 			@Valid @RequestBody Evento evento) {
@@ -87,7 +87,7 @@ public class EventoController {
 
 	@DeleteMapping("/{id}")
 	@ApiOperation(value = "Deleta um evento", notes = "Deleta um evento especificado pelo id do evento.")
-	ResponseEntity<Void> excluiEvento(
+	public ResponseEntity<Void> excluiEvento(
 			@ApiParam(name = "id", value = "Id do evento.", required = true, type = "long") 
 			@PathVariable Long id) {
 		

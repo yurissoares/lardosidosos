@@ -37,10 +37,22 @@ public class DocumentoController {
 
 	@Autowired
 	private MoradorRepository moradorRepository;
+	
+	@ApiOperation(value = "Lista documentos referente ao morador", notes = "Retorna uma lista com todos os documentos do morador")
+	@GetMapping("/morador/{moradorId}")
+	public ResponseEntity<List<Documento>> listarDocumentosDoMorador(
+			@ApiParam(name = "moradorId", value = "Id do morador.", required = true, type = "long") 
+			@PathVariable Long moradorId) 
+	{
+		 moradorRepository.findById(moradorId)
+			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
+		return ResponseEntity.ok(repository.findByMoradorId(moradorId));
+	}
 
 	@ApiOperation(value = "Lista todos os documentos", notes = "Retorna uma lista com todos os documentos dos moradores.")
 	@GetMapping
-	List<Documento> listarDocumentos() {
+	public List<Documento> listarDocumentos() {
 		return repository.findAll();
 	}
 
@@ -78,8 +90,10 @@ public class DocumentoController {
 			@PathVariable Long id,
 			@Valid @RequestBody Documento documento) {
 
-		moradorRepository.findById(documento.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		if (!repository.existsById(id))
+			return ResponseEntity.notFound().build();
+//		moradorRepository.findById(documento.getMorador().getId())
+//				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 		
 		documento.setId(id);
 		documento = repository.save(documento);
@@ -88,7 +102,7 @@ public class DocumentoController {
 
 	@ApiOperation(value = "Deleta um documento", notes = "Deleta um documento de um morador especificado pelo id do documento.")
 	@DeleteMapping("/{id}")
-	ResponseEntity<Void> excluiDocumento(
+	public ResponseEntity<Void> excluiDocumento(
 			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") @PathVariable Long id) {
 
 		if (!repository.existsById(id))
