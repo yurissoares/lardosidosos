@@ -23,6 +23,7 @@ create table morador (
   
   tem_emprestimo boolean,
   valor_parcela_emprestimo double,
+  data_ultima_parcela_emprestimo datetime,
   
   medicacoes varchar(255),
   motivo_ingresso varchar(255),

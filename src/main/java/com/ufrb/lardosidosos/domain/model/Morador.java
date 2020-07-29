@@ -62,6 +62,10 @@ public class Morador {
 	private @Enumerated(EnumType.STRING) TipoAposentadoria tipoAposentadoria;
 	private boolean temEmprestimo;
 	private double valorParcelaEmprestimo;
+	
+	@JsonFormat(pattern="dd/MM/yyyy")
+	private LocalDate dataUltimaParcelaEmprestimo;
+	
 	private String medicacoes;
 	private String motivoIngresso;
 	private @Enumerated(EnumType.STRING) Situacao situacao;
