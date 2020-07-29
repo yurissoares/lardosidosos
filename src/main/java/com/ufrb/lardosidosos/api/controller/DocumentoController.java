@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ufrb.lardosidosos.doctransfer.model.Arquivo;
+import com.ufrb.lardosidosos.doctransfer.repository.ArquivoRepository;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Documento;
 import com.ufrb.lardosidosos.domain.model.Morador;
@@ -37,6 +39,9 @@ public class DocumentoController {
 
 	@Autowired
 	private MoradorRepository moradorRepository;
+	
+	@Autowired
+	private ArquivoRepository arquivoRepository;
 	
 	@ApiOperation(value = "Lista documentos referente ao morador", notes = "Retorna uma lista com todos os documentos do morador")
 	@GetMapping("/morador/{moradorId}")
@@ -100,13 +105,19 @@ public class DocumentoController {
 		return ResponseEntity.ok(documento);
 	}
 
-	@ApiOperation(value = "Deleta um documento", notes = "Deleta um documento de um morador especificado pelo id do documento.")
+	@Transactional
+	@ApiOperation(value = "Deleta um documento", notes = "Deleta um documento de um morador especificado pelo id do documento e todos os arquivos associados a ele.")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> excluiDocumento(
 			@ApiParam(name = "id", value = "Id do documento.", required = true, type = "long") @PathVariable Long id) {
 
 		if (!repository.existsById(id))
 			return ResponseEntity.notFound().build();
+		
+		List<Arquivo> arquivosDeletar = arquivoRepository.findAllByDocumentoId(id);
+		arquivosDeletar.forEach((item) -> {
+			arquivoRepository.deleteById(item.getId());
+		});
 
 		repository.deleteById(id);
 		return ResponseEntity.noContent().build();
