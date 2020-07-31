@@ -10,6 +10,6 @@ deploy:
     docker push yurissoares/spring-boot-api-lardosidosos;
     docker push yurissoares/mysql-api-lardosidosos;
   on:
-    branch: producao
+    branch: desenvolvimento
 notifications:
   email: false
