@@ -1,6 +1,7 @@
 language: bash
 services: docker
 before_install:
+  - cd .
   - echo "Tudo ok até aqui!"
 script:
   - docker-compose build
@@ -14,4 +15,4 @@ deploy:
   on:
     branch: producao
 notifications:
-  email: true
+  email: false
