@@ -1,1 +1,1 @@
-ALTER TABLE morador add sexo ENUM('M', 'F');
+ALTER TABLE morador MODIFY COLUMN sexo ENUM('M', 'F');
