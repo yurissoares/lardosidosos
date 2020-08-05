@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ufrb.lardosidosos.domain.model.enums.EstadoCivil;
 import com.ufrb.lardosidosos.domain.model.enums.Estados;
 import com.ufrb.lardosidosos.domain.model.enums.Parentesco;
+import com.ufrb.lardosidosos.domain.model.enums.Sexo;
 import com.ufrb.lardosidosos.domain.model.enums.Situacao;
 import com.ufrb.lardosidosos.domain.model.enums.TipoAposentadoria;
 
@@ -32,6 +33,8 @@ public class Morador {
 	private Long id;
 
 	private @NotBlank @Size(max=50) String nome;
+	
+	private @Enumerated(EnumType.STRING) Sexo sexo;
 
 	@NotNull
 	@JsonFormat(pattern="dd/MM/yyyy")
@@ -55,7 +58,7 @@ public class Morador {
 	// fim do endereço
 	
 	private @CPF String nmCpf;
-	private @NotBlank @Size(max=14) String nmRg;
+	private @NotBlank @Size(max=20) String nmRg;
 	private @Size(max=50) String nmCtps;
 	private @Size(max=50) String nmBeneficio;
 	private boolean ehAposentado;
@@ -71,7 +74,7 @@ public class Morador {
 	private @Enumerated(EnumType.STRING) Situacao situacao;
 	
 	// responsável
-	private @NotBlank String nomeResponsavel;
+	private String nomeResponsavel;
 	
 	// endereço
 	private @Size(max=70) String endLogradouroResponsavel;
@@ -83,8 +86,8 @@ public class Morador {
 	// fim do endereço
 
 	private @CPF String nmCpfResponsavel;
-	private @Size(max=14) String nmRgResponsavel;
-	private @NotBlank @Size(max=50) String telResponsavel;
+	private @Size(max=20) String nmRgResponsavel;
+	private @Size(max=50) String telResponsavel;
 	private @Enumerated(EnumType.STRING) Parentesco parentescoResponsavel;
 	private String obsResponsavel;
 

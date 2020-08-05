@@ -6,6 +6,8 @@ public enum Parentesco {
 	SOBRINHO,
 	FILHO,
 	PRIMO,
+	GENRO,
+	NETO,
 	VIZINHO,
 	CONHECIDO,
 	OUTRO;
