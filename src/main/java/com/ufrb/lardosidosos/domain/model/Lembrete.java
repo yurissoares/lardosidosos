@@ -12,30 +12,36 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ufrb.lardosidosos.domain.model.enums.TipoEvento;
+import com.ufrb.lardosidosos.domain.model.enums.StatusLembrete;
+import com.ufrb.lardosidosos.domain.model.enums.TipoUsuario;
 
 import lombok.Data;
 
 @Data
 @Entity
-public class Evento {
+public class Lembrete {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull
 	@ManyToOne
 	private Morador morador;
-
+	
+	private @Enumerated(EnumType.STRING) TipoUsuario tipoUsuario;
+	
+	@ManyToOne
+	private Usuario usuario;
+	
+	private String obs;
+	
+	private @Enumerated(EnumType.STRING) StatusLembrete statusLembrete;
+	
 	@NotNull
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate data;
-
-	@Enumerated(EnumType.STRING)
-	private TipoEvento tipo;
 	
-	private String motivo;
-	private String observacoes;
-
+	@ManyToOne
+	private TipoLembrete tipoLembrete;
+	
 }

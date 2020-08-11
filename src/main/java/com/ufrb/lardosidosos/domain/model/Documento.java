@@ -24,7 +24,9 @@ public class Documento {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private @ManyToOne Morador morador;
+	@NotNull
+	@ManyToOne
+	private Morador morador;
 
 	@NotNull
 	@JsonFormat(pattern = "dd/MM/yyyy")

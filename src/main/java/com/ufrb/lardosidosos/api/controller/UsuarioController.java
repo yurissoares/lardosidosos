@@ -1,6 +1,7 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -39,13 +40,26 @@ public class UsuarioController
 		return usuarioRepository.findAll();
 	}
 	
+	@GetMapping("/{usuarioId}")
+	public ResponseEntity<Usuario> buscar(
+			@PathVariable Long usuarioId)
+	{
+		Optional<Usuario> usuario = usuarioRepository.findById(usuarioId);
+		
+		if(usuario.isPresent())
+			return ResponseEntity.ok(usuario.get());
+		
+		return ResponseEntity.notFound().build();
+
+	}
+	
 	@ApiOperation(value = "Cria usuário", notes = "Cria um novo usuário.")
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public Usuario criar(@Valid @RequestBody Usuario usuario)
+	public Usuario criar(@Valid @RequestBody Usuario novoUsuario)
 	{
-		return usuarioRepository.save(usuario);
+		return usuarioRepository.save(novoUsuario);
 	}
 	
 	@ApiOperation(value = "Edita usuario", notes = "Edita usuario especificado pelo id.")

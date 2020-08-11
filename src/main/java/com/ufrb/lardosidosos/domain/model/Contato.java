@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.ufrb.lardosidosos.domain.model.enums.Parentesco;
@@ -22,9 +23,17 @@ public class Contato {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private @ManyToOne Morador morador;
-	private @NotBlank @Size(max=50) String nome;
-	private @Enumerated(EnumType.STRING) Parentesco parentesco;
+	@NotNull 
+	@ManyToOne
+	private Morador morador;
+	
+	@NotBlank
+	@Size(max=50)
+	private String nome;
+	
+	@Enumerated(EnumType.STRING) 
+	private Parentesco parentesco;
+
 	private String informacoes;
 
 }

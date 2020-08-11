@@ -77,6 +77,7 @@ public class EventoController {
 			@ApiParam(name = "id", value = "Id do evento.", required = true, type = "long") 
 			@PathVariable Long id,
 			@Valid @RequestBody Evento evento) {
+		
 		moradorRepository.findById(evento.getMorador().getId())
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 

@@ -97,8 +97,8 @@ public class ContatoController {
 		return ResponseEntity.ok(contato);
 	}
 
-	@DeleteMapping("/{id}")
 	@ApiOperation(value = "Deleta contato", notes = "Deleta contato de um morador especificado pelo id do contato.")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> excluiContato(
 			@ApiParam(name = "contatoId", value = "Id do contato.", required = true, type = "long") 
 			@PathVariable Long id) {
