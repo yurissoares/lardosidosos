@@ -51,7 +51,7 @@ public class OcorrenciaController {
 	{
 		moradorRepository.findById(moradorId).orElseThrow(() -> new NegocioException("Morador não encontrado."));
 		
-		return ResponseEntity.ok(repository.findByMoradorId(moradorId));
+		return ResponseEntity.ok(repository.findByMoradorIdOrderByDataDesc(moradorId));
 	}
 	
 	@GetMapping

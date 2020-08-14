@@ -9,6 +9,6 @@ import com.ufrb.lardosidosos.domain.model.Ocorrencia;
 
 @Repository
 public interface OcorrenciaRepository extends JpaRepository<Ocorrencia, Long> {
-	List<Ocorrencia> findByMoradorId(Long id);
+	List<Ocorrencia> findByMoradorIdOrderByDataDesc(Long id);
 	
 }
