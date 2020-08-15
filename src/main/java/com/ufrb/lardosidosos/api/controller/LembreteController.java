@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Lembrete;
 import com.ufrb.lardosidosos.domain.model.Morador;
+import com.ufrb.lardosidosos.domain.model.RegistroSaude;
 import com.ufrb.lardosidosos.domain.model.TipoLembrete;
 import com.ufrb.lardosidosos.domain.model.Usuario;
 import com.ufrb.lardosidosos.domain.repository.LembreteRepository;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
+import com.ufrb.lardosidosos.domain.repository.RegistroSaudeRepository;
 import com.ufrb.lardosidosos.domain.repository.TipoLembreteRepository;
 import com.ufrb.lardosidosos.domain.repository.UsuarioRepository;
 
@@ -45,6 +47,9 @@ public class LembreteController {
 	@Autowired
 	private TipoLembreteRepository tipoLembreteRepository;
 	
+	@Autowired
+	private RegistroSaudeRepository registroSaudeRepository;
+	
 	@GetMapping
 	public List<Lembrete> listar()
 	{
@@ -63,25 +68,64 @@ public class LembreteController {
 		return ResponseEntity.notFound().build();
 
 	}
+
+	@GetMapping("/usuarioDestino/{usuarioId}")
+	public ResponseEntity<List<Lembrete>> buscarPorUsuarioDestino(@PathVariable Long usuarioId)
+	{
+		usuarioRepository.findById(usuarioId)
+				.orElseThrow(() -> new NegocioException("Usuário não encontrado."));
+
+		return ResponseEntity.ok(repository.findByUsuarioDestinoId(usuarioId));
+	}
+
+	@GetMapping("/usuarioOrigem/{usuarioId}")
+	public ResponseEntity<List<Lembrete>> buscarPorUsuarioOrigem(@PathVariable Long usuarioId)
+	{
+		usuarioRepository.findById(usuarioId)
+				.orElseThrow(() -> new NegocioException("Usuário não encontrado."));
+
+		return ResponseEntity.ok(repository.findByUsuarioOrigemId(usuarioId));
+	}
 	
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public Lembrete salvar(@Valid @RequestBody Lembrete novoLembrete)
+	public Lembrete salvar(@Valid @RequestBody Lembrete lembrete)
 	{
-		Morador morador = moradorRepository.findById(novoLembrete.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		Morador morador = null;
+		Usuario usuarioDestino = null;
+		RegistroSaude registroSaude = null;
 		
-		Usuario usuario = usuarioRepository.findById(novoLembrete.getUsuario().getId())
+		if (lembrete.getMorador() != null) 
+		{
+			morador = moradorRepository.findById(lembrete.getMorador().getId())
+					.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		}
+		
+		Usuario usuarioOrigem = usuarioRepository.findById(lembrete.getUsuarioOrigem().getId())
 				.orElseThrow(() -> new NegocioException("Usuário não encontrado."));
+
+		if (lembrete.getUsuarioDestino() != null) 
+		{
+		usuarioDestino = usuarioRepository.findById(lembrete.getUsuarioDestino().getId())
+				.orElseThrow(() -> new NegocioException("Usuário não encontrado."));
+		}
 		
-		TipoLembrete tipoLembrete = tipoLembreteRepository.findById(novoLembrete.getTipoLembrete().getId())
+		TipoLembrete tipoLembrete = tipoLembreteRepository.findById(lembrete.getTipoLembrete().getId())
 				.orElseThrow(() -> new NegocioException("Tipo de Lembrete não encontrado."));
 		
-		novoLembrete.setMorador(morador);
-		novoLembrete.setUsuario(usuario);
-		novoLembrete.setTipoLembrete(tipoLembrete);	
-		return repository.save(novoLembrete);
+		if (lembrete.getRegistroSaude() != null) 
+		{
+			registroSaude = registroSaudeRepository.findById(lembrete.getRegistroSaude().getId())
+					.orElseThrow(() -> new NegocioException("RegistroSaude não encontrado."));
+		}
+		
+		lembrete.setMorador(morador);
+		lembrete.setUsuarioOrigem(usuarioOrigem);
+		lembrete.setUsuarioDestino(usuarioDestino);
+		lembrete.setTipoLembrete(tipoLembrete);	
+		lembrete.setRegistroSaude(registroSaude);
+		return repository.save(lembrete);
 	}
 	
 	@Transactional
@@ -90,17 +134,32 @@ public class LembreteController {
 			@PathVariable Long id,
 			@Valid @RequestBody Lembrete lembrete)
 	{
-		moradorRepository.findById(lembrete.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		if (!repository.existsById(id))
+			return ResponseEntity.notFound().build();
 		
-		usuarioRepository.findById(lembrete.getUsuario().getId())
-				.orElseThrow(() -> new NegocioException("Usuário encontrado."));
+		if (lembrete.getMorador() != null) 
+		{
+			moradorRepository.findById(lembrete.getMorador().getId())
+					.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		}
+
+		usuarioRepository.findById(lembrete.getUsuarioOrigem().getId())
+				.orElseThrow(() -> new NegocioException("Usuário não encontrado."));
+
+		if (lembrete.getUsuarioDestino() != null) 
+		{
+			usuarioRepository.findById(lembrete.getUsuarioDestino().getId())
+					.orElseThrow(() -> new NegocioException("Usuário não encontrado."));
+		}
 		
 		tipoLembreteRepository.findById(lembrete.getTipoLembrete().getId())
 				.orElseThrow(() -> new NegocioException("Tipo de Lembrete não encontrado."));
 		
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
+		if (lembrete.getRegistroSaude() != null) 
+		{
+			registroSaudeRepository.findById(lembrete.getRegistroSaude().getId())
+					.orElseThrow(() -> new NegocioException("RegistroSaude não encontrado."));
+		}
 		
 		lembrete.setId(id);
 		lembrete = repository.save(lembrete);

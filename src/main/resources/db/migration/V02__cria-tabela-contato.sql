@@ -2,9 +2,9 @@ create table contato (
 	id bigint unsigned not null auto_increment,
 	morador_id bigint unsigned not null,
   	nome varchar(50) not null,
-  	parentesco enum('PAI', 'IRMAO', 'SOBRINHO', 'FILHO', 'PRIMO', 'VIZINHO', 'CONHECIDO', 'OUTRO') not null,
+  	parentesco ENUM('PAI', 'IRMAO', 'SOBRINHO', 'FILHO', 'PRIMO', 'GENRO', 'NETO', 'VIZINHO', 'CONHECIDO', 'OUTRO') not null,
   	informacoes varchar(255),
-  	
+
   	primary key(id)
 );
 

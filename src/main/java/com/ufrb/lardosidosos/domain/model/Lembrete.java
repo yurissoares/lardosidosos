@@ -1,21 +1,14 @@
 package com.ufrb.lardosidosos.domain.model;
 
-import java.time.LocalDate;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ufrb.lardosidosos.domain.model.enums.StatusLembrete;
 import com.ufrb.lardosidosos.domain.model.enums.TipoUsuario;
-
 import lombok.Data;
+
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -25,23 +18,31 @@ public class Lembrete {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotNull
+	@JsonFormat(pattern = "dd/MM/yyyy")
+	private LocalDate dataEntrega;
+	
+	@Enumerated(EnumType.STRING) 
+	private StatusLembrete statusLembrete;
+	
+	@ManyToOne
+	private Usuario usuarioOrigem;
+
+	@ManyToOne
+	private Usuario usuarioDestino;
+
 	@ManyToOne
 	private Morador morador;
 	
-	private @Enumerated(EnumType.STRING) TipoUsuario tipoUsuario;
-	
-	@ManyToOne
-	private Usuario usuario;
-	
-	private String obs;
-	
-	private @Enumerated(EnumType.STRING) StatusLembrete statusLembrete;
-	
-	@NotNull
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private LocalDate data;
+	@Enumerated(EnumType.STRING)
+	private TipoUsuario tipoUsuario;
 	
 	@ManyToOne
 	private TipoLembrete tipoLembrete;
+	
+	@ManyToOne
+	private RegistroSaude registroSaude;
+
+	private String obs;
 	
 }

@@ -58,7 +58,7 @@ public class Morador {
 	// fim do endereço
 	
 	private @CPF String nmCpf;
-	private @NotBlank @Size(max=20) String nmRg;
+	private @Size(max=20) String nmRg;
 	private @Size(max=50) String nmCtps;
 	private @Size(max=50) String nmBeneficio;
 	private boolean ehAposentado;
@@ -74,7 +74,7 @@ public class Morador {
 	private @Enumerated(EnumType.STRING) Situacao situacao;
 	
 	// responsável
-	private String nomeResponsavel;
+	private @Size(max=50) String nomeResponsavel;
 	
 	// endereço
 	private @Size(max=70) String endLogradouroResponsavel;
@@ -87,7 +87,7 @@ public class Morador {
 
 	private @CPF String nmCpfResponsavel;
 	private @Size(max=20) String nmRgResponsavel;
-	private @Size(max=50) String telResponsavel;
+	private @Size(max=20) String telResponsavel;
 	private @Enumerated(EnumType.STRING) Parentesco parentescoResponsavel;
 	private String obsResponsavel;
 

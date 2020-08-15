@@ -1,13 +1,14 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,57 +19,63 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ufrb.lardosidosos.domain.model.Morador;
-import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
+import com.ufrb.lardosidosos.domain.model.TipoRegistroSaude;
+import com.ufrb.lardosidosos.domain.repository.TipoRegistroSaudeRepository;
 
 @RestController
-@RequestMapping("/morador")
-public class MoradorController {
+@RequestMapping("/tiporegistrosaude")
+public class TipoRegistroSaudeController 
+{
 
 	@Autowired
-	private MoradorRepository repository;
-
+	private TipoRegistroSaudeRepository repository;
+	
 	@GetMapping
-	public List<Morador> listarMoradores() {
+	public List<TipoRegistroSaude> listar()
+	{
 		return repository.findAll();
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<TipoRegistroSaude> buscarPorId(
+			@PathVariable Long id)
+	{
+		Optional<TipoRegistroSaude> tipoRegistroSaude = repository.findById(id);
+		
+		if(tipoRegistroSaude.isPresent())
+			return ResponseEntity.ok(tipoRegistroSaude.get());
+		
+		return ResponseEntity.notFound().build();
+
 	}
 	
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public Morador novoMorador(@Valid @RequestBody Morador novoMorador) {
-		return repository.save(novoMorador);
+	public TipoRegistroSaude salvar(@Valid @RequestBody TipoRegistroSaude tipoRegistroSaude)
+	{
+		return repository.save(tipoRegistroSaude);
 	}
 	
-	@GetMapping("/{nome}")
-	public ResponseEntity<List<Morador>> buscaPorNome(@PathVariable String nome) {
-		
-		List<Morador> moradores = repository.findByNomeContainingOrderByNomeAsc(nome);
-		
-		if(moradores.isEmpty())
-			return ResponseEntity.notFound().build();
-
-		return ResponseEntity.ok(moradores);
-	}
-
 	@Transactional
 	@PutMapping("/{id}")
-	public ResponseEntity<Morador> atualizaMorador(
+	public ResponseEntity<TipoRegistroSaude> editar(
 			@PathVariable Long id,
-			@Valid @RequestBody Morador morador) {
-		
+			@Valid @RequestBody TipoRegistroSaude tipoRegistroSaude)
+	{
 		if (!repository.existsById(id))
 			return ResponseEntity.notFound().build();
-			
-		morador.setId(id);
-
-		morador = repository.save(morador);
-		return ResponseEntity.ok(morador);
+		
+		tipoRegistroSaude.setId(id);
+		tipoRegistroSaude = repository.save(tipoRegistroSaude);
+		return ResponseEntity.ok(tipoRegistroSaude);
 	}
 	
+	@Transactional
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluirMorador(@PathVariable Long id) {
-		
+	public ResponseEntity<Void> excluir(
+			@PathVariable Long id)
+	{
 		if (!repository.existsById(id))
 			return ResponseEntity.notFound().build();
 		
@@ -76,3 +83,30 @@ public class MoradorController {
 		return ResponseEntity.noContent().build();
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

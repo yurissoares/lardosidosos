@@ -9,7 +9,7 @@ import com.ufrb.lardosidosos.doctransfer.model.Arquivo;
 
 @Repository
 public interface ArquivoRepository extends JpaRepository<Arquivo, Long> {
-	List<Arquivo> findByDocumentoId(Long id);
-	List<Arquivo> findAllByDocumentoId(Long id);
-	Void deleteByDocumentoId(Long id);
+	List<Arquivo> findByDocumentoMoradorId(Long id);
+	List<Arquivo> findAllByDocumentoMoradorId(Long id);
+	Void deleteByDocumentoMoradorId(Long id);
 }

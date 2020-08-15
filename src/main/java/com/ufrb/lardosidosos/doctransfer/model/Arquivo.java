@@ -7,7 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
-import com.ufrb.lardosidosos.domain.model.Documento;
+import com.ufrb.lardosidosos.domain.model.DocumentoMorador;
+import com.ufrb.lardosidosos.domain.model.DocumentoRegistroSaude;
 
 import lombok.Data;
 
@@ -19,7 +20,11 @@ public class Arquivo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY )
 	private long id;
 	
-	private @ManyToOne Documento documento;
+	@ManyToOne
+	private DocumentoMorador documentoMorador;
+	
+	@ManyToOne
+	private DocumentoRegistroSaude documentoRegistroSaude;
 	
 	private String tipoArquivo;
 	
@@ -27,8 +32,8 @@ public class Arquivo {
 	
 	public Arquivo() {}
 	
-	public Arquivo(Documento documento, String tipoArquivo, byte[] data) {
-		this.documento = documento;
+	public Arquivo(DocumentoMorador documentoMorador, String tipoArquivo, byte[] data) {
+		this.documentoMorador = documentoMorador;
 		this.tipoArquivo = tipoArquivo;
 		this.data = data;
 	}

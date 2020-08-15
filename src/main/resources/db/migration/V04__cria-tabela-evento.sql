@@ -1,11 +1,11 @@
 create table evento (
 	id bigint unsigned not null auto_increment,
 	morador_id bigint unsigned not null,
-	data datetime not null,
+	dataEntrega datetime not null,
 	tipo enum('ENTRADA', 'SAIDA', 'FALECIMENTO') not null,
 	motivo varchar(255),
 	observacoes varchar(255),
-	
+
 	primary key(id)
 );
 

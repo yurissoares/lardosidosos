@@ -1,7 +1,6 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -31,25 +30,36 @@ public class UsuarioController
 {
 
 	@Autowired 
-	private UsuarioRepository usuarioRepository;
+	private UsuarioRepository repository;
 	
 	@ApiOperation(value = "Lista usuários", notes = "Retorna uma lista com todos os usuários.")
 	@GetMapping
 	public List<Usuario> listar()
 	{
-		return usuarioRepository.findAll();
+		return repository.findAll();
 	}
 	
-	@GetMapping("/{usuarioId}")
-	public ResponseEntity<Usuario> buscar(
-			@PathVariable Long usuarioId)
+	/*@GetMapping("/{usuarioId}")
+	public ResponseEntity<Usuario> buscarPorId(@PathVariable Long usuarioId)
 	{
-		Optional<Usuario> usuario = usuarioRepository.findById(usuarioId);
+		Optional<Usuario> usuario = repository.findById(usuarioId);
 		
 		if(usuario.isPresent())
 			return ResponseEntity.ok(usuario.get());
 		
 		return ResponseEntity.notFound().build();
+
+	}*/
+
+	@GetMapping("/{usuarioNome}")
+	public ResponseEntity<List<Usuario>> buscarPorNome(@PathVariable String usuarioNome)
+	{
+		List<Usuario> usuarios = repository.findByNomeResumidoContainingOrderByNomeResumidoAsc(usuarioNome);
+
+		if(usuarios.isEmpty())
+			return ResponseEntity.notFound().build();
+
+		return ResponseEntity.ok(usuarios);
 
 	}
 	
@@ -59,7 +69,7 @@ public class UsuarioController
 	@PostMapping
 	public Usuario criar(@Valid @RequestBody Usuario novoUsuario)
 	{
-		return usuarioRepository.save(novoUsuario);
+		return repository.save(novoUsuario);
 	}
 	
 	@ApiOperation(value = "Edita usuario", notes = "Edita usuario especificado pelo id.")
@@ -71,13 +81,13 @@ public class UsuarioController
 			@Valid 
 			@RequestBody Usuario usuario)
 	{
-		if(!usuarioRepository.existsById(usuarioId))
+		if(!repository.existsById(usuarioId))
 		{
 			return ResponseEntity.notFound().build();
 		}
 		
 		usuario.setId(usuarioId);
-		usuario = usuarioRepository.save(usuario);
+		usuario = repository.save(usuario);
 		
 		return ResponseEntity.ok(usuario);
 	}
@@ -88,12 +98,12 @@ public class UsuarioController
 			@ApiParam(name = "usuarioId", value = "Id do usuário.", required = true, type = "Long")
 			@PathVariable Long usuarioId)
 	{
-		if(!usuarioRepository.existsById(usuarioId))
+		if(!repository.existsById(usuarioId))
 		{
 			return ResponseEntity.notFound().build();
 		}
 		
-		usuarioRepository.deleteById(usuarioId);
+		repository.deleteById(usuarioId);
 		return ResponseEntity.noContent().build();
 	}
 }

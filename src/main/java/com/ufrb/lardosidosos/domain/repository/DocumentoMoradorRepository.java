@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ufrb.lardosidosos.domain.model.Documento;
+import com.ufrb.lardosidosos.domain.model.DocumentoMorador;
 
 @Repository
-public interface DocumentoRepository extends JpaRepository<Documento, Long> {
-	List<Documento> findByMoradorId(Long id);
+public interface DocumentoMoradorRepository extends JpaRepository<DocumentoMorador, Long> {
+	List<DocumentoMorador> findByMoradorId(Long id);
 }

@@ -25,9 +25,6 @@ import com.ufrb.lardosidosos.domain.model.Morador;
 import com.ufrb.lardosidosos.domain.repository.ContatoRepository;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 @RestController
 @RequestMapping("/contato")
 public class ContatoController {
@@ -38,24 +35,19 @@ public class ContatoController {
 	@Autowired
 	private MoradorRepository moradorRepository;
 	
-	@ApiOperation(value = "Lista contatos referente ao morador", notes = "Retorna uma lista com todos os contatos do morador")
 	@GetMapping("/morador/{moradorId}")
-	public ResponseEntity<List<Contato>> listarContatosDoMorador(
-			@ApiParam(name = "moradorId", value = "Id do morador.", required = true, type = "long") 
-			@PathVariable Long moradorId) 
+	public ResponseEntity<List<Contato>> listarContatosDoMorador(@PathVariable Long moradorId) 
 	{
 		moradorRepository.findById(moradorId).orElseThrow(() -> new NegocioException("Morador não encontrado."));
 		
 		return ResponseEntity.ok(repository.findByMoradorId(moradorId));
 	}
 
-	@ApiOperation(value = "Lista todos os contatos", notes = "Retorna uma lista com todos os contatos.")
 	@GetMapping
 	public List<Contato> listarContatos() {
 		return repository.findAll();
 	}
 	
-	@ApiOperation(value = "Cria um novo contato", notes = "Cria um novo contato de um morador.")
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
 	@PostMapping
@@ -68,11 +60,8 @@ public class ContatoController {
 		return repository.save(contato);
 	}
 
-	@ApiOperation(value = "Busca contato", notes = "Busca por um contato de um morador especificado pelo id do contato.")
 	@GetMapping("/{id}")
-	public ResponseEntity<Contato> buscaContato(
-			@ApiParam(name = "id", value = "Id do contato.", required = true, type = "long") 
-			@PathVariable Long id) {
+	public ResponseEntity<Contato> buscaContato(@PathVariable Long id) {
 		
 		Optional<Contato> contato = repository.findById(id);
 		if (contato.isPresent())
@@ -81,11 +70,9 @@ public class ContatoController {
 		return ResponseEntity.notFound().build();
 	}
 	
-	@ApiOperation(value = "Edita contato", notes = "Edita contato de um morador especificado pelo id do contato.")
 	@Transactional
 	@PutMapping("/{id}")
 	public ResponseEntity<Contato> atualizaContato(
-			@ApiParam(name = "id", value = "Id do contato.", required = true, type = "long") 
 			@PathVariable Long id,
 			@Valid @RequestBody Contato contato) {
 		
@@ -97,11 +84,8 @@ public class ContatoController {
 		return ResponseEntity.ok(contato);
 	}
 
-	@ApiOperation(value = "Deleta contato", notes = "Deleta contato de um morador especificado pelo id do contato.")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluiContato(
-			@ApiParam(name = "contatoId", value = "Id do contato.", required = true, type = "long") 
-			@PathVariable Long id) {
+	public ResponseEntity<Void> excluiContato(@PathVariable Long id) {
 		
 		if (!repository.existsById(id))
 			return ResponseEntity.notFound().build();

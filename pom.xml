@@ -10,9 +10,9 @@
 		<relativePath />
 	</parent>
 	<groupId>com.ufrb.lardosidosos</groupId>
-	<artifactId>lardosidosos-api</artifactId>
+	<artifactId>api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>lardosidosos-api</name>
+	<name>api</name>
 	<description>API do Lar dos Idosos</description>
 	<properties>
 		<java.version>11</java.version>

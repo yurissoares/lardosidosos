@@ -27,11 +27,8 @@ import com.ufrb.lardosidosos.doctransfer.exception.FileStorageException;
 import com.ufrb.lardosidosos.doctransfer.model.Arquivo;
 import com.ufrb.lardosidosos.doctransfer.repository.ArquivoRepository;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
-import com.ufrb.lardosidosos.domain.model.Documento;
-import com.ufrb.lardosidosos.domain.repository.DocumentoRepository;
-
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import com.ufrb.lardosidosos.domain.model.DocumentoMorador;
+import com.ufrb.lardosidosos.domain.repository.DocumentoMoradorRepository;
 
 @RestController
 @RequestMapping("/arquivo")
@@ -41,37 +38,31 @@ public class ArquivoController {
 	private ArquivoRepository repository;
 	
 	@Autowired
-	private DocumentoRepository docRepository;
+	private DocumentoMoradorRepository documentoMoradorRepository;
 	
-	@ApiOperation(value = "Lista arquivos referentes ao documento", notes = "Retorna uma lista com todos os arquivos do documento")
 	@GetMapping("/documento/{documentoId}")
-	public ResponseEntity<List<Arquivo>> listarArquivosDoDocumento(
-			@ApiParam(name = "documentoId", value = "Id do documento.", required = true, type = "long") 
-			@PathVariable Long documentoId)
+	public ResponseEntity<List<Arquivo>> listar(@PathVariable Long documentoId)
 	{
-		 docRepository.findById(documentoId)
+		documentoMoradorRepository.findById(documentoId)
 			.orElseThrow(() -> new NegocioException("Documento não encontrado."));
 		 
-		 return ResponseEntity.ok(repository.findByDocumentoId(documentoId));
+		 return ResponseEntity.ok(repository.findByDocumentoMoradorId(documentoId));
 	}
 
-	@ApiOperation(value = "Upload de uma imagem", notes = "Upload de uma nova imagem.")
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/upload")
-	public Arquivo uploadArquivo(
-			@ApiParam(name = "arquivo", value = "Arquivo que irá ser feito o upload.", required = true)
-			@RequestParam("arquivo") MultipartFile arquivo, 
-			@ApiParam(name = "documento_id", value = "id do documento.", required = true, type = "long")
+	public Arquivo upload(
+			@RequestParam("arquivo") MultipartFile arquivo,
 			@RequestParam("documento_id") long id) {
 
-		Documento documento = docRepository.findById(id)
+		DocumentoMorador documentoMorador = documentoMoradorRepository.findById(id)
 				.orElseThrow(() -> new NegocioException("Documento não encontrado."));
 
 			Arquivo arq = null;
 			
 			try {
-				arq = new Arquivo(documento, arquivo.getContentType(), arquivo.getBytes());
+				arq = new Arquivo(documentoMorador, arquivo.getContentType(), arquivo.getBytes());
 			} catch (Exception e) {
 				throw new FileStorageException("Não foi possível criar o arquivo. Por favor, tente novamente.", e);
 			}
@@ -79,9 +70,8 @@ public class ArquivoController {
 			return repository.save(arq);
 		} 
 
-	@ApiOperation(value = "Download de uma imagem", notes = "Download de uma imagem.")
 	@GetMapping("/download/{id}")
-	public ResponseEntity<Resource> downloadArquivo(@PathVariable Long id, HttpServletRequest request) {
+	public ResponseEntity<Resource> download(@PathVariable Long id, HttpServletRequest request) {
 
 		Arquivo arq = repository.findById(id)
 				.orElseThrow(() -> new FileNotFoundException("Arquivo com o id: " + id + " não foi encontrado."));
@@ -91,12 +81,9 @@ public class ArquivoController {
 				.body(new ByteArrayResource(arq.getData()));
 
 	}
-	
-	@ApiOperation(value = "Deleta arquivo", notes = "Deleta arquivo de um documento especificado pelo id do arquivo.")
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluiArquivo(
-			@ApiParam(name = "id", value = "Id do arquivo.", required = true, type = "long") 
-			@PathVariable Long id) {
+	public ResponseEntity<Void> excluir(@PathVariable Long id) {
 		
 		if (!repository.existsById(id))
 			return ResponseEntity.notFound().build();

@@ -1,6 +1,7 @@
 create table morador (
   id bigint unsigned not null auto_increment,
   nome varchar(50) not null,
+  sexo ENUM('M', 'F'),
   data_entrada datetime not null,
   data_nascimento datetime not null,
   estado_civil enum('SOLTEIRO', 'CASADO', 'VIUVO', 'SEPARADO'),
@@ -14,7 +15,7 @@ create table morador (
   end_cep varchar(10),
 
   nm_cpf varchar(14),
-  nm_rg varchar(14) not null,
+  nm_rg varchar(20) not null,
   nm_ctps varchar(50),
   nm_beneficio varchar(50),
   
@@ -30,7 +31,7 @@ create table morador (
   
   situacao enum('ATIVO', 'INATIVO', 'FALECIDO'),
   
-  nome_responsavel varchar(50) not null,
+  nome_responsavel varchar(50),
   
   end_logradouro_responsavel varchar(70),
   end_numero_responsavel varchar(70),
@@ -40,9 +41,9 @@ create table morador (
   end_cep_responsavel varchar(10),
   
   nm_cpf_responsavel varchar(14),
-  nm_rg_responsavel varchar(14),
-  tel_responsavel varchar(50) not null,
-  parentesco_responsavel enum('PAI', 'IRMAO', 'SOBRINHO', 'FILHO', 'PRIMO', 'VIZINHO', 'CONHECIDO', 'OUTRO'),
+  nm_rg_responsavel varchar(20),
+  tel_responsavel varchar(20),
+  parentesco_responsavel ENUM('PAI', 'IRMAO', 'SOBRINHO', 'FILHO', 'PRIMO', 'GENRO', 'NETO', 'VIZINHO', 'CONHECIDO', 'OUTRO'),
   obs_responsavel varchar(255),
 
   primary key(id)

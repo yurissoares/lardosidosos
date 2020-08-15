@@ -5,7 +5,10 @@ import org.springframework.stereotype.Repository;
 
 import com.ufrb.lardosidosos.domain.model.Lembrete;
 
+import java.util.List;
+
 @Repository
 public interface LembreteRepository extends JpaRepository<Lembrete, Long> {
-
+    List<Lembrete> findByUsuarioDestinoId(Long id);
+    List<Lembrete> findByUsuarioOrigemId(Long id);
 }
