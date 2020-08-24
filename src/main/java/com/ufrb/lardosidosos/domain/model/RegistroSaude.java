@@ -23,7 +23,7 @@ public class RegistroSaude {
 	
 	@NotNull
 	@JsonFormat(pattern = "dd/MM/yyyy")
-	private LocalDate dataEntrega;
+	private LocalDate data;
 	
 	private String descricao;
 	

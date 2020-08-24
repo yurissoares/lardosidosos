@@ -32,8 +32,11 @@ public class Arquivo {
 	
 	public Arquivo() {}
 	
-	public Arquivo(DocumentoMorador documentoMorador, String tipoArquivo, byte[] data) {
+	public Arquivo(DocumentoMorador documentoMorador, DocumentoRegistroSaude documentoRegistroSaude,
+				   String tipoArquivo, byte[] data)
+	{
 		this.documentoMorador = documentoMorador;
+		this.documentoRegistroSaude = documentoRegistroSaude;
 		this.tipoArquivo = tipoArquivo;
 		this.data = data;
 	}

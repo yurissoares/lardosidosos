@@ -7,7 +7,7 @@ create table tipo_registro_saude (
 
 create table registro_saude (
 	id bigint unsigned not null auto_increment,
-	dataEntrega datetime not null,
+	data datetime not null,
 	descricao varchar(255),
 	morador_id bigint unsigned not null,
 	usuario_id bigint unsigned not null,

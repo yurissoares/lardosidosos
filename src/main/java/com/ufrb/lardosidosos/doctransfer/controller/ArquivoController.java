@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ufrb.lardosidosos.domain.model.DocumentoRegistroSaude;
+import com.ufrb.lardosidosos.domain.repository.DocumentoRegistroSaudeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -39,39 +41,73 @@ public class ArquivoController {
 	
 	@Autowired
 	private DocumentoMoradorRepository documentoMoradorRepository;
+
+	@Autowired
+	private DocumentoRegistroSaudeRepository documentoRegistroSaudeRepository;
 	
-	@GetMapping("/documento/{documentoId}")
-	public ResponseEntity<List<Arquivo>> listar(@PathVariable Long documentoId)
+	@GetMapping("/documentomorador/{documentoId}")
+	public ResponseEntity<List<Arquivo>> listarDocumentosMorador(@PathVariable Long documentoId)
 	{
 		documentoMoradorRepository.findById(documentoId)
 			.orElseThrow(() -> new NegocioException("Documento não encontrado."));
 		 
 		 return ResponseEntity.ok(repository.findByDocumentoMoradorId(documentoId));
 	}
+	
+	@GetMapping("/documentoregistrosaude/{documentoId}")
+	public ResponseEntity<List<Arquivo>> listarDocumentoRegistroSaude(@PathVariable Long documentoId)
+	{
+		documentoRegistroSaudeRepository.findById(documentoId)
+				.orElseThrow(() -> new NegocioException("Documento não encontrado."));
+
+		return ResponseEntity.ok(repository.findByDocumentoRegistroSaudeId(documentoId));
+	}
 
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/upload")
-	public Arquivo upload(
+	public Arquivo uploadDocMorador(
 			@RequestParam("arquivo") MultipartFile arquivo,
-			@RequestParam("documento_id") long id) {
-
-		DocumentoMorador documentoMorador = documentoMoradorRepository.findById(id)
-				.orElseThrow(() -> new NegocioException("Documento não encontrado."));
-
-			Arquivo arq = null;
+			@RequestParam("documento_id") long id,
+			@RequestParam("doc_tipo") char tipo)
+	{
+		
+		Arquivo arq = null;
+		
+		if(tipo == 'd') {
+			DocumentoMorador documentoMorador = documentoMoradorRepository.findById(id)
+					.orElseThrow(() -> new NegocioException("Documento não encontrado."));
+			try {
+				arq = new Arquivo(documentoMorador, null, arquivo.getContentType(), arquivo.getBytes());
+			} 
+			catch (Exception e) {
+				throw new FileStorageException("Não foi possível criar o arquivo. Por favor, tente novamente.", e);
+			}
+			return repository.save(arq);
+		} 
+		else if (tipo == 'r') 
+		{
+			DocumentoRegistroSaude documentoRegistroSaude = documentoRegistroSaudeRepository.findById(id)
+					.orElseThrow(() -> new NegocioException("Documento não encontrado."));
 			
 			try {
-				arq = new Arquivo(documentoMorador, arquivo.getContentType(), arquivo.getBytes());
+				arq = new Arquivo(null, documentoRegistroSaude, arquivo.getContentType(), arquivo.getBytes());
 			} catch (Exception e) {
 				throw new FileStorageException("Não foi possível criar o arquivo. Por favor, tente novamente.", e);
 			}
 
 			return repository.save(arq);
-		} 
+		}
+		else 
+		{
+			throw new NegocioException("Não foi possível criar o arquivo. O parâmetro doc_tipo deve ser um char d ou r.");
+		}
+
+	}
 
 	@GetMapping("/download/{id}")
-	public ResponseEntity<Resource> download(@PathVariable Long id, HttpServletRequest request) {
+	public ResponseEntity<Resource> download(@PathVariable Long id, HttpServletRequest request)
+	{
 
 		Arquivo arq = repository.findById(id)
 				.orElseThrow(() -> new FileNotFoundException("Arquivo com o id: " + id + " não foi encontrado."));
@@ -91,4 +127,5 @@ public class ArquivoController {
 		repository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
+
 }

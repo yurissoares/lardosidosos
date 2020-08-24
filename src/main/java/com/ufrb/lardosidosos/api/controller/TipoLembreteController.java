@@ -36,7 +36,7 @@ public class TipoLembreteController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<TipoLembrete> buscarPorId(
+	public ResponseEntity<TipoLembrete> buscar(
 			@PathVariable Long id)
 	{
 		Optional<TipoLembrete> tipoLembrete = repository.findById(id);
@@ -48,8 +48,8 @@ public class TipoLembreteController {
 
 	}
 	
-	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
+	@Transactional
 	@PostMapping
 	public TipoLembrete salvar(@Valid @RequestBody TipoLembrete novoTipoLembrete)
 	{

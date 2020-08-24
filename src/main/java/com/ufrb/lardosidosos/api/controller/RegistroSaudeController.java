@@ -52,7 +52,7 @@ public class RegistroSaudeController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<RegistroSaude> buscarPorId(
+	public ResponseEntity<RegistroSaude> buscar(
 			@PathVariable Long id)
 	{
 		Optional<RegistroSaude> registroSaude = repository.findById(id);
@@ -64,8 +64,8 @@ public class RegistroSaudeController {
 
 	}
 	
-	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
+	@Transactional
 	@PostMapping
 	public RegistroSaude salvar(@Valid @RequestBody RegistroSaude registroSaude)
 	{

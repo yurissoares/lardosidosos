@@ -37,7 +37,7 @@ public class TipoOcorrenciaController
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<TipoOcorrencia> buscarPorId(
+	public ResponseEntity<TipoOcorrencia> buscar(
 			@PathVariable Long id)
 	{
 		Optional<TipoOcorrencia> tipoOcorrencia = repository.findById(id);
@@ -49,8 +49,8 @@ public class TipoOcorrenciaController
 
 	}
 	
-	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
+	@Transactional
 	@PostMapping
 	public TipoOcorrencia salvar(@Valid @RequestBody TipoOcorrencia novoTipoOcorrencia)
 	{

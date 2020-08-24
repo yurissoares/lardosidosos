@@ -35,33 +35,14 @@ public class ContatoController {
 	@Autowired
 	private MoradorRepository moradorRepository;
 	
-	@GetMapping("/morador/{moradorId}")
-	public ResponseEntity<List<Contato>> listarContatosDoMorador(@PathVariable Long moradorId) 
-	{
-		moradorRepository.findById(moradorId).orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
-		return ResponseEntity.ok(repository.findByMoradorId(moradorId));
-	}
 
 	@GetMapping
-	public List<Contato> listarContatos() {
+	public List<Contato> listar() {
 		return repository.findAll();
 	}
 	
-	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
-	@PostMapping
-	public Contato salvarContato(@Valid @RequestBody Contato contato) {
-		
-		Morador morador = moradorRepository.findById(contato.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-
-		contato.setMorador(morador);
-		return repository.save(contato);
-	}
-
 	@GetMapping("/{id}")
-	public ResponseEntity<Contato> buscaContato(@PathVariable Long id) {
+	public ResponseEntity<Contato> buscar(@PathVariable Long id) {
 		
 		Optional<Contato> contato = repository.findById(id);
 		if (contato.isPresent())
@@ -70,9 +51,29 @@ public class ContatoController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	@GetMapping("/morador/{moradorId}")
+	public ResponseEntity<List<Contato>> listarContatosDoMorador(@PathVariable Long moradorId) 
+	{
+		moradorRepository.findById(moradorId).orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
+		return ResponseEntity.ok(repository.findByMoradorId(moradorId));
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@Transactional
+	@PostMapping
+	public Contato salvar(@Valid @RequestBody Contato contato) {
+		
+		Morador morador = moradorRepository.findById(contato.getMorador().getId())
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+
+		contato.setMorador(morador);
+		return repository.save(contato);
+	}
+	
 	@Transactional
 	@PutMapping("/{id}")
-	public ResponseEntity<Contato> atualizaContato(
+	public ResponseEntity<Contato> editar(
 			@PathVariable Long id,
 			@Valid @RequestBody Contato contato) {
 		
@@ -85,7 +86,7 @@ public class ContatoController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluiContato(@PathVariable Long id) {
+	public ResponseEntity<Void> excluir(@PathVariable Long id) {
 		
 		if (!repository.existsById(id))
 			return ResponseEntity.notFound().build();

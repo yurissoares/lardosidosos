@@ -18,9 +18,12 @@ public class Lembrete {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@JsonFormat(pattern = "dd/MM/yyyy")
+	private LocalDate dataCriacao;
+	
 	@NotNull
 	@JsonFormat(pattern = "dd/MM/yyyy")
-	private LocalDate dataEntrega;
+	private LocalDate dataLembrete;
 	
 	@Enumerated(EnumType.STRING) 
 	private StatusLembrete statusLembrete;

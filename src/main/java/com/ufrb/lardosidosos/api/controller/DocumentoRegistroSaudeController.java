@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ufrb.lardosidosos.doctransfer.model.Arquivo;
+import com.ufrb.lardosidosos.doctransfer.repository.ArquivoRepository;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.DocumentoRegistroSaude;
 import com.ufrb.lardosidosos.domain.model.Morador;
@@ -30,7 +32,7 @@ import com.ufrb.lardosidosos.domain.repository.RegistroSaudeRepository;
 import com.ufrb.lardosidosos.domain.repository.UsuarioRepository;
 
 @RestController
-@RequestMapping("/documentoregistrosaude")
+@RequestMapping("/docregsaude")
 public class DocumentoRegistroSaudeController {
 
 	@Autowired
@@ -45,8 +47,8 @@ public class DocumentoRegistroSaudeController {
 	@Autowired
 	private RegistroSaudeRepository registroSaudeRepository;
 
-//	@Autowired
-//	private ArquivoRepository arquivoRepository;
+	@Autowired
+	private ArquivoRepository arquivoRepository;
 
 	@GetMapping
 	public List<DocumentoRegistroSaude> listar() {
@@ -54,7 +56,7 @@ public class DocumentoRegistroSaudeController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<DocumentoRegistroSaude> buscarPorId(@PathVariable Long id) {
+	public ResponseEntity<DocumentoRegistroSaude> buscar(@PathVariable Long id) {
 
 		Optional<DocumentoRegistroSaude> documentoRegistroSaude = repository.findById(id);
 
@@ -64,8 +66,8 @@ public class DocumentoRegistroSaudeController {
 		return ResponseEntity.notFound().build();
 	}
 
-	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
+	@Transactional
 	@PostMapping
 	public DocumentoRegistroSaude salvar(@Valid @RequestBody DocumentoRegistroSaude documentoRegistroSaude) {
 
@@ -114,10 +116,10 @@ public class DocumentoRegistroSaudeController {
 		if (!repository.existsById(id))
 			return ResponseEntity.notFound().build();
 
-//		List<Arquivo> arquivosDeletar = arquivoRepository.findAllByDocumentoRegistroSaudeId(id);
-//		arquivosDeletar.forEach((item) -> {
-//			arquivoRepository.deleteById(item.getId());
-//		});
+		List<Arquivo> arquivosDeletar = arquivoRepository.findAllByDocumentoRegistroSaudeId(id);
+		arquivosDeletar.forEach((item) -> {
+			arquivoRepository.deleteById(item.getId());
+		});
 
 		repository.deleteById(id);
 		return ResponseEntity.noContent().build();

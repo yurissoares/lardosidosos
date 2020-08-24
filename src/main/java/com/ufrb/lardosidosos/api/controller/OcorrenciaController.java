@@ -45,14 +45,6 @@ public class OcorrenciaController {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	
-	@GetMapping("/morador/{moradorId}")
-	public ResponseEntity<List<Ocorrencia>> listarOcorrenciasDoMorador(
-			@PathVariable Long moradorId) 
-	{
-		moradorRepository.findById(moradorId).orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
-		return ResponseEntity.ok(repository.findByMoradorIdOrderByDataDesc(moradorId));
-	}
 	
 	@GetMapping
 	public List<Ocorrencia> listar()
@@ -61,7 +53,7 @@ public class OcorrenciaController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Ocorrencia> buscarPorId(
+	public ResponseEntity<Ocorrencia> buscar(
 			@PathVariable Long id)
 	{
 		Optional<Ocorrencia> ocorrencia = repository.findById(id);
@@ -73,8 +65,17 @@ public class OcorrenciaController {
 
 	}
 	
-	@Transactional
+	@GetMapping("/morador/{moradorId}")
+	public ResponseEntity<List<Ocorrencia>> listarOcorrenciasDoMorador(
+			@PathVariable Long moradorId) 
+	{
+		moradorRepository.findById(moradorId).orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
+		return ResponseEntity.ok(repository.findByMoradorIdOrderByDataDesc(moradorId));
+	}
+	
 	@ResponseStatus(HttpStatus.CREATED)
+	@Transactional
 	@PostMapping
 	public Ocorrencia salvar(@Valid @RequestBody Ocorrencia novaOcorrencia)
 	{

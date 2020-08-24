@@ -21,9 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ufrb.lardosidosos.domain.model.Usuario;
 import com.ufrb.lardosidosos.domain.repository.UsuarioRepository;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 @RestController
 @RequestMapping("/usuario")
 public class UsuarioController 
@@ -32,7 +29,6 @@ public class UsuarioController
 	@Autowired 
 	private UsuarioRepository repository;
 	
-	@ApiOperation(value = "Lista usuários", notes = "Retorna uma lista com todos os usuários.")
 	@GetMapping
 	public List<Usuario> listar()
 	{
@@ -63,23 +59,19 @@ public class UsuarioController
 
 	}
 	
-	@ApiOperation(value = "Cria usuário", notes = "Cria um novo usuário.")
-	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
+	@Transactional
 	@PostMapping
 	public Usuario criar(@Valid @RequestBody Usuario novoUsuario)
 	{
 		return repository.save(novoUsuario);
 	}
 	
-	@ApiOperation(value = "Edita usuario", notes = "Edita usuario especificado pelo id.")
 	@Transactional
 	@PutMapping("/{usuarioId}")
 	public ResponseEntity<Usuario> editar(
-			@ApiParam(name = "usuarioId", value = "Id do usuário.", required = true, type = "Long") 
 			@PathVariable Long usuarioId, 
-			@Valid 
-			@RequestBody Usuario usuario)
+			@Valid @RequestBody Usuario usuario)
 	{
 		if(!repository.existsById(usuarioId))
 		{
@@ -92,11 +84,8 @@ public class UsuarioController
 		return ResponseEntity.ok(usuario);
 	}
 	
-	@ApiOperation(value = "Deleta usuário", notes = "Deleta usuário especificado pelo id.")
 	@DeleteMapping("/{usuarioId}")
-	public ResponseEntity<Void> remover(
-			@ApiParam(name = "usuarioId", value = "Id do usuário.", required = true, type = "Long")
-			@PathVariable Long usuarioId)
+	public ResponseEntity<Void> excluir(@PathVariable Long usuarioId)
 	{
 		if(!repository.existsById(usuarioId))
 		{

@@ -11,4 +11,5 @@ import java.util.List;
 public interface LembreteRepository extends JpaRepository<Lembrete, Long> {
     List<Lembrete> findByUsuarioDestinoId(Long id);
     List<Lembrete> findByUsuarioOrigemId(Long id);
+    List<Lembrete> findByMoradorId(Long id);
 }

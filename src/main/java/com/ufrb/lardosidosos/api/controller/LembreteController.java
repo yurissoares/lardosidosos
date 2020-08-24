@@ -30,13 +30,17 @@ import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 import com.ufrb.lardosidosos.domain.repository.RegistroSaudeRepository;
 import com.ufrb.lardosidosos.domain.repository.TipoLembreteRepository;
 import com.ufrb.lardosidosos.domain.repository.UsuarioRepository;
+import com.ufrb.lardosidosos.domain.service.CadastroLembreteService;
 
 @RestController
 @RequestMapping("/lembrete")
 public class LembreteController {
 
 	@Autowired
-	private LembreteRepository repository;
+	private LembreteRepository lembreteRepository;
+	
+	@Autowired
+	private CadastroLembreteService cadastroLembreteService;
 	
 	@Autowired
 	private MoradorRepository moradorRepository;
@@ -53,14 +57,14 @@ public class LembreteController {
 	@GetMapping
 	public List<Lembrete> listar()
 	{
-		return repository.findAll();
+		return lembreteRepository.findAll();
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Lembrete> buscarPorId(
+	public ResponseEntity<Lembrete> buscar(
 			@PathVariable Long id)
 	{
-		Optional<Lembrete> lembrete = repository.findById(id);
+		Optional<Lembrete> lembrete = lembreteRepository.findById(id);
 		
 		if(lembrete.isPresent())
 			return ResponseEntity.ok(lembrete.get());
@@ -70,24 +74,32 @@ public class LembreteController {
 	}
 
 	@GetMapping("/usuarioDestino/{usuarioId}")
-	public ResponseEntity<List<Lembrete>> buscarPorUsuarioDestino(@PathVariable Long usuarioId)
+	public ResponseEntity<List<Lembrete>> listarLembretesDoUsuarioDetinoPorUsuarioId(@PathVariable Long usuarioId)
 	{
 		usuarioRepository.findById(usuarioId)
 				.orElseThrow(() -> new NegocioException("Usuário não encontrado."));
 
-		return ResponseEntity.ok(repository.findByUsuarioDestinoId(usuarioId));
+		return ResponseEntity.ok(lembreteRepository.findByUsuarioDestinoId(usuarioId));
 	}
 
 	@GetMapping("/usuarioOrigem/{usuarioId}")
-	public ResponseEntity<List<Lembrete>> buscarPorUsuarioOrigem(@PathVariable Long usuarioId)
+	public ResponseEntity<List<Lembrete>> listarLembretesDoUsuarioOrigemPorUsuarioId(@PathVariable Long usuarioId)
 	{
 		usuarioRepository.findById(usuarioId)
 				.orElseThrow(() -> new NegocioException("Usuário não encontrado."));
 
-		return ResponseEntity.ok(repository.findByUsuarioOrigemId(usuarioId));
+		return ResponseEntity.ok(lembreteRepository.findByUsuarioOrigemId(usuarioId));
 	}
 	
-	@Transactional
+	@GetMapping("/morador/{moradorId}")
+	public ResponseEntity<List<Lembrete>> listarLembretesDoMoradorPorMoradorId(@PathVariable Long moradorId)
+	{
+		moradorRepository.findById(moradorId)
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+
+		return ResponseEntity.ok(lembreteRepository.findByMoradorId(moradorId));
+	}
+	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public Lembrete salvar(@Valid @RequestBody Lembrete lembrete)
@@ -125,7 +137,8 @@ public class LembreteController {
 		lembrete.setUsuarioDestino(usuarioDestino);
 		lembrete.setTipoLembrete(tipoLembrete);	
 		lembrete.setRegistroSaude(registroSaude);
-		return repository.save(lembrete);
+		return cadastroLembreteService.salvar(lembrete);
+		
 	}
 	
 	@Transactional
@@ -134,7 +147,7 @@ public class LembreteController {
 			@PathVariable Long id,
 			@Valid @RequestBody Lembrete lembrete)
 	{
-		if (!repository.existsById(id))
+		if (!lembreteRepository.existsById(id))
 			return ResponseEntity.notFound().build();
 		
 		if (lembrete.getMorador() != null) 
@@ -162,7 +175,7 @@ public class LembreteController {
 		}
 		
 		lembrete.setId(id);
-		lembrete = repository.save(lembrete);
+		lembrete = lembreteRepository.save(lembrete);
 		return ResponseEntity.ok(lembrete);
 	}
 	
@@ -171,10 +184,10 @@ public class LembreteController {
 	public ResponseEntity<Void> excluir(
 			@PathVariable Long id)
 	{
-		if (!repository.existsById(id))
+		if (!lembreteRepository.existsById(id))
 			return ResponseEntity.notFound().build();
 		
-		repository.deleteById(id);
+		lembreteRepository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 	

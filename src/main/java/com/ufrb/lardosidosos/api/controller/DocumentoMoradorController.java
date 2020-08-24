@@ -28,7 +28,7 @@ import com.ufrb.lardosidosos.domain.repository.DocumentoMoradorRepository;
 import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 
 @RestController
-@RequestMapping("/documento")
+@RequestMapping("/docmorador")
 public class DocumentoMoradorController {
 
 	@Autowired
@@ -40,22 +40,13 @@ public class DocumentoMoradorController {
 	@Autowired
 	private ArquivoRepository arquivoRepository;
 	
-	@GetMapping("/morador/{moradorId}")
-	public ResponseEntity<List<DocumentoMorador>> listarPorMoradorId(@PathVariable Long moradorId)
-	{
-		 moradorRepository.findById(moradorId)
-			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
-		return ResponseEntity.ok(repository.findByMoradorId(moradorId));
-	}
-
 	@GetMapping
 	public List<DocumentoMorador> listar() {
 		return repository.findAll();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<DocumentoMorador> buscarPorId(@PathVariable Long id) {
+	public ResponseEntity<DocumentoMorador> buscar(@PathVariable Long id) {
 
 		Optional<DocumentoMorador> documentoMorador = repository.findById(id);
 
@@ -64,9 +55,18 @@ public class DocumentoMoradorController {
 
 		return ResponseEntity.notFound().build();
 	}
+	
+	@GetMapping("/morador/{moradorId}")
+	public ResponseEntity<List<DocumentoMorador>> listarDocDoMorador(@PathVariable Long moradorId)
+	{
+		 moradorRepository.findById(moradorId)
+			.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
+		return ResponseEntity.ok(repository.findByMoradorId(moradorId));
+	}
 
-	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
+	@Transactional
 	@PostMapping
 	public DocumentoMorador salvar(@Valid @RequestBody DocumentoMorador documentoMorador) {
 

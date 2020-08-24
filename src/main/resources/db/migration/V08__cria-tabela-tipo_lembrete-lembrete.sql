@@ -7,7 +7,8 @@ create table tipo_lembrete (
 
 create table lembrete (
 	id bigint unsigned not null auto_increment,
-	data_entrega datetime not null,
+	data_criacao datetime not null,
+	data_lembrete datetime,
 	status_lembrete ENUM('PENDENTE', 'CONCLUIDO') not null,
 	usuario_origem_id bigint unsigned not null,
 	usuario_destino_id bigint unsigned,
