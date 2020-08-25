@@ -28,13 +28,14 @@ import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 import com.ufrb.lardosidosos.domain.repository.RegistroSaudeRepository;
 import com.ufrb.lardosidosos.domain.repository.TipoRegistroSaudeRepository;
 import com.ufrb.lardosidosos.domain.repository.UsuarioRepository;
+import com.ufrb.lardosidosos.domain.service.CadastroRegistroSaudeService;
 
 @RestController
 @RequestMapping("/registrosaude")
 public class RegistroSaudeController {
 
 	@Autowired
-	private RegistroSaudeRepository repository;
+	private RegistroSaudeRepository registroSaudeRepository;
 	
 	@Autowired
 	private MoradorRepository moradorRepository;
@@ -45,17 +46,20 @@ public class RegistroSaudeController {
 	@Autowired
 	private TipoRegistroSaudeRepository tipoRegistroSaudeRepository;
 	
+	@Autowired
+	private CadastroRegistroSaudeService cadastroRegistroSaudeService;
+	
 	@GetMapping
 	public List<RegistroSaude> listar()
 	{
-		return repository.findAll();
+		return registroSaudeRepository.findAll();
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<RegistroSaude> buscar(
 			@PathVariable Long id)
 	{
-		Optional<RegistroSaude> registroSaude = repository.findById(id);
+		Optional<RegistroSaude> registroSaude = registroSaudeRepository.findById(id);
 		
 		if(registroSaude.isPresent())
 			return ResponseEntity.ok(registroSaude.get());
@@ -65,7 +69,6 @@ public class RegistroSaudeController {
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
 	@PostMapping
 	public RegistroSaude salvar(@Valid @RequestBody RegistroSaude registroSaude)
 	{
@@ -81,7 +84,7 @@ public class RegistroSaudeController {
 		registroSaude.setUsuario(usuario);
 		registroSaude.setMorador(morador);
 		registroSaude.setTipoRegistroSaude(tipoRegistroSaude);	
-		return repository.save(registroSaude);
+		return cadastroRegistroSaudeService.salvar(registroSaude);
 	}
 	
 	@Transactional
@@ -99,23 +102,32 @@ public class RegistroSaudeController {
 		 usuarioRepository.findById(registroSaude.getUsuario().getId())
 				.orElseThrow(() -> new NegocioException("Usuario não encontrado."));
 		
-		if (!repository.existsById(id))
+		if (!registroSaudeRepository.existsById(id))
 			return ResponseEntity.notFound().build();
 		
 		registroSaude.setId(id);
-		registroSaude = repository.save(registroSaude);
+		registroSaude = registroSaudeRepository.save(registroSaude);
 		return ResponseEntity.ok(registroSaude);
 	}
 	
-	@Transactional
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(
-			@PathVariable Long id)
+	public ResponseEntity<Void> excluir(@PathVariable Long registroSaudeId)
 	{
-		if (!repository.existsById(id))
+		if (!registroSaudeRepository.existsById(registroSaudeId))
 			return ResponseEntity.notFound().build();
 		
-		repository.deleteById(id);
+		cadastroRegistroSaudeService.excluir(registroSaudeId);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@GetMapping("/morador/{moradorId}")
+	public ResponseEntity<List<RegistroSaude>> listarRegistroSaudePorMoradorId(@PathVariable Long moradorId) {
+		
+		moradorRepository.findById(moradorId)
+				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
+		
+		return ResponseEntity.ok(registroSaudeRepository.findByMoradorId(moradorId));
+	}
+	
+	
 }
