@@ -175,8 +175,7 @@ public class LembreteController {
 		}
 		
 		lembrete.setId(id);
-		lembrete = lembreteRepository.save(lembrete);
-		return ResponseEntity.ok(lembrete);
+		return ResponseEntity.ok(lembreteRepository.save(lembrete));
 	}
 	
 	@Transactional

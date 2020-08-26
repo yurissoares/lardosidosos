@@ -13,7 +13,6 @@ public class CadastroMoradorService {
 	@Autowired
 	private MoradorRepository moradorRepository;
 
-	
 	@Transactional
 	public Morador salvar(Morador morador) {
 		return moradorRepository.save(morador);			

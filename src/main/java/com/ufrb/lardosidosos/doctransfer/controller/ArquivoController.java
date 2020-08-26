@@ -65,45 +65,52 @@ public class ArquivoController {
 
 	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/upload")
-	public Arquivo uploadDocMorador(
-			@RequestParam("arquivo") MultipartFile arquivo,
-			@RequestParam("documento_id") long id,
-			@RequestParam("doc_tipo") char tipo)
-	{
-		
+	@PostMapping("/uploaddoc")
+	public Arquivo uploadDocMorador(@RequestParam("arquivo") MultipartFile arquivo, @RequestParam("documento_id") long id) {
 		Arquivo arq = null;
 		
-		if(tipo == 'd') {
-			DocumentoMorador documentoMorador = documentoMoradorRepository.findById(id)
-					.orElseThrow(() -> new NegocioException("Documento não encontrado."));
-			try {
-				arq = new Arquivo(documentoMorador, null, arquivo.getContentType(), arquivo.getBytes());
-			} 
-			catch (Exception e) {
-				throw new FileStorageException("Não foi possível criar o arquivo. Por favor, tente novamente.", e);
-			}
-			return repository.save(arq);
-		} 
-		else if (tipo == 'r') 
-		{
-			DocumentoRegistroSaude documentoRegistroSaude = documentoRegistroSaudeRepository.findById(id)
-					.orElseThrow(() -> new NegocioException("Documento não encontrado."));
-			
-			try {
-				arq = new Arquivo(null, documentoRegistroSaude, arquivo.getContentType(), arquivo.getBytes());
-			} catch (Exception e) {
-				throw new FileStorageException("Não foi possível criar o arquivo. Por favor, tente novamente.", e);
-			}
-
-			return repository.save(arq);
+		DocumentoMorador documentoMorador = documentoMoradorRepository.findById(id)
+				.orElseThrow(() -> new NegocioException("Documento não encontrado."));
+		
+		try {
+			arq = new Arquivo(documentoMorador, null, arquivo.getContentType(), arquivo.getBytes());
+		} catch (Exception e) {
+			throw new FileStorageException("Não foi possível criar o arquivo. Por favor, tente novamente.", e);
 		}
-		else 
-		{
-			throw new NegocioException("Não foi possível criar o arquivo. O parâmetro doc_tipo deve ser um char d ou r.");
-		}
-
+		return repository.save(arq);
 	}
+	
+	@Transactional
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("/uploadreg")
+	public Arquivo uploadDocRegSaude(@RequestParam("arquivo") MultipartFile arquivo, @RequestParam("documento_id") long id) {
+		Arquivo arq = null;
+		
+		DocumentoRegistroSaude documentoRegistroSaude = documentoRegistroSaudeRepository.findById(id)
+				.orElseThrow(() -> new NegocioException("Documento não encontrado."));
+		
+		try {
+			arq = new Arquivo(null, documentoRegistroSaude, arquivo.getContentType(), arquivo.getBytes());
+		} catch (Exception e) {
+			throw new FileStorageException("Não foi possível criar o arquivo. Por favor, tente novamente.", e);
+		}
+
+		return repository.save(arq);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@GetMapping("/download/{id}")
 	public ResponseEntity<Resource> download(@PathVariable Long id, HttpServletRequest request)
