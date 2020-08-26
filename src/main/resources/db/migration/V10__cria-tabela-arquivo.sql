@@ -12,4 +12,4 @@ alter table arquivo add constraint fk_arquivo_documento_morador
 foreign key (documento_morador_id) references documento_morador (id);
 
 alter table arquivo add constraint fk_arquivo_documento_registro_saude
-foreign key (documento_morador_id) references documento_registro_saude (id);
+foreign key (documento_registro_saude_id) references documento_registro_saude (id);
