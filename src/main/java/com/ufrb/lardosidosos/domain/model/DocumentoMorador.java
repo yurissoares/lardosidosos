@@ -32,6 +32,7 @@ public class DocumentoMorador {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataEntrega;
 	
-	private @Enumerated(EnumType.STRING) TipoDocumentoMorador tipoDocumentoMorador;
+	@Enumerated(EnumType.STRING)
+	private TipoDocumentoMorador tipoDocumentoMorador;
 
 }
