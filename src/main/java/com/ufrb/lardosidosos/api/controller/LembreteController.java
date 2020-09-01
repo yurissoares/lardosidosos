@@ -97,7 +97,7 @@ public class LembreteController {
 		moradorRepository.findById(moradorId)
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 
-		return ResponseEntity.ok(lembreteRepository.findByMoradorId(moradorId));
+		return ResponseEntity.ok(lembreteRepository.findByMoradorIdOrderByDataCriacaoDesc(moradorId));
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)

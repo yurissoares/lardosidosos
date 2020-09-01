@@ -3,7 +3,6 @@ package com.ufrb.lardosidosos.api.controller;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,6 @@ import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
 import com.ufrb.lardosidosos.domain.repository.RegistroSaudeRepository;
 import com.ufrb.lardosidosos.domain.repository.TipoRegistroSaudeRepository;
 import com.ufrb.lardosidosos.domain.repository.UsuarioRepository;
-import com.ufrb.lardosidosos.domain.service.CadastroRegistroSaudeService;
 
 @RestController
 @RequestMapping("/registrosaude")
@@ -45,9 +43,6 @@ public class RegistroSaudeController {
 	
 	@Autowired
 	private TipoRegistroSaudeRepository tipoRegistroSaudeRepository;
-	
-	@Autowired
-	private CadastroRegistroSaudeService cadastroRegistroSaudeService;
 	
 	@GetMapping
 	public List<RegistroSaude> listar()
@@ -84,10 +79,10 @@ public class RegistroSaudeController {
 		registroSaude.setUsuario(usuario);
 		registroSaude.setMorador(morador);
 		registroSaude.setTipoRegistroSaude(tipoRegistroSaude);	
-		return cadastroRegistroSaudeService.salvar(registroSaude);
+		
+		return registroSaudeRepository.save(registroSaude);
 	}
 	
-	@Transactional
 	@PutMapping("/{id}")
 	public ResponseEntity<RegistroSaude> editar(
 			@PathVariable Long id,
@@ -111,12 +106,12 @@ public class RegistroSaudeController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(@PathVariable Long registroSaudeId)
+	public ResponseEntity<Void> excluir(@PathVariable Long id)
 	{
-		if (!registroSaudeRepository.existsById(registroSaudeId))
+		if (!registroSaudeRepository.existsById(id))
 			return ResponseEntity.notFound().build();
 		
-		cadastroRegistroSaudeService.excluir(registroSaudeId);
+		registroSaudeRepository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 	
@@ -126,8 +121,7 @@ public class RegistroSaudeController {
 		moradorRepository.findById(moradorId)
 				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
 		
-		return ResponseEntity.ok(registroSaudeRepository.findByMoradorId(moradorId));
+		return ResponseEntity.ok(registroSaudeRepository.findByMoradorIdOrderByDataDesc(moradorId));
 	}
-	
 	
 }

@@ -9,5 +9,5 @@ import com.ufrb.lardosidosos.domain.model.RegistroSaude;
 
 @Repository
 public interface RegistroSaudeRepository extends JpaRepository<RegistroSaude, Long> {
-	List<RegistroSaude> findByMoradorId(Long id);
+	List<RegistroSaude> findByMoradorIdOrderByDataDesc(Long id);
 }
