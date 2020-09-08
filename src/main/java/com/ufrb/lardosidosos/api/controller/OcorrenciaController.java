@@ -1,9 +1,7 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,113 +17,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ufrb.lardosidosos.domain.exception.NegocioException;
-import com.ufrb.lardosidosos.domain.model.Morador;
 import com.ufrb.lardosidosos.domain.model.Ocorrencia;
-import com.ufrb.lardosidosos.domain.model.TipoOcorrencia;
-import com.ufrb.lardosidosos.domain.model.Usuario;
-import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
-import com.ufrb.lardosidosos.domain.repository.OcorrenciaRepository;
-import com.ufrb.lardosidosos.domain.repository.TipoOcorrenciaRepository;
-import com.ufrb.lardosidosos.domain.repository.UsuarioRepository;
+import com.ufrb.lardosidosos.domain.service.IOcorrenciaService;
 
 @RestController
 @RequestMapping("/ocorrencia")
 public class OcorrenciaController {
 
 	@Autowired
-	private OcorrenciaRepository repository;
-	
-	@Autowired
-	private MoradorRepository moradorRepository;
-	
-	@Autowired
-	private TipoOcorrenciaRepository tipoOcorrenciaRepository;
-	
-	@Autowired
-	private UsuarioRepository usuarioRepository;
-	
+	private IOcorrenciaService ocorrenciaService;
 	
 	@GetMapping
-	public List<Ocorrencia> listar()
-	{
-		return repository.findAll();
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<Ocorrencia> buscar(
-			@PathVariable Long id)
-	{
-		Optional<Ocorrencia> ocorrencia = repository.findById(id);
-		
-		if(ocorrencia.isPresent())
-			return ResponseEntity.ok(ocorrencia.get());
-		
-		return ResponseEntity.notFound().build();
-
-	}
-	
-	@GetMapping("/morador/{moradorId}")
-	public ResponseEntity<List<Ocorrencia>> listarOcorrenciasDoMorador(
-			@PathVariable Long moradorId) 
-	{
-		moradorRepository.findById(moradorId).orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
-		return ResponseEntity.ok(repository.findByMoradorIdOrderByDataDesc(moradorId));
+	public List<Ocorrencia> listar() {
+		return this.ocorrenciaService.listar();
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
 	@PostMapping
-	public Ocorrencia salvar(@Valid @RequestBody Ocorrencia novaOcorrencia)
-	{
-		Morador morador = moradorRepository.findById(novaOcorrencia.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
-		TipoOcorrencia tipoOcorrencia = tipoOcorrenciaRepository.findById(novaOcorrencia.getTipoOcorrencia().getId())
-				.orElseThrow(() -> new NegocioException("Tipo de Ocorrencia não encontrado."));
-		
-		Usuario usuario = usuarioRepository.findById(novaOcorrencia.getUsuario().getId())
-				.orElseThrow(() -> new NegocioException("Usuario não encontrado."));
-		
-		novaOcorrencia.setUsuario(usuario);
-		novaOcorrencia.setMorador(morador);
-		novaOcorrencia.setTipoOcorrencia(tipoOcorrencia);	
-		return repository.save(novaOcorrencia);
+	public Ocorrencia salvar(@Valid @RequestBody Ocorrencia ocorrencia) {	
+		return this.ocorrenciaService.cadastrar(ocorrencia);
 	}
 	
-	@Transactional
+	@GetMapping("/{id}")
+	public ResponseEntity<Ocorrencia> buscar(@PathVariable Long id) {
+		return ResponseEntity.ok(this.ocorrenciaService.buscar(id));
+	}
+	
 	@PutMapping("/{id}")
-	public ResponseEntity<Ocorrencia> editar(
-			@PathVariable Long id,
-			@Valid @RequestBody Ocorrencia ocorrencia)
-	{
-		moradorRepository.findById(ocorrencia.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
-		tipoOcorrenciaRepository.findById(ocorrencia.getTipoOcorrencia().getId())
-				.orElseThrow(() -> new NegocioException("Tipo de Ocorrencia não encontrado."));
-		
-		 usuarioRepository.findById(ocorrencia.getUsuario().getId())
-				.orElseThrow(() -> new NegocioException("Usuario não encontrado."));
-		
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
-		
-		ocorrencia.setId(id);
-		ocorrencia = repository.save(ocorrencia);
-		return ResponseEntity.ok(ocorrencia);
+	public ResponseEntity<Ocorrencia> editar(@PathVariable Long id, @Valid @RequestBody Ocorrencia ocorrencia) {
+		return ResponseEntity.ok(this.ocorrenciaService.editar(id, ocorrencia));
 	}
 	
-	@Transactional
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(
-			@PathVariable Long id)
-	{
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
-		
-		repository.deleteById(id);
+	public ResponseEntity<Void> excluir(@PathVariable Long id) {
+		this.ocorrenciaService.excluir(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@GetMapping("/morador/{moradorId}")
+	public ResponseEntity<List<Ocorrencia>> listarOcorrenciasDoMorador(@PathVariable Long moradorId) {
+		return ResponseEntity.ok(this.ocorrenciaService.listarOcorrenciaMorador(moradorId));
+	}
+	
+	
+
 }

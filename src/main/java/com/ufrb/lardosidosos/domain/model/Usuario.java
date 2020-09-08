@@ -1,5 +1,7 @@
 package com.ufrb.lardosidosos.domain.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,18 +18,29 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Usuario {
+public class Usuario implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	private @Email @Size(max=50) String email;
-	private @NotBlank @Size(max=50) String senha;
-	
-	private @Enumerated(EnumType.STRING) TipoUsuario tipoUsuario;
-	
-	private @Size(max=50) String nomeCompleto;
-	private @Size(max=20) String nomeResumido;
-	
+
+	@Email
+	@Size(max = 50)
+	private String email;
+
+	@NotBlank
+	@Size(max = 50)
+	private String senha;
+
+	@Enumerated(EnumType.STRING)
+	private TipoUsuario tipoUsuario;
+
+	@Size(max = 50)
+	private String nomeCompleto;
+
+	@Size(max = 20)
+	private String nomeResumido;
+
 }

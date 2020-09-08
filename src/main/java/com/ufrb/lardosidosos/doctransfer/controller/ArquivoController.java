@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ufrb.lardosidosos.domain.model.DocumentoRegistroSaude;
-import com.ufrb.lardosidosos.domain.repository.DocumentoRegistroSaudeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -27,29 +25,33 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ufrb.lardosidosos.doctransfer.exception.FileNotFoundException;
 import com.ufrb.lardosidosos.doctransfer.exception.FileStorageException;
 import com.ufrb.lardosidosos.doctransfer.model.Arquivo;
-import com.ufrb.lardosidosos.doctransfer.repository.ArquivoRepository;
+import com.ufrb.lardosidosos.doctransfer.repository.IArquivoRepository;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.DocumentoMorador;
-import com.ufrb.lardosidosos.domain.repository.DocumentoMoradorRepository;
+import com.ufrb.lardosidosos.domain.model.DocumentoRegistroSaude;
+import com.ufrb.lardosidosos.domain.repository.IDocumentoMoradorRepository;
+import com.ufrb.lardosidosos.domain.repository.IDocumentoRegistroSaudeRepository;
 
 @RestController
 @RequestMapping("/arquivo")
 public class ArquivoController {
+	
+	private static final String NOT_FOUND_DOCUMENTO = "Documento não encontrado.";
 
 	@Autowired
-	private ArquivoRepository repository;
+	private IArquivoRepository repository;
 	
 	@Autowired
-	private DocumentoMoradorRepository documentoMoradorRepository;
+	private IDocumentoMoradorRepository documentoMoradorRepository;
 
 	@Autowired
-	private DocumentoRegistroSaudeRepository documentoRegistroSaudeRepository;
+	private IDocumentoRegistroSaudeRepository documentoRegistroSaudeRepository;
 	
 	@GetMapping("/documentomorador/{documentoId}")
 	public ResponseEntity<List<Arquivo>> listarDocumentosMorador(@PathVariable Long documentoId)
 	{
 		documentoMoradorRepository.findById(documentoId)
-			.orElseThrow(() -> new NegocioException("Documento não encontrado."));
+			.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO));
 		 
 		 return ResponseEntity.ok(repository.findByDocumentoMoradorId(documentoId));
 	}
@@ -58,7 +60,7 @@ public class ArquivoController {
 	public ResponseEntity<List<Arquivo>> listarDocumentoRegistroSaude(@PathVariable Long documentoId)
 	{
 		documentoRegistroSaudeRepository.findById(documentoId)
-				.orElseThrow(() -> new NegocioException("Documento não encontrado."));
+				.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO));
 
 		return ResponseEntity.ok(repository.findByDocumentoRegistroSaudeId(documentoId));
 	}
@@ -70,7 +72,7 @@ public class ArquivoController {
 		Arquivo arq = null;
 		
 		DocumentoMorador documentoMorador = documentoMoradorRepository.findById(id)
-				.orElseThrow(() -> new NegocioException("Documento não encontrado."));
+				.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO));
 		
 		try {
 			arq = new Arquivo(documentoMorador, null, arquivo.getContentType(), arquivo.getBytes());
@@ -87,7 +89,7 @@ public class ArquivoController {
 		Arquivo arq = null;
 		
 		DocumentoRegistroSaude documentoRegistroSaude = documentoRegistroSaudeRepository.findById(id)
-				.orElseThrow(() -> new NegocioException("Documento não encontrado."));
+				.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO));
 		
 		try {
 			arq = new Arquivo(null, documentoRegistroSaude, arquivo.getContentType(), arquivo.getBytes());
@@ -98,20 +100,6 @@ public class ArquivoController {
 		return repository.save(arq);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	@GetMapping("/download/{id}")
 	public ResponseEntity<Resource> download(@PathVariable Long id, HttpServletRequest request)
 	{

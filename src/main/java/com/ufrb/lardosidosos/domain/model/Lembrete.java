@@ -8,11 +8,14 @@ import com.ufrb.lardosidosos.domain.model.enums.StatusLembrete;
 import com.ufrb.lardosidosos.domain.model.enums.TipoUsuario;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @Entity
-public class Lembrete {
+public class Lembrete implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

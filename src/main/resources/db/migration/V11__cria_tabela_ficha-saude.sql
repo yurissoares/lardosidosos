@@ -1,9 +1,8 @@
 create table ficha_saude (
 	id bigint unsigned not null auto_increment,
-	morador_id bigint unsigned not null,
-    usuario_id bigint unsigned not null,
+	morador_id bigint unsigned,
+    usuario_id bigint unsigned,
 	data datetime,
-    tipo_ficha_saude enum('ADMISSAO', 'EVOLUCAO_DIARIA', 'EVENTOS_ADVERSOS'),
     nao_preenchida boolean,
     motivo_nao_preenchida enum('AGITACAO', 'AGRESSIVIDADE', 'INTERNAMENTO', 'CONSULTA_MEDICA', 'IDA_BANCO', 'IDA_INSS', 'OUTRA_AUSENCIA', 'OUTRO_MOTIVO'),
 

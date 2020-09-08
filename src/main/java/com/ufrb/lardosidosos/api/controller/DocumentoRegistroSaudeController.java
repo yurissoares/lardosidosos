@@ -1,9 +1,7 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,118 +17,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ufrb.lardosidosos.doctransfer.model.Arquivo;
-import com.ufrb.lardosidosos.doctransfer.repository.ArquivoRepository;
-import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.DocumentoRegistroSaude;
-import com.ufrb.lardosidosos.domain.model.Morador;
-import com.ufrb.lardosidosos.domain.model.RegistroSaude;
-import com.ufrb.lardosidosos.domain.model.Usuario;
-import com.ufrb.lardosidosos.domain.repository.DocumentoRegistroSaudeRepository;
-import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
-import com.ufrb.lardosidosos.domain.repository.RegistroSaudeRepository;
-import com.ufrb.lardosidosos.domain.repository.UsuarioRepository;
+import com.ufrb.lardosidosos.domain.service.IDocumentoRegistroSaudeService;
 
 @RestController
 @RequestMapping("/docregsaude")
 public class DocumentoRegistroSaudeController {
 
 	@Autowired
-	private DocumentoRegistroSaudeRepository repository;
-
-	@Autowired
-	private MoradorRepository moradorRepository;
-
-	@Autowired
-	private UsuarioRepository usuarioRepository;
-
-	@Autowired
-	private RegistroSaudeRepository registroSaudeRepository;
-
-	@Autowired
-	private ArquivoRepository arquivoRepository;
-
+	private IDocumentoRegistroSaudeService docRegistroSaudeService;
+	
 	@GetMapping
 	public List<DocumentoRegistroSaude> listar() {
-		return repository.findAll();
+		return this.docRegistroSaudeService.listar();
 	}
-
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping
+	public DocumentoRegistroSaude cadastrar(@Valid @RequestBody DocumentoRegistroSaude docRegistroSaude) {
+		return this.docRegistroSaudeService.cadastrar(docRegistroSaude);
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<DocumentoRegistroSaude> buscar(@PathVariable Long id) {
-
-		Optional<DocumentoRegistroSaude> documentoRegistroSaude = repository.findById(id);
-
-		if (documentoRegistroSaude.isPresent())
-			return ResponseEntity.ok(documentoRegistroSaude.get());
-
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.ok(this.docRegistroSaudeService.buscar(id));
 	}
-
-	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
-	@PostMapping
-	public DocumentoRegistroSaude salvar(@Valid @RequestBody DocumentoRegistroSaude documentoRegistroSaude) {
-
-		Morador morador = moradorRepository.findById(documentoRegistroSaude.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
-		Usuario usuario = usuarioRepository.findById(documentoRegistroSaude.getUsuario().getId())
-				.orElseThrow(() -> new NegocioException("Usuário não encontrado."));
-		
-		RegistroSaude registroSaude = registroSaudeRepository.findById(documentoRegistroSaude.getRegistroSaude().getId())
-				.orElseThrow(() -> new NegocioException("RegistroSaude não encontrado."));
-		
-		documentoRegistroSaude.setMorador(morador);
-		documentoRegistroSaude.setUsuario(usuario);
-		documentoRegistroSaude.setRegistroSaude(registroSaude);
-		return repository.save(documentoRegistroSaude);
-	}
-
-	@Transactional
+	
 	@PutMapping("/{id}")
-	public ResponseEntity<DocumentoRegistroSaude> editar(
-			@PathVariable Long id,
-			@Valid @RequestBody DocumentoRegistroSaude documentoRegistroSaude) {
-
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
-		
-		moradorRepository.findById(documentoRegistroSaude.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
-		usuarioRepository.findById(documentoRegistroSaude.getUsuario().getId())
-				.orElseThrow(() -> new NegocioException("Usuário não encontrado."));
-		
-		registroSaudeRepository.findById(documentoRegistroSaude.getRegistroSaude().getId())
-				.orElseThrow(() -> new NegocioException("RegistroSaude não encontrado."));
-		
-		documentoRegistroSaude.setId(id);
-		documentoRegistroSaude = repository.save(documentoRegistroSaude);
-		return ResponseEntity.ok(documentoRegistroSaude);
+	public ResponseEntity<DocumentoRegistroSaude> editar(@PathVariable Long id, @Valid @RequestBody DocumentoRegistroSaude docRegistroSaude) {
+		return ResponseEntity.ok(this.docRegistroSaudeService.editar(id, docRegistroSaude));
 	}
 
-	@Transactional
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> excluir(@PathVariable Long id) {
-
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
-
-		List<Arquivo> arquivosDeletar = arquivoRepository.findAllByDocumentoRegistroSaudeId(id);
-		arquivosDeletar.forEach((item) -> {
-			arquivoRepository.deleteById(item.getId());
-		});
-
-		repository.deleteById(id);
+		this.docRegistroSaudeService.excluir(id);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping("/regsaude/{regSaudeId}")
-	public ResponseEntity<List<DocumentoRegistroSaude>> listarRegSaudeDoDoc(@PathVariable Long regSaudeId)
-	{
-		 registroSaudeRepository.findById(regSaudeId)
-			.orElseThrow(() -> new NegocioException("Registro de Saúde não encontrado."));
-		
-		return ResponseEntity.ok(repository.findByRegistroSaudeId(regSaudeId));
+	public ResponseEntity<List<DocumentoRegistroSaude>> listarRegSaudeDoDoc(@PathVariable Long regSaudeId) {
+		return ResponseEntity.ok(this.docRegistroSaudeService.listarDocDoRegSaude(regSaudeId));
 	}
 }

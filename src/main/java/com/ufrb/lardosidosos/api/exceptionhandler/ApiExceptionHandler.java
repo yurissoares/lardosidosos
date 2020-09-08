@@ -51,17 +51,4 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return super.handleExceptionInternal(ex, problema, headers, status, request);
 	}
 	
-//	@Override
-//	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
-//			HttpHeaders headers, HttpStatus status, WebRequest request) {
-//		
-//		var problema = new Problema();
-//		problema.setStatus(status.value());
-//		problema.setTitulo("string");
-//		problema.setDataHora(LocalDateTime.now());
-//		
-//		return super.handleExceptionInternal(ex, problema, headers, status, request);
-//	}
-	
-	
 }

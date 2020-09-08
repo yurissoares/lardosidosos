@@ -1,9 +1,7 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,65 +18,39 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ufrb.lardosidosos.domain.model.TipoLembrete;
-import com.ufrb.lardosidosos.domain.repository.TipoLembreteRepository;
+import com.ufrb.lardosidosos.domain.service.ITipoLembreteService;
 
 @RestController
 @RequestMapping("/tipolembrete")
 public class TipoLembreteController {
 
 	@Autowired
-	public TipoLembreteRepository repository;
+	private ITipoLembreteService tipoLembreteService;
 	
 	@GetMapping
-	public List<TipoLembrete> listar()
-	{
-		return repository.findAll();
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<TipoLembrete> buscar(
-			@PathVariable Long id)
-	{
-		Optional<TipoLembrete> tipoLembrete = repository.findById(id);
-		
-		if(tipoLembrete.isPresent())
-			return ResponseEntity.ok(tipoLembrete.get());
-		
-		return ResponseEntity.notFound().build();
-
+	public List<TipoLembrete> listar() {
+		return this.tipoLembreteService.listar();
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
 	@PostMapping
-	public TipoLembrete salvar(@Valid @RequestBody TipoLembrete novoTipoLembrete)
-	{
-		return repository.save(novoTipoLembrete);
+	public TipoLembrete cadastrar(@Valid @RequestBody TipoLembrete tipoLembrete) {
+		return this.tipoLembreteService.cadastrar(tipoLembrete);
 	}
 	
-	@Transactional
+	@GetMapping("/{id}")
+	public ResponseEntity<TipoLembrete> buscar(@PathVariable Long id) {
+		return ResponseEntity.ok(this.tipoLembreteService.buscar(id));
+	}
+
 	@PutMapping("/{id}")
-	public ResponseEntity<TipoLembrete> editar(
-			@PathVariable Long id,
-			@Valid @RequestBody TipoLembrete tipoLembrete)
-	{
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
-		
-		tipoLembrete.setId(id);
-		tipoLembrete = repository.save(tipoLembrete);
-		return ResponseEntity.ok(tipoLembrete);
+	public ResponseEntity<TipoLembrete> editar(@PathVariable Long id, @Valid @RequestBody TipoLembrete tipoLembrete) {
+		return ResponseEntity.ok(this.tipoLembreteService.editar(id, tipoLembrete));
 	}
 	
-	@Transactional
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(
-			@PathVariable Long id)
-	{
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
-		
-		repository.deleteById(id);
+	public ResponseEntity<Void> excluir(@PathVariable Long id) {
+		this.tipoLembreteService.excluir(id);
 		return ResponseEntity.noContent().build();
 	}
 }

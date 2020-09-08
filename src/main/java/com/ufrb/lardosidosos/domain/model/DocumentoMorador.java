@@ -1,5 +1,6 @@
 package com.ufrb.lardosidosos.domain.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -18,7 +19,9 @@ import lombok.Data;
 
 @Data
 @Entity
-public class DocumentoMorador {
+public class DocumentoMorador implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

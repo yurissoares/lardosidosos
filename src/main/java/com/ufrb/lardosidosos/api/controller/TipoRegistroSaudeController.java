@@ -1,9 +1,7 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,66 +18,39 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ufrb.lardosidosos.domain.model.TipoRegistroSaude;
-import com.ufrb.lardosidosos.domain.repository.TipoRegistroSaudeRepository;
+import com.ufrb.lardosidosos.domain.service.ITipoRegistroSaudeService;
 
 @RestController
 @RequestMapping("/tiporegistrosaude")
-public class TipoRegistroSaudeController 
-{
-
+public class TipoRegistroSaudeController {
+	
 	@Autowired
-	private TipoRegistroSaudeRepository repository;
+	private ITipoRegistroSaudeService tipoRegistroSaudeService;
 	
 	@GetMapping
-	public List<TipoRegistroSaude> listar()
-	{
-		return repository.findAll();
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<TipoRegistroSaude> buscar(
-			@PathVariable Long id)
-	{
-		Optional<TipoRegistroSaude> tipoRegistroSaude = repository.findById(id);
-		
-		if(tipoRegistroSaude.isPresent())
-			return ResponseEntity.ok(tipoRegistroSaude.get());
-		
-		return ResponseEntity.notFound().build();
-
+	public List<TipoRegistroSaude> listar() {
+		return this.tipoRegistroSaudeService.listar();
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
 	@PostMapping
-	public TipoRegistroSaude salvar(@Valid @RequestBody TipoRegistroSaude tipoRegistroSaude)
-	{
-		return repository.save(tipoRegistroSaude);
+	public TipoRegistroSaude cadastrar(@Valid @RequestBody TipoRegistroSaude tipoRegistroSaude) {
+		return this.tipoRegistroSaudeService.cadastrar(tipoRegistroSaude);
 	}
 	
-	@Transactional
+	@GetMapping("/{id}")
+	public ResponseEntity<TipoRegistroSaude> buscar(@PathVariable Long id) {
+		return ResponseEntity.ok(this.tipoRegistroSaudeService.buscar(id));
+	}
+
 	@PutMapping("/{id}")
-	public ResponseEntity<TipoRegistroSaude> editar(
-			@PathVariable Long id,
-			@Valid @RequestBody TipoRegistroSaude tipoRegistroSaude)
-	{
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
-		
-		tipoRegistroSaude.setId(id);
-		tipoRegistroSaude = repository.save(tipoRegistroSaude);
-		return ResponseEntity.ok(tipoRegistroSaude);
+	public ResponseEntity<TipoRegistroSaude> editar(@PathVariable Long id, @Valid @RequestBody TipoRegistroSaude tipoRegistroSaude) {
+		return ResponseEntity.ok(this.tipoRegistroSaudeService.editar(id, tipoRegistroSaude));
 	}
 	
-	@Transactional
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> excluir(
-			@PathVariable Long id)
-	{
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
-		
-		repository.deleteById(id);
+	public ResponseEntity<Void> excluir(@PathVariable Long id) {
+		this.tipoRegistroSaudeService.excluir(id);
 		return ResponseEntity.noContent().build();
 	}
 }

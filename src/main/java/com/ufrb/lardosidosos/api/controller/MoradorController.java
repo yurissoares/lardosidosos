@@ -2,7 +2,6 @@ package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,62 +18,39 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ufrb.lardosidosos.domain.model.Morador;
-import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
-import com.ufrb.lardosidosos.domain.service.CadastroMoradorService;
+import com.ufrb.lardosidosos.domain.service.IMoradorService;
 
 @RestController
 @RequestMapping("/morador")
 public class MoradorController {
-
-	@Autowired
-	private MoradorRepository moradorRepository;
 	
 	@Autowired
-	private CadastroMoradorService cadastroMoradorService;
+	private IMoradorService moradorService;
 
 	@GetMapping
 	public List<Morador> listar() {
-		return moradorRepository.findAll();
-	}
-	
-	@GetMapping("/{moradorNome}")
-	public ResponseEntity<List<Morador>> buscarPorNome(@PathVariable String moradorNome) {
-		
-		List<Morador> moradores = 
-				moradorRepository.findByNomeContainingOrderByNomeAsc(moradorNome);
-		
-		if(moradores.isEmpty())
-			return ResponseEntity.notFound().build();
-
-		return ResponseEntity.ok(moradores);
+		return this.moradorService.listar();
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public Morador salvar(@Valid @RequestBody Morador morador) {
-		return cadastroMoradorService.salvar(morador);
+	public Morador cadastrar(@Valid @RequestBody Morador morador) {
+		return this.moradorService.cadastrar(morador);
 	}
 	
-	@Transactional
-	@PutMapping("/{moradorId}")
-	public ResponseEntity<Morador> editar(
-			@PathVariable Long moradorId,
-			@Valid @RequestBody Morador morador) {
-		
-		if (!moradorRepository.existsById(moradorId))
-			return ResponseEntity.notFound().build();
-			
-		morador.setId(moradorId);
-		return ResponseEntity.ok(moradorRepository.save(morador));
+	@PutMapping("/{id}")
+	public ResponseEntity<Morador> editar(@PathVariable Long id, @Valid @RequestBody Morador morador) {
+		return ResponseEntity.ok(this.moradorService.editar(id, morador));
 	}
 	
-	@DeleteMapping("/{moradorId}")
-	public ResponseEntity<Void> excluir(@PathVariable Long moradorId) {
-		
-		if (!moradorRepository.existsById(moradorId))
-			return ResponseEntity.notFound().build();
-		
-		cadastroMoradorService.excluir(moradorId);
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> excluir(@PathVariable Long id) {
+		this.moradorService.excluir(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping("/{nome}")
+	public ResponseEntity<List<Morador>> buscarPorNome(@PathVariable String nome) {
+		return ResponseEntity.ok(this.moradorService.buscarPorNome(nome));
 	}
 }

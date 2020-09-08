@@ -1,0 +1,40 @@
+create table ficha_admissao (
+	id bigint unsigned not null auto_increment,
+
+	queixa_principal varchar(240),
+	medicamento varchar(255),
+	alimentacao ENUM('INDEPENDENTE', 'SEMI_INDEPENDENTE', 'INCAPAZ'),
+	higiene ENUM('INDEPENDENTE', 'SEMI_INDEPENDENTE', 'INCAPAZ'),
+	deambulacao ENUM('INDEPENDENTE', 'SEMI_INDEPENDENTE', 'INCAPAZ'),
+	cadeira_rodas Boolean,
+	acamado Boolean,
+	verbalizacao ENUM('INDEPENDENTE', 'SEMI_INDEPENDENTE', 'INCAPAZ'),
+	deficiencia_visual Boolean,
+	uso_oculos Boolean,
+	deficiencia_auditiva Boolean,
+	uso_aparelho_auditivo Boolean,
+	olfato  ENUM('PRESERVADO', 'REDUZIDO'),
+	paladar  ENUM('PRESERVADO', 'REDUZIDO'),
+	pele_hidratada Boolean,
+	pele_ressecada Boolean,
+	pele_integra Boolean,
+	pele_lesoes Boolean,
+	pele_ferida_cronica Boolean,
+	dispineia_esforco Boolean,
+	dispineia_repouso Boolean,
+	desconforto Boolean,
+	palpitacoes Boolean,
+	edema_mmi Boolean,
+	dor_mmi Boolean,
+	dores_articulares varchar(240),
+	edema_articular varchar(240),
+	fratura varchar(240),
+	peso decimal,
+	altura decimal,
+	exames_complementares varchar(240),
+	evolucao varchar(240),
+	
+	primary key(id)
+);
+
+

@@ -1,9 +1,7 @@
 package com.ufrb.lardosidosos.api.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,79 +17,51 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Contato;
-import com.ufrb.lardosidosos.domain.model.Morador;
-import com.ufrb.lardosidosos.domain.repository.ContatoRepository;
-import com.ufrb.lardosidosos.domain.repository.MoradorRepository;
+import com.ufrb.lardosidosos.domain.service.IContatoService;
 
 @RestController
 @RequestMapping("/contato")
 public class ContatoController {
 
 	@Autowired
-	private ContatoRepository repository;
+	private IContatoService contatoService;
 	
-	@Autowired
-	private MoradorRepository moradorRepository;
-	
-
 	@GetMapping
 	public List<Contato> listar() {
-		return repository.findAll();
+		return this.contatoService.listar();
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping
+	public Contato cadastrar(@Valid @RequestBody Contato contato) {
+		return this.contatoService.cadastrar(contato);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Contato> buscar(@PathVariable Long id) {
-		
-		Optional<Contato> contato = repository.findById(id);
-		if (contato.isPresent())
-			return ResponseEntity.ok(contato.get());
-		
-		return ResponseEntity.notFound().build();
+		return ResponseEntity.ok(this.contatoService.buscar(id));
 	}
 	
-	@GetMapping("/morador/{moradorId}")
-	public ResponseEntity<List<Contato>> listarContatosDoMorador(@PathVariable Long moradorId) 
-	{
-		moradorRepository.findById(moradorId).orElseThrow(() -> new NegocioException("Morador não encontrado."));
-		
-		return ResponseEntity.ok(repository.findByMoradorId(moradorId));
-	}
-	
-	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
-	@PostMapping
-	public Contato salvar(@Valid @RequestBody Contato contato) {
-		
-		Morador morador = moradorRepository.findById(contato.getMorador().getId())
-				.orElseThrow(() -> new NegocioException("Morador não encontrado."));
-
-		contato.setMorador(morador);
-		return repository.save(contato);
-	}
-	
-	@Transactional
 	@PutMapping("/{id}")
-	public ResponseEntity<Contato> editar(
-			@PathVariable Long id,
-			@Valid @RequestBody Contato contato) {
-		
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
-
-		contato.setId(id);
-		contato = repository.save(contato);
-		return ResponseEntity.ok(contato);
+	public ResponseEntity<Contato> editar(@PathVariable Long id, @Valid @RequestBody Contato contato) {
+		return ResponseEntity.ok(this.contatoService.editar(id, contato));
 	}
-
+	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> excluir(@PathVariable Long id) {
-		
-		if (!repository.existsById(id))
-			return ResponseEntity.notFound().build();
-		
-		repository.deleteById(id);
+		this.contatoService.excluir(id);
 		return ResponseEntity.noContent().build();
 	}
+
+	@GetMapping("/morador/{moradorId}")
+	public ResponseEntity<List<Contato>> listarContatosMorador(@PathVariable Long moradorId) {
+		return ResponseEntity.ok(this.contatoService.listarContatosDoMorador(moradorId));
+	}
+	
+
+	
+
+
+
 }

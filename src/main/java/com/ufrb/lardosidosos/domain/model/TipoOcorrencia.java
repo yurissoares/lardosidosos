@@ -1,5 +1,7 @@
 package com.ufrb.lardosidosos.domain.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,11 +12,13 @@ import lombok.Data;
 
 @Data
 @Entity
-public class TipoOcorrencia {
+public class TipoOcorrencia implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private @NotBlank String descricao;
+	@NotBlank 
+	private String descricao;
 }
