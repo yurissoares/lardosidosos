@@ -1,5 +1,6 @@
 package com.ufrb.lardosidosos.api.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -59,4 +61,16 @@ public class FichaEvDiariaController {
 	public FichaEvDiaria cadastrarComFichaAdmissao(@Valid @RequestBody FichaEvDiaria fichaEvDiaria) {
 		return this.fichaEvDiariaService.cadastrarComFichaAdmissao(fichaEvDiaria);
 	}
+	
+	@GetMapping("/morador/{id}")
+	public List<FichaEvDiaria> listarPorMorador(@PathVariable Long moradorId) {
+		return this.fichaEvDiariaService.listarPorMorador(moradorId);
+	}
+	
+	@GetMapping("/morador/datas")
+	public List<FichaEvDiaria> listarPorMoradorPorData(@RequestParam("moradorId") Long moradorId, 
+			@RequestParam("dtInicio") LocalDate dtInicio, @RequestParam("dtFinal") LocalDate dtFinal) {
+		return this.fichaEvDiariaService.listarPorMoradorEntreDatas(moradorId, dtInicio, dtFinal);
+	}
+
 }

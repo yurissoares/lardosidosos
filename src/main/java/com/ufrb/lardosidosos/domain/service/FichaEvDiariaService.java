@@ -1,5 +1,6 @@
 package com.ufrb.lardosidosos.domain.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,4 +78,23 @@ public class FichaEvDiariaService implements IFichaEvDiariaService {
 		this.usuarioService.verificaSeUsuarioExiste(fichaEvDiaria.getUsuario().getId());
 		return this.fichaEvDiariaRepository.save(fichaEvDiaria);
 	}
+	
+	@Override
+	public List<FichaEvDiaria> listarPorMorador(Long moradorId) {
+		this.moradorService.verificaSeMoradorExiste(moradorId);
+		return this.fichaEvDiariaRepository.findByMoradorId(moradorId);
+	}
+
+	@Override
+	public List<FichaEvDiaria> listarPorMoradorEntreDatas(Long moradorId, LocalDate dtInicio, LocalDate dtFinal) {
+		this.moradorService.verificaSeMoradorExiste(moradorId);
+		
+		List<FichaEvDiaria> listFichaEvDiaria = this.fichaEvDiariaRepository.findByMoradorIdAndDataBetween(moradorId, dtInicio, dtFinal);
+		if(listFichaEvDiaria.isEmpty()) {
+			throw new NegocioException("Data de início ou fim inexistente.");
+		}
+		
+		return listFichaEvDiaria;
+	}
+
 }

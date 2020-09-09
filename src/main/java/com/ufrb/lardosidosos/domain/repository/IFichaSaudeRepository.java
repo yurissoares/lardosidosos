@@ -7,5 +7,4 @@ import com.ufrb.lardosidosos.domain.model.FichaSaude;
 
 @Repository
 public interface IFichaSaudeRepository extends JpaRepository<FichaSaude, Long> {
-
 }
