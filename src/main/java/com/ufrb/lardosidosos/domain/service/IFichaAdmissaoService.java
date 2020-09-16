@@ -17,5 +17,7 @@ public interface IFichaAdmissaoService {
 	public void excluir(final Long id);
 
 	public void verificaSeFichaAdmissaoExiste(final Long id);
+	
+	public FichaAdmissao buscarPorMorador(final Long moradorId);
 
 }

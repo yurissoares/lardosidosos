@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,12 +29,14 @@ public class MoradorController {
 	private IMoradorService moradorService;
 
 	@GetMapping
+//	@PreAuthorize("hasRole('TECNICO')")
 	public List<Morador> listar() {
 		return this.moradorService.listar();
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
+	@PreAuthorize("hasRole('DIRETOR')")
 	public Morador cadastrar(@Valid @RequestBody Morador morador) {
 		return this.moradorService.cadastrar(morador);
 	}
@@ -44,6 +47,7 @@ public class MoradorController {
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('DIRETOR')")
 	public ResponseEntity<Void> excluir(@PathVariable Long id) {
 		this.moradorService.excluir(id);
 		return ResponseEntity.noContent().build();

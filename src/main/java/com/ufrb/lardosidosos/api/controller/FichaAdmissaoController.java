@@ -53,4 +53,9 @@ public class FichaAdmissaoController {
 		this.fichaAdmissaoService.excluir(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@GetMapping("/morador/{moradorId}")
+	public ResponseEntity<FichaAdmissao> buscarPorMorador(@PathVariable Long moradorId) {
+		return ResponseEntity.ok(this.fichaAdmissaoService.buscarPorMorador(moradorId));
+	}
 }

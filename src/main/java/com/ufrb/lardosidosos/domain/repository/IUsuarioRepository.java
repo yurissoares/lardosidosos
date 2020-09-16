@@ -6,8 +6,10 @@ import org.springframework.stereotype.Repository;
 import com.ufrb.lardosidosos.domain.model.Usuario;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IUsuarioRepository extends JpaRepository<Usuario, Long>{
     List<Usuario> findByNomeResumidoContainingOrderByNomeResumidoAsc(String nome);
+    Optional<Usuario> findByNomeResumido(String username);
 }

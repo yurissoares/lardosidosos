@@ -72,4 +72,15 @@ public class FichaAdmissaoService implements IFichaAdmissaoService {
 		this.buscar(id);
 		this.fichaAdmissaoRepository.deleteById(id);
 	}
+	
+	@Override
+	public FichaAdmissao buscarPorMorador(Long moradorId) {
+		this.moradorService.verificaSeMoradorExiste(moradorId);
+		
+		Optional<FichaAdmissao> fichaAdmissaoOptional = this.fichaAdmissaoRepository.findByMoradorId(moradorId);
+		if (!fichaAdmissaoOptional.isPresent()) {
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_FICHA_ADMISSAO.getValor());
+		}
+		return fichaAdmissaoOptional.get();
+	}
 }
