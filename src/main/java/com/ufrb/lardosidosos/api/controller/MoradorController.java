@@ -36,7 +36,7 @@ public class MoradorController {
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	@PreAuthorize("hasRole('DIRETOR')")
+//	@PreAuthorize("hasRole('DIRETOR')")
 	public Morador cadastrar(@Valid @RequestBody Morador morador) {
 		return this.moradorService.cadastrar(morador);
 	}
@@ -47,7 +47,7 @@ public class MoradorController {
 	}
 	
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('DIRETOR')")
+//	@PreAuthorize("hasRole('DIRETOR')")
 	public ResponseEntity<Void> excluir(@PathVariable Long id) {
 		this.moradorService.excluir(id);
 		return ResponseEntity.noContent().build();
