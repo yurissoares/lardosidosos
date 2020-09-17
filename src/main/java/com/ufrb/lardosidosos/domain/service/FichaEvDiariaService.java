@@ -88,13 +88,7 @@ public class FichaEvDiariaService implements IFichaEvDiariaService {
 	@Override
 	public List<FichaEvDiaria> listarPorMoradorEntreDatas(Long moradorId, LocalDate dtInicio, LocalDate dtFinal) {
 		this.moradorService.verificaSeMoradorExiste(moradorId);
-		
-		List<FichaEvDiaria> listFichaEvDiaria = this.fichaEvDiariaRepository.findByMoradorIdAndDataBetween(moradorId, dtInicio, dtFinal);
-		if(listFichaEvDiaria.isEmpty()) {
-			throw new NegocioException("Data de início ou fim inexistente.");
-		}
-		
-		return listFichaEvDiaria;
+		return this.fichaEvDiariaRepository.findByMoradorIdAndDataBetween(moradorId, dtInicio, dtFinal);
 	}
 
 }
