@@ -88,7 +88,7 @@ public class FichaEvDiariaService implements IFichaEvDiariaService {
 	@Override
 	public List<FichaEvDiaria> listarPorMoradorEntreDatas(Long moradorId, LocalDate dtInicio, LocalDate dtFinal) {
 		this.moradorService.verificaSeMoradorExiste(moradorId);
-		return this.fichaEvDiariaRepository.findByMoradorIdAndDataBetween(moradorId, dtInicio, dtFinal);
+		return this.fichaEvDiariaRepository.findByMoradorIdAndDataBetweenOrderByData(moradorId, dtInicio, dtFinal);
 	}
 
 }

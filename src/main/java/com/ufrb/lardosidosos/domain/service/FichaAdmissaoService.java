@@ -64,7 +64,10 @@ public class FichaAdmissaoService implements IFichaAdmissaoService {
 	public FichaAdmissao editar(Long id, FichaAdmissao fichaAdmissao) {
 		this.buscar(id);
 		fichaAdmissao.setId(id);
-		return this.cadastrar(fichaAdmissao);
+		this.moradorService.verificaSeMoradorExiste(fichaAdmissao.getMorador().getId());
+		this.usuarioService.verificaSeUsuarioExiste(fichaAdmissao.getUsuario().getId());
+		
+		return this.fichaAdmissaoRepository.save(fichaAdmissao);
 	}
 
 	@Override
