@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ufrb.lardosidosos.domain.constant.NotFoundMsg;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.Despesa;
 import com.ufrb.lardosidosos.domain.repository.IDespesaRepository;
@@ -18,6 +19,12 @@ public class DespesaService implements IDespesaService {
 	@Autowired
 	public DespesaService(IDespesaRepository despesaRepository) {
 		this.despesaRepository = despesaRepository;
+	}
+	
+	@Override
+	public void verificaSeDespesaExiste(Long id) {
+		if (!this.despesaRepository.findById(id).isPresent())
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_DESPESA.getValor());
 	}
 	
 	@Override

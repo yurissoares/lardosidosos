@@ -16,4 +16,6 @@ public interface IDespesaService {
 
 	public void excluir(final Long id);
 
+	public void verificaSeDespesaExiste(final Long id);
+
 }

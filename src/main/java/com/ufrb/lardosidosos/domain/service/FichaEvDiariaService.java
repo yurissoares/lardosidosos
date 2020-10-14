@@ -90,5 +90,25 @@ public class FichaEvDiariaService implements IFichaEvDiariaService {
 		this.moradorService.verificaSeMoradorExiste(moradorId);
 		return this.fichaEvDiariaRepository.findByMoradorIdAndDataBetweenOrderByData(moradorId, dtInicio, dtFinal);
 	}
+	
+	@Override
+	public FichaEvDiaria buscarFichaAdmPorMorador(Long moradorId) {
+		FichaEvDiaria fevd = null;
+		this.moradorService.verificaSeMoradorExiste(moradorId);
+		
+		List<FichaEvDiaria> fichas = this.listarPorMorador(moradorId);
+		
+		for (FichaEvDiaria fichaEvDiaria : fichas) {
+			if(fichaEvDiaria.getFichaAdmissao() != null) {
+				fevd = fichaEvDiaria;
+			}
+		}
+		
+		if(fevd == null) {
+			throw new NegocioException("Morador não possui ficha de Admissão.");
+		}
+
+		return fevd;
+	}
 
 }

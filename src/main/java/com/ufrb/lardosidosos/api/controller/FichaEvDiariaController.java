@@ -62,7 +62,7 @@ public class FichaEvDiariaController {
 		return this.fichaEvDiariaService.cadastrarComFichaAdmissao(fichaEvDiaria);
 	}
 	
-	@GetMapping("/morador/{id}")
+	@GetMapping("/morador/{moradorId}")
 	public List<FichaEvDiaria> listarPorMorador(@PathVariable Long moradorId) {
 		return this.fichaEvDiariaService.listarPorMorador(moradorId);
 	}
@@ -71,6 +71,11 @@ public class FichaEvDiariaController {
 	public List<FichaEvDiaria> listarPorMoradorPorData(@RequestParam("moradorId") Long moradorId, 
 			@RequestParam("dtInicio") LocalDate dtInicio, @RequestParam("dtFinal") LocalDate dtFinal) {
 		return this.fichaEvDiariaService.listarPorMoradorEntreDatas(moradorId, dtInicio, dtFinal);
+	}
+	
+	@GetMapping("/fichaadmissao/morador/{moradorId}")
+	public FichaEvDiaria buscarFichaAdmissaoPorMorador(@PathVariable Long moradorId) {
+		return this.fichaEvDiariaService.buscarFichaAdmPorMorador(moradorId);
 	}
 
 }
