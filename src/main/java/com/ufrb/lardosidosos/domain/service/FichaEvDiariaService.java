@@ -82,7 +82,7 @@ public class FichaEvDiariaService implements IFichaEvDiariaService {
 	@Override
 	public List<FichaEvDiaria> listarPorMorador(Long moradorId) {
 		this.moradorService.verificaSeMoradorExiste(moradorId);
-		return this.fichaEvDiariaRepository.findByMoradorId(moradorId);
+		return this.fichaEvDiariaRepository.findByMoradorIdOrderByData(moradorId);
 	}
 
 	@Override

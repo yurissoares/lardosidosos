@@ -12,6 +12,6 @@ import com.ufrb.lardosidosos.domain.model.FichaEvDiaria;
 @Repository
 public interface IFichaEvDiariaRepository extends JpaRepository<FichaEvDiaria, Long> {
 	Optional<FichaEvDiaria> findByFichaAdmissaoId(Long id);
-	List<FichaEvDiaria> findByMoradorId(Long moradorId);
+	List<FichaEvDiaria> findByMoradorIdOrderByData(Long moradorId);
 	List<FichaEvDiaria> findByMoradorIdAndDataBetweenOrderByData(Long moradorId, LocalDate dtInicio, LocalDate dtFinal);
 }
