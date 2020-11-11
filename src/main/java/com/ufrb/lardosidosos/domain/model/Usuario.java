@@ -31,7 +31,6 @@ public class Usuario implements Serializable {
 	private String email;
 
 	@NotBlank
-	@Size(max = 50)
 	private String senha;
 
 	@Enumerated(EnumType.STRING)
