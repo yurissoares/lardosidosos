@@ -23,20 +23,19 @@ import com.ufrb.lardosidosos.domain.service.IMoradorService;
 
 @RestController
 @RequestMapping("/morador")
+@PreAuthorize("hasRole('DIRETOR')")
 public class MoradorController {
 	
 	@Autowired
 	private IMoradorService moradorService;
 
 	@GetMapping
-	@PreAuthorize("hasRole('DIRETOR')")
 	public List<Morador> listar() {
 		return this.moradorService.listar();
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-//	@PreAuthorize("hasRole('DIRETOR')")
 	public Morador cadastrar(@Valid @RequestBody Morador morador) {
 		return this.moradorService.cadastrar(morador);
 	}
@@ -47,7 +46,6 @@ public class MoradorController {
 	}
 	
 	@DeleteMapping("/{id}")
-//	@PreAuthorize("hasRole('DIRETOR')")
 	public ResponseEntity<Void> excluir(@PathVariable Long id) {
 		this.moradorService.excluir(id);
 		return ResponseEntity.noContent().build();

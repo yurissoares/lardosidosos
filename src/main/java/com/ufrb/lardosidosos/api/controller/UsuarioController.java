@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class UsuarioController {
 	private IUsuarioService usuarioService;
 
 	@GetMapping
+	@PreAuthorize("hasRole('DIRETOR')")
 	public List<Usuario> listar() {
 		return this.usuarioService.listar();
 	}
@@ -39,17 +41,20 @@ public class UsuarioController {
 	}
 	
 	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('DIRETOR')")
 	public ResponseEntity<Usuario> editar(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
 		return ResponseEntity.ok(this.usuarioService.editar(id, usuario));
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('DIRETOR')")
 	public ResponseEntity<Void> excluir(@PathVariable Long id) {
 		this.usuarioService.excluir(id);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping("/{nome}")
+	@PreAuthorize("hasRole('DIRETOR')")
 	public ResponseEntity<List<Usuario>> buscarPorNome(@PathVariable String nome) {
 		return ResponseEntity.ok(this.usuarioService.buscarPorNome(nome));
 	}
