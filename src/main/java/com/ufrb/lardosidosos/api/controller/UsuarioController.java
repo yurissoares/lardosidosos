@@ -23,13 +23,13 @@ import com.ufrb.lardosidosos.domain.service.IUsuarioService;
 
 @RestController
 @RequestMapping("/usuario")
+@PreAuthorize("hasRole('DIRETOR')")
 public class UsuarioController {
 	
 	@Autowired
 	private IUsuarioService usuarioService;
 
 	@GetMapping
-	@PreAuthorize("hasRole('DIRETOR')")
 	public List<Usuario> listar() {
 		return this.usuarioService.listar();
 	}
@@ -41,20 +41,17 @@ public class UsuarioController {
 	}
 	
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('DIRETOR')")
 	public ResponseEntity<Usuario> editar(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
 		return ResponseEntity.ok(this.usuarioService.editar(id, usuario));
 	}
 	
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('DIRETOR')")
 	public ResponseEntity<Void> excluir(@PathVariable Long id) {
 		this.usuarioService.excluir(id);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping("/{nome}")
-	@PreAuthorize("hasRole('DIRETOR')")
 	public ResponseEntity<List<Usuario>> buscarPorNome(@PathVariable String nome) {
 		return ResponseEntity.ok(this.usuarioService.buscarPorNome(nome));
 	}

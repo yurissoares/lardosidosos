@@ -23,7 +23,7 @@ import com.ufrb.lardosidosos.domain.service.IContatoService;
 
 @RestController
 @RequestMapping("/contato")
-@PreAuthorize("hasRole('DIRETOR')")
+@PreAuthorize("hasRole('DIRETOR, ASSISTENTE_SOCIAL')")
 public class ContatoController {
 
 	@Autowired

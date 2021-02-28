@@ -3,6 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
+der lar dos idosos.mwb
 
 ### STS ###
 .apt_generated

@@ -1,7 +1,9 @@
 package com.ufrb.lardosidosos.domain.service;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -27,13 +29,29 @@ public class CustomUsuarioDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		Usuario usuario = usuarioRepository.findByNomeResumido(username)
+		Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findByNomeResumido(username))
 				.orElseThrow(() -> new UsernameNotFoundException("Usuário não existe."));
 
-		List<GrantedAuthority> authorityListDiretor = AuthorityUtils.createAuthorityList("ROLE_TECNICO", "ROLE_DIRETOR");
+		List<GrantedAuthority> authorityListDiretor = AuthorityUtils.createAuthorityList("ROLE_DIRETOR, ROLE_ASSISTENTE_SOCIAL, ROLE_ENFERMEIRO, ROLE_TECNICO");
+		List<GrantedAuthority> authorityListAssistenteSocial = AuthorityUtils.createAuthorityList("ROLE_ASSISTENTE_SOCIAL");
+		List<GrantedAuthority> authorityListEnfermeiro = AuthorityUtils.createAuthorityList("ROLE_ENFERMEIRO");
 		List<GrantedAuthority> authorityListTecnico = AuthorityUtils.createAuthorityList("ROLE_TECNICO");
 
-		return new org.springframework.security.core.userdetails.User(usuario.getNomeResumido(), usuario.getSenha(),
-				usuario.getTipoUsuario() == TipoUsuario.DIRETOR ? authorityListDiretor : authorityListTecnico);
+		List<GrantedAuthority> userAuthorityList;
+		if(usuario.isPresent()) {
+			if (usuario.get().getTipoUsuario() == TipoUsuario.DIRETOR) {
+				userAuthorityList = authorityListDiretor;
+			} else if (usuario.get().getTipoUsuario() == TipoUsuario.ASSISTENTE_SOCIAL) {
+				userAuthorityList = authorityListAssistenteSocial;
+			} else if (usuario.get().getTipoUsuario() == TipoUsuario.ENFERMEIRO) {
+				userAuthorityList = authorityListEnfermeiro;
+			} else {
+				userAuthorityList = authorityListTecnico;
+			}
+		} else {
+			throw new NegocioException("Usuario sem permissões.");
+		}
+
+		return new org.springframework.security.core.userdetails.User(usuario.get().getNomeResumido(), usuario.get().getSenha(), userAuthorityList);
 	}
 }

@@ -23,7 +23,7 @@ import com.ufrb.lardosidosos.domain.service.IMoradorAntecedenteService;
 
 @RestController
 @RequestMapping("/moradorantecedente")
-@PreAuthorize("hasRole('DIRETOR')")
+@PreAuthorize("hasRole('DIRETOR, ASSISTENTE_SOCIAL')")
 public class MoradorAntecedenteController {
 
 	@Autowired

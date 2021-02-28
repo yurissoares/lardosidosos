@@ -25,7 +25,7 @@ import com.ufrb.lardosidosos.domain.service.IFichaEvDiariaService;
 
 @RestController
 @RequestMapping("/fichaevdiaria")
-@PreAuthorize("hasRole('DIRETOR')")
+@PreAuthorize("hasRole('DIRETOR, TECNICO')")
 public class FichaEvDiariaController {
 	
 	@Autowired

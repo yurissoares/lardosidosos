@@ -23,7 +23,7 @@ import com.ufrb.lardosidosos.domain.service.ITipoRegistroSaudeService;
 
 @RestController
 @RequestMapping("/tiporegistrosaude")
-@PreAuthorize("hasRole('DIRETOR')")
+@PreAuthorize("hasRole('DIRETOR, ENFERMEIRO')")
 public class TipoRegistroSaudeController {
 	
 	@Autowired

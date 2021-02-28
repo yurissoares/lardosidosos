@@ -23,7 +23,7 @@ import com.ufrb.lardosidosos.domain.service.IDocumentoMoradorService;
 
 @RestController
 @RequestMapping("/docmorador")
-@PreAuthorize("hasRole('DIRETOR')")
+@PreAuthorize("hasRole('DIRETOR, ASSISTENTE_SOCIAL')")
 public class DocumentoMoradorController {
 
 	@Autowired
