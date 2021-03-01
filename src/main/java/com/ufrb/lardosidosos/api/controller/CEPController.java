@@ -20,7 +20,7 @@ import com.ufrb.lardosidosos.domain.exception.NegocioException;
 
 @RestController
 @RequestMapping("/cep")
-@PreAuthorize("hasRole('DIRETOR')")
+@PreAuthorize("hasRole('ROLE_DIRETOR')")
 public class CEPController {
 	
 	@GetMapping("/{cepNumero}")

@@ -23,7 +23,7 @@ import com.ufrb.lardosidosos.domain.service.IDespesaService;
 
 @RestController
 @RequestMapping("/despesa")
-@PreAuthorize("hasRole('DIRETOR')")
+@PreAuthorize("hasRole('ROLE_DIRETOR')")
 public class DespesaController {
 
 	@Autowired

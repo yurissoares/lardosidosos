@@ -23,7 +23,7 @@ import com.ufrb.lardosidosos.domain.service.ILembreteService;
 
 @RestController
 @RequestMapping("/lembrete")
-@PreAuthorize("hasRole('DIRETOR')")
+@PreAuthorize("hasRole('ROLE_DIRETOR')")
 public class LembreteController {
 	
 	@Autowired

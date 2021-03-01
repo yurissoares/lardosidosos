@@ -23,7 +23,7 @@ import com.ufrb.lardosidosos.domain.service.ITipoLembreteService;
 
 @RestController
 @RequestMapping("/tipolembrete")
-@PreAuthorize("hasRole('DIRETOR, TECNICO')")
+@PreAuthorize("hasRole('ROLE_DIRETOR') or hasRole('ROLE_TECNICO')")
 public class TipoLembreteController {
 
 	@Autowired

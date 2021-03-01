@@ -23,7 +23,7 @@ import com.ufrb.lardosidosos.domain.service.IDoencaService;
 
 @RestController
 @RequestMapping("/doenca")
-@PreAuthorize("hasRole('DIRETOR, ENFERMEIRO')")
+@PreAuthorize("hasRole('ROLE_DIRETOR') or hasRole('ROLE_ENFERMEIRO')")
 public class DoencaController {
 
 	@Autowired

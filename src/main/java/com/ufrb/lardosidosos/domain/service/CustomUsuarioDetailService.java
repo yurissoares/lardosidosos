@@ -29,10 +29,12 @@ public class CustomUsuarioDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		Optional<Usuario> usuario = Optional.ofNullable(usuarioRepository.findByNomeResumido(username))
-				.orElseThrow(() -> new UsernameNotFoundException("Usuário não existe."));
+		Optional<Usuario> usuario = usuarioRepository.findByNomeResumido(username);
+		if(usuario.isEmpty()) {
+			throw new NegocioException("Login ou senha invalidos.");
+		}
 
-		List<GrantedAuthority> authorityListDiretor = AuthorityUtils.createAuthorityList("ROLE_DIRETOR, ROLE_ASSISTENTE_SOCIAL, ROLE_ENFERMEIRO, ROLE_TECNICO");
+		List<GrantedAuthority> authorityListDiretor = AuthorityUtils.createAuthorityList("ROLE_DIRETOR");
 		List<GrantedAuthority> authorityListAssistenteSocial = AuthorityUtils.createAuthorityList("ROLE_ASSISTENTE_SOCIAL");
 		List<GrantedAuthority> authorityListEnfermeiro = AuthorityUtils.createAuthorityList("ROLE_ENFERMEIRO");
 		List<GrantedAuthority> authorityListTecnico = AuthorityUtils.createAuthorityList("ROLE_TECNICO");

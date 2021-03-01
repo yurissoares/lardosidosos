@@ -23,7 +23,7 @@ import com.ufrb.lardosidosos.domain.service.IFichaAdmissaoService;
 
 @RestController
 @RequestMapping("/fichaadmissao")
-@PreAuthorize("hasRole('DIRETOR, ASSISTENTE_SOCIAL')")
+@PreAuthorize("hasRole('ROLE_DIRETOR') or hasRole('ROLE_ASSISTENTE_SOCIAL')")
 public class FichaAdmissaoController {
 	
 	@Autowired

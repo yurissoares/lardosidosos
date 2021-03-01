@@ -23,7 +23,7 @@ import com.ufrb.lardosidosos.domain.service.IUsuarioService;
 
 @RestController
 @RequestMapping("/usuario")
-@PreAuthorize("hasRole('DIRETOR')")
+@PreAuthorize("hasRole('ROLE_DIRETOR')")
 public class UsuarioController {
 	
 	@Autowired
