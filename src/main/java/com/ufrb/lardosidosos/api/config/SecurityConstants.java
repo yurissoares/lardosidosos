@@ -6,7 +6,7 @@ public class SecurityConstants {
 	public static final String TOKEN_PREFIX = "Bearer ";
 	public static final String HEADER_STRING = "Authorization";
 	public static final String SIGN_UP_URL = "/usuarios/sign-up";
-	public static final Long EXPIRATION_TIME = 120000L; //1 Dia
+	public static final Long EXPIRATION_TIME = 3600000L; //1 Dia
 	
 //	public static void main(String[] args) {
 //		System.out.println(TimeUnit.MILLISECONDS.convert(120, TimeUnit.SECONDS));

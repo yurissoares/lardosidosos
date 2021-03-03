@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
@@ -42,7 +43,7 @@ public class MoradorAntecedenteService implements IMoradorAntecedenteService {
 	public MoradorAntecedente buscar(Long id) {
 		Optional<MoradorAntecedente> moradorAntecedenteOptional = this.moradorAntecedenteRepository.findById(id);
 		if (!moradorAntecedenteOptional.isPresent()) {
-			throw new NegocioException("Morador antecedente não encontrado.");
+			throw new NegocioException("Morador antecedente não encontrado.", HttpStatus.NOT_FOUND);
 		}
 		return moradorAntecedenteOptional.get();
 	}

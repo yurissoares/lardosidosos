@@ -9,6 +9,7 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,7 @@ public class CEPController {
 	        br.close();	
 	        
 		} catch(IOException e) {
-			throw new NegocioException("CEP inválido."); 
+			throw new NegocioException("CEP inválido.", HttpStatus.BAD_REQUEST);
         }
 		
 		return ResponseEntity.ok(jsonObj.toMap());

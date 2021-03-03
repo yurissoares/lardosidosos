@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.doctransfer.model.Arquivo;
@@ -49,7 +50,7 @@ public class DocumentoRegistroSaudeService implements IDocumentoRegistroSaudeSer
 	public DocumentoRegistroSaude buscar(Long id) {
 		Optional<DocumentoRegistroSaude> docRegSaudeOptional = this.docRegSaudeRepository.findById(id);
 		if (!docRegSaudeOptional.isPresent()) {
-			throw new NegocioException("Documento de registro de saúde não encontrado.");
+			throw new NegocioException("Documento de registro de saúde não encontrado.", HttpStatus.NOT_FOUND);
 		}
 		return docRegSaudeOptional.get();
 	}

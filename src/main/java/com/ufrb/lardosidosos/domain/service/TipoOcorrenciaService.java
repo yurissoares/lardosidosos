@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.domain.constant.NotFoundMsg;
@@ -24,7 +25,7 @@ public class TipoOcorrenciaService implements ITipoOcorrenciaService {
 	@Override
 	public void verificaSeTpOcorrenciaExiste(Long id) {
 		if (!this.tipoOcorrenciaRepository.findById(id).isPresent())
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_TP_OCORRENCIA.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_TP_OCORRENCIA.getValor(), HttpStatus.NOT_FOUND);
 	}
 	
 	@Override
@@ -41,7 +42,7 @@ public class TipoOcorrenciaService implements ITipoOcorrenciaService {
 	public TipoOcorrencia buscar(Long id) {
 		Optional<TipoOcorrencia> tipoOcorrenciaOptional = this.tipoOcorrenciaRepository.findById(id);
 		if (!tipoOcorrenciaOptional.isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_TP_OCORRENCIA.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_TP_OCORRENCIA.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return tipoOcorrenciaOptional.get();
 	}

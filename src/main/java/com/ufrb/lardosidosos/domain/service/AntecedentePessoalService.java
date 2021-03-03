@@ -3,10 +3,11 @@ package com.ufrb.lardosidosos.domain.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ufrb.lardosidosos.domain.constant.NotFoundMsg;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.ufrb.lardosidosos.domain.constant.NotFoundMsg;
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.AntecedentePessoal;
 import com.ufrb.lardosidosos.domain.repository.IAntecedentePessoalRepository;
@@ -23,7 +24,10 @@ public class AntecedentePessoalService implements IAntecedentePessoalService {
 	
 	@Override
 	public void verificaSeAntPessoalExiste(Long id) {
-		if(!this.antecedentePessoalRepository.findById(id).isPresent()) throw new NegocioException(NotFoundMsg.NOT_FOUND_ANT_PESSOAL.getValor());
+		Optional<AntecedentePessoal> AntecedentePessoalOptional = this.antecedentePessoalRepository.findById(id);
+		if (!AntecedentePessoalOptional.isPresent()) {
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_ANT_PESSOAL.getValor(), HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	@Override
@@ -40,7 +44,7 @@ public class AntecedentePessoalService implements IAntecedentePessoalService {
 	public AntecedentePessoal buscar(Long id) {
 		Optional<AntecedentePessoal> antecedentePessoalOptional = this.antecedentePessoalRepository.findById(id);
 		if (!antecedentePessoalOptional.isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_ANT_PESSOAL.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_ANT_PESSOAL.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return antecedentePessoalOptional.get();
 	}

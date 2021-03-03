@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.domain.constant.NotFoundMsg;
@@ -32,7 +33,7 @@ public class OcorrenciaService implements IOcorrenciaService {
 	@Override
 	public void verificaSeOcorrenciaExiste(Long id) {
 		if (!this.ocorrenciaRepository.findById(id).isPresent())
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_OCORRENCIA.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_OCORRENCIA.getValor(), HttpStatus.NOT_FOUND);
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class OcorrenciaService implements IOcorrenciaService {
 	public Ocorrencia buscar(Long id) {
 		Optional<Ocorrencia> ocorrenciaOptional = this.ocorrenciaRepository.findById(id);
 		if (!ocorrenciaOptional.isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_OCORRENCIA.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_OCORRENCIA.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return ocorrenciaOptional.get();
 	}

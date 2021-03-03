@@ -51,7 +51,7 @@ public class ArquivoController {
 	public ResponseEntity<List<Arquivo>> listarDocumentosMorador(@PathVariable Long documentoId)
 	{
 		documentoMoradorRepository.findById(documentoId)
-			.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO));
+			.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO, HttpStatus.NOT_FOUND));
 		 
 		 return ResponseEntity.ok(repository.findByDocumentoMoradorId(documentoId));
 	}
@@ -60,7 +60,7 @@ public class ArquivoController {
 	public ResponseEntity<List<Arquivo>> listarDocumentoRegistroSaude(@PathVariable Long documentoId)
 	{
 		documentoRegistroSaudeRepository.findById(documentoId)
-				.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO));
+				.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO, HttpStatus.NOT_FOUND));
 
 		return ResponseEntity.ok(repository.findByDocumentoRegistroSaudeId(documentoId));
 	}
@@ -72,7 +72,7 @@ public class ArquivoController {
 		Arquivo arq = null;
 		
 		DocumentoMorador documentoMorador = documentoMoradorRepository.findById(id)
-				.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO));
+				.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO, HttpStatus.NOT_FOUND));
 		
 		try {
 			arq = new Arquivo(documentoMorador, null, arquivo.getContentType(), arquivo.getBytes());
@@ -89,7 +89,7 @@ public class ArquivoController {
 		Arquivo arq = null;
 		
 		DocumentoRegistroSaude documentoRegistroSaude = documentoRegistroSaudeRepository.findById(id)
-				.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO));
+				.orElseThrow(() -> new NegocioException(NOT_FOUND_DOCUMENTO, HttpStatus.NOT_FOUND));
 		
 		try {
 			arq = new Arquivo(null, documentoRegistroSaude, arquivo.getContentType(), arquivo.getBytes());

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
@@ -42,7 +43,7 @@ public class MoradorDoencaService implements IMoradorDoencaService {
 	public MoradorDoenca buscar(Long id) {
 		Optional<MoradorDoenca> moradorDoencaOptional = this.moradorDoencaRepository.findById(id);
 		if (!moradorDoencaOptional.isPresent()) {
-			throw new NegocioException("Morador doença não encontrado.");
+			throw new NegocioException("Morador doença não encontrado.", HttpStatus.NOT_FOUND);
 		}
 		return moradorDoencaOptional.get();
 	}

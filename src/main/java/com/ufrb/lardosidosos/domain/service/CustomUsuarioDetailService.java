@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,11 +29,11 @@ public class CustomUsuarioDetailService implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
+	public UserDetails loadUserByUsername(String username) throws InternalAuthenticationServiceException {
 		Optional<Usuario> usuario = usuarioRepository.findByNomeResumido(username);
 		if(usuario.isEmpty()) {
-			throw new NegocioException("Login ou senha invalidos.");
+			//TODO: Faltando mapear essa exception corretamente 02-03-2021
+			throw new InternalAuthenticationServiceException(usuario.get().getNomeResumido());
 		}
 
 		List<GrantedAuthority> authorityListDiretor = AuthorityUtils.createAuthorityList("ROLE_DIRETOR");
@@ -51,9 +53,8 @@ public class CustomUsuarioDetailService implements UserDetailsService {
 				userAuthorityList = authorityListTecnico;
 			}
 		} else {
-			throw new NegocioException("Usuario sem permissões.");
+			throw new NegocioException("Usuario sem permissões.", HttpStatus.BAD_REQUEST);
 		}
-
 		return new org.springframework.security.core.userdetails.User(usuario.get().getNomeResumido(), usuario.get().getSenha(), userAuthorityList);
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.doctransfer.model.Arquivo;
@@ -43,7 +44,7 @@ public class DocumentoMoradorService implements IDocumentoMoradorService {
 	public DocumentoMorador buscar(Long id) {
 		Optional<DocumentoMorador> moradorOptional = this.docMoradorRepository.findById(id);
 		if (!moradorOptional.isPresent()) {
-			throw new NegocioException("Documento do morador não encontrado.");
+			throw new NegocioException("Documento do morador não encontrado.", HttpStatus.NOT_FOUND);
 		}
 		return moradorOptional.get();
 	}

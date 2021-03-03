@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.domain.constant.NotFoundMsg;
@@ -23,7 +24,7 @@ public class DoencaService implements IDoencaService {
 	
 	@Override
 	public void verificaSeDoencaExiste(Long id) {
-		if(!this.doencaRepository.findById(id).isPresent()) throw new NegocioException(NotFoundMsg.NOT_FOUND_DOENCA.getValor());
+		if(!this.doencaRepository.findById(id).isPresent()) throw new NegocioException(NotFoundMsg.NOT_FOUND_DOENCA.getValor(), HttpStatus.NOT_FOUND);
 	}
 	
 	@Override
@@ -40,7 +41,7 @@ public class DoencaService implements IDoencaService {
 	public Doenca buscar(Long id) {
 		Optional<Doenca> doencaOptional = this.doencaRepository.findById(id);
 		if (!doencaOptional.isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_DOENCA.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_DOENCA.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return doencaOptional.get();
 	}

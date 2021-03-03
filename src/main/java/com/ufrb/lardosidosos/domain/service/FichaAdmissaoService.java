@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.domain.constant.NotFoundMsg;
@@ -29,7 +30,7 @@ public class FichaAdmissaoService implements IFichaAdmissaoService {
 	
 	@Override
 	public void verificaSeFichaAdmissaoExiste(Long id) {
-		if(!this.fichaAdmissaoRepository.findById(id).isPresent()) throw new NegocioException(NotFoundMsg.NOT_FOUND_FICHA_ADMISSAO.getValor());
+		if(!this.fichaAdmissaoRepository.findById(id).isPresent()) throw new NegocioException(NotFoundMsg.NOT_FOUND_FICHA_ADMISSAO.getValor(), HttpStatus.NOT_FOUND);
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class FichaAdmissaoService implements IFichaAdmissaoService {
 		Optional<FichaAdmissao> fichaAdmissaoMoradorOptional = this.fichaAdmissaoRepository
 				.findByMoradorId(fichaAdmissao.getMorador().getId());
 		if (fichaAdmissaoMoradorOptional.isPresent()) {
-			throw new NegocioException("Ficha de admissão já cadastrada para o morador.");
+			throw new NegocioException("Ficha de admissão já cadastrada para o morador.", HttpStatus.BAD_REQUEST);
 		}
 
 		this.usuarioService.verificaSeUsuarioExiste(fichaAdmissao.getUsuario().getId());
@@ -55,7 +56,7 @@ public class FichaAdmissaoService implements IFichaAdmissaoService {
 	public FichaAdmissao buscar(Long id) {
 		Optional<FichaAdmissao> fichaAdmissaoOptional = this.fichaAdmissaoRepository.findById(id);
 		if (!fichaAdmissaoOptional.isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_FICHA_ADMISSAO.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_FICHA_ADMISSAO.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return fichaAdmissaoOptional.get();
 	}
@@ -82,7 +83,7 @@ public class FichaAdmissaoService implements IFichaAdmissaoService {
 		
 		Optional<FichaAdmissao> fichaAdmissaoOptional = this.fichaAdmissaoRepository.findByMoradorId(moradorId);
 		if (!fichaAdmissaoOptional.isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_FICHA_ADMISSAO.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_FICHA_ADMISSAO.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return fichaAdmissaoOptional.get();
 	}

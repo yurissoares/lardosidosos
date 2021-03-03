@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.domain.constant.NotFoundMsg;
@@ -24,7 +25,7 @@ public class TipoRegistroSaudeService implements ITipoRegistroSaudeService {
 	@Override
 	public void verificaSeTpRegSaudeExiste(Long id) {
 		if (!this.tipoRegistroSaudeRepository.findById(id).isPresent())
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_TP_REG_SAUDE.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_TP_REG_SAUDE.getValor(), HttpStatus.NOT_FOUND);
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class TipoRegistroSaudeService implements ITipoRegistroSaudeService {
 	public TipoRegistroSaude buscar(Long id) {
 		Optional<TipoRegistroSaude> tipoRegistroSaudeOptional = this.tipoRegistroSaudeRepository.findById(id);
 		if (!tipoRegistroSaudeOptional.isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_TP_REG_SAUDE.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_TP_REG_SAUDE.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return tipoRegistroSaudeOptional.get();
 	}

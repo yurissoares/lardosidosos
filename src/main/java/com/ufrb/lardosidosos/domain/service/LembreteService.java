@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.domain.constant.NotFoundMsg;
@@ -55,19 +56,19 @@ public class LembreteService implements ILembreteService {
 
 		if (lembrete.getMorador() != null) {
 			morador = moradorRepository.findById(lembrete.getMorador().getId())
-					.orElseThrow(() -> new NegocioException(NotFoundMsg.NOT_FOUND_MORADOR.getValor()));
+					.orElseThrow(() -> new NegocioException(NotFoundMsg.NOT_FOUND_MORADOR.getValor(), HttpStatus.NOT_FOUND));
 		}
 		Usuario usuarioOrigem = usuarioRepository.findById(lembrete.getUsuarioOrigem().getId())
-				.orElseThrow(() -> new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor()));
+				.orElseThrow(() -> new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor(), HttpStatus.NOT_FOUND));
 		if (lembrete.getUsuarioDestino() != null) {
 			usuarioDestino = usuarioRepository.findById(lembrete.getUsuarioDestino().getId())
-					.orElseThrow(() -> new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor()));
+					.orElseThrow(() -> new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor(), HttpStatus.NOT_FOUND));
 		}
 		TipoLembrete tipoLembrete = tipoLembreteRepository.findById(lembrete.getTipoLembrete().getId())
-				.orElseThrow(() -> new NegocioException(NotFoundMsg.NOT_FOUND_TP_LEMBRETE.getValor()));
+				.orElseThrow(() -> new NegocioException(NotFoundMsg.NOT_FOUND_TP_LEMBRETE.getValor(), HttpStatus.NOT_FOUND));
 		if (lembrete.getRegistroSaude() != null) {
 			registroSaude = registroSaudeRepository.findById(lembrete.getRegistroSaude().getId())
-					.orElseThrow(() -> new NegocioException(NotFoundMsg.NOT_FOUND_REG_SAUDE.getValor()));
+					.orElseThrow(() -> new NegocioException(NotFoundMsg.NOT_FOUND_REG_SAUDE.getValor(), HttpStatus.NOT_FOUND));
 		}
 
 		lembrete.setMorador(morador);
@@ -89,7 +90,7 @@ public class LembreteService implements ILembreteService {
 	public Lembrete buscar(Long id) {
 		Optional<Lembrete> lembreteOptional = this.lembreteRepository.findById(id);
 		if (!lembreteOptional.isPresent()) {
-			throw new NegocioException("Lembrete não encontrado.");
+			throw new NegocioException("Lembrete não encontrado.", HttpStatus.NOT_FOUND);
 		}
 		return lembreteOptional.get();
 	}
@@ -110,7 +111,7 @@ public class LembreteService implements ILembreteService {
 	@Override
 	public List<Lembrete> listarLembretesUsuarioDestinoPorUsuarioId(Long usuarioId) {
 		if (!usuarioRepository.findById(usuarioId).isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return this.lembreteRepository.findByUsuarioDestinoId(usuarioId);
 	}
@@ -118,7 +119,7 @@ public class LembreteService implements ILembreteService {
 	@Override
 	public List<Lembrete> listarLembretesUsuarioOrigemPorUsuarioId(Long usuarioId) {
 		if (!usuarioRepository.findById(usuarioId).isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return this.lembreteRepository.findByUsuarioOrigemId(usuarioId);
 	}
@@ -126,7 +127,7 @@ public class LembreteService implements ILembreteService {
 	@Override
 	public List<Lembrete> listarLembreteMoradorPorMoradorId(Long moradorId) {
 		if (!moradorRepository.findById(moradorId).isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_MORADOR.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_MORADOR.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return this.lembreteRepository.findByMoradorIdOrderByDataCriacaoDesc(moradorId);
 	}

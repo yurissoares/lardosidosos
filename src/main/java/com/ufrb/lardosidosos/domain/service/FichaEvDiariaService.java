@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.domain.exception.NegocioException;
@@ -49,7 +50,7 @@ public class FichaEvDiariaService implements IFichaEvDiariaService {
 	public FichaEvDiaria buscar(Long id) {
 		Optional<FichaEvDiaria> fichaEvDiariaOptional = this.fichaEvDiariaRepository.findById(id);
 		if (!fichaEvDiariaOptional.isPresent()) {
-			throw new NegocioException("Ficha de evolução diária não encontrada.");
+			throw new NegocioException("Ficha de evolução diária não encontrada.", HttpStatus.NOT_FOUND);
 		}
 		return fichaEvDiariaOptional.get();
 	}
@@ -72,7 +73,7 @@ public class FichaEvDiariaService implements IFichaEvDiariaService {
 		this.fichaAdmissaoService.verificaSeFichaAdmissaoExiste(fichaEvDiaria.getFichaAdmissao().getId());
 		
 		if(!this.fichaSaudeRepository.findById(fichaEvDiaria.getFichaAdmissao().getId()).isPresent())
-			throw new NegocioException("Ficha de saúde não encontrada.");
+			throw new NegocioException("Ficha de saúde não encontrada.", HttpStatus.NOT_FOUND);
 
 		this.moradorService.verificaSeMoradorExiste(fichaEvDiaria.getMorador().getId());
 		this.usuarioService.verificaSeUsuarioExiste(fichaEvDiaria.getUsuario().getId());
@@ -105,7 +106,7 @@ public class FichaEvDiariaService implements IFichaEvDiariaService {
 		}
 		
 		if(fevd == null) {
-			throw new NegocioException("Morador não possui ficha de Admissão.");
+			throw new NegocioException("Morador não possui ficha de Admissão.", HttpStatus.NOT_FOUND);
 		}
 
 		return fevd;

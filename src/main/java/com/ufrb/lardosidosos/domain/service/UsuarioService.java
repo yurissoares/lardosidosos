@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class UsuarioService implements IUsuarioService {
 	@Override
 	public void verificaSeUsuarioExiste(Long id) {
 		if (!this.usuarioRepository.findById(id).isPresent())
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor(), HttpStatus.NOT_FOUND);
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class UsuarioService implements IUsuarioService {
 	public Usuario buscar(Long id) {
 		Optional<Usuario> usuarioOptional = this.usuarioRepository.findById(id);
 		if (!usuarioOptional.isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return usuarioOptional.get();
 	}
@@ -65,7 +66,7 @@ public class UsuarioService implements IUsuarioService {
 	public List<Usuario> buscarPorNome(String nome) {
 		List<Usuario> usuarios = usuarioRepository.findByNomeResumidoContainingOrderByNomeResumidoAsc(nome);
 		if (usuarios.isEmpty()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_USUARIO.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return usuarios;
 	}

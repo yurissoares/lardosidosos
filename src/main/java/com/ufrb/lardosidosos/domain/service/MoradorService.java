@@ -3,7 +3,9 @@ package com.ufrb.lardosidosos.domain.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ufrb.lardosidosos.domain.constant.NotFoundMsg;
@@ -24,7 +26,7 @@ public class MoradorService implements IMoradorService {
 	@Override
 	public void verificaSeMoradorExiste(Long id) {
 		if (!this.moradorRepository.findById(id).isPresent())
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_MORADOR.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_MORADOR.getValor(), HttpStatus.NOT_FOUND);
 	}
 
 	@Override
@@ -41,7 +43,7 @@ public class MoradorService implements IMoradorService {
 	public Morador buscar(Long id) {
 		Optional<Morador> moradorOptional = this.moradorRepository.findById(id);
 		if (!moradorOptional.isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_MORADOR.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_MORADOR.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return moradorOptional.get();
 	}
@@ -63,7 +65,7 @@ public class MoradorService implements IMoradorService {
 	public List<Morador> buscarPorNome(String nome) {
 		List<Morador> moradores = moradorRepository.findByNomeContainingOrderByNomeAsc(nome);
 		if (moradores.isEmpty()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_MORADOR.getValor());
+			throw new NegocioException(NotFoundMsg.NOT_FOUND_MORADOR.getValor(), HttpStatus.NOT_FOUND);
 		}
 		return moradores;
 	}
