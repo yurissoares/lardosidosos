@@ -22,10 +22,11 @@ import com.ufrb.lardosidosos.domain.repository.IUsuarioRepository;
 public class CustomUsuarioDetailService implements UserDetailsService {
 
 	private IUsuarioRepository usuarioRepository;
+	private IUsuarioService usuarioService;
 
 	@Autowired
-	public CustomUsuarioDetailService(IUsuarioRepository usuarioRepository) {
-		this.usuarioRepository = usuarioRepository;
+	public CustomUsuarioDetailService(final IUsuarioService usuarioService) {
+		this.usuarioService = usuarioService;
 	}
 
 	@Override

@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface IUsuarioRepository extends JpaRepository<Usuario, Long>{
-    List<Usuario> findByNomeResumidoContainingOrderByNomeResumidoAsc(String nome);
-    Optional<Usuario> findByNomeResumido(String username);
+    List<Usuario> findByNomeResumidoContainingOrderByNomeResumidoAsc(final String nome);
+    Optional<Usuario> findByNomeResumido(final String username);
 }
