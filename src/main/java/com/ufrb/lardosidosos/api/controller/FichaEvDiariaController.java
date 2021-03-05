@@ -70,8 +70,8 @@ public class FichaEvDiariaController {
 	}
 	
 	@GetMapping("/morador/datas")
-	public List<FichaEvDiaria> listarPorMoradorPorData(@RequestParam("moradorId") Long moradorId, 
-			@RequestParam("dtInicio") LocalDate dtInicio, @RequestParam("dtFinal") LocalDate dtFinal) {
+	public List<FichaEvDiaria> listarPorMoradorPorData(@RequestParam("moradorId") final Long moradorId,
+			@RequestParam("dtInicio")  final String dtInicio, @RequestParam("dtFinal") final String dtFinal) {
 		return this.fichaEvDiariaService.listarPorMoradorEntreDatas(moradorId, dtInicio, dtFinal);
 	}
 	

@@ -21,7 +21,7 @@ public interface IFichaEvDiariaService {
 	
 	public List<FichaEvDiaria> listarPorMorador(final Long moradorId);
 	
-	public List<FichaEvDiaria> listarPorMoradorEntreDatas(final Long moradorId, final LocalDate dtInicio, final LocalDate dtFinal);
+	public List<FichaEvDiaria> listarPorMoradorEntreDatas(final Long moradorId, final String dtInicio, final String dtFinal);
 
 	public FichaEvDiaria buscarFichaAdmPorMorador(final Long moradorId);
 

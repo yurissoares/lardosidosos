@@ -1,10 +1,14 @@
 package com.ufrb.lardosidosos.domain.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +16,8 @@ import com.ufrb.lardosidosos.domain.exception.NegocioException;
 import com.ufrb.lardosidosos.domain.model.FichaEvDiaria;
 import com.ufrb.lardosidosos.domain.repository.IFichaEvDiariaRepository;
 import com.ufrb.lardosidosos.domain.repository.IFichaSaudeRepository;
+
+import javax.swing.text.DateFormatter;
 
 @Service
 public class FichaEvDiariaService implements IFichaEvDiariaService {
@@ -87,13 +93,18 @@ public class FichaEvDiariaService implements IFichaEvDiariaService {
 	}
 
 	@Override
-	public List<FichaEvDiaria> listarPorMoradorEntreDatas(Long moradorId, LocalDate dtInicio, LocalDate dtFinal) {
+	public List<FichaEvDiaria> listarPorMoradorEntreDatas(final Long moradorId, final String dtInicio, final String dtFinal) {
 		this.moradorService.verificaSeMoradorExiste(moradorId);
-		return this.fichaEvDiariaRepository.findByMoradorIdAndDataBetweenOrderByData(moradorId, dtInicio, dtFinal);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+		LocalDate localDateInicio = LocalDate.parse(dtInicio, formatter);
+		LocalDate localDateFinal = LocalDate.parse(dtFinal, formatter);
+
+		return this.fichaEvDiariaRepository.findByMoradorIdAndDataBetweenOrderByData(moradorId, localDateInicio, localDateFinal);
 	}
 	
 	@Override
-	public FichaEvDiaria buscarFichaAdmPorMorador(Long moradorId) {
+	public FichaEvDiaria buscarFichaAdmPorMorador(final Long moradorId) {
 		FichaEvDiaria fevd = null;
 		this.moradorService.verificaSeMoradorExiste(moradorId);
 		
