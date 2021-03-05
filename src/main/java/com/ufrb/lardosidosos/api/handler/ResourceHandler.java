@@ -25,16 +25,4 @@ public class ResourceHandler {
         return ResponseEntity.status(ne.getHttpStatus()).body(erro.build());
     }
 
-    //TODO: Faltando mapear essa exception corretamente 02-03-2021
-    @ExceptionHandler(InternalAuthenticationServiceException.class)
-    public ResponseEntity<ErrorResponse> handlerInternalAuthenticationServiceException(InternalAuthenticationServiceException iase) {
-        ErrorResponseBuilder erro = ErrorResponse.builder();
-
-        erro.httpStatus(HttpStatus.NOT_FOUND.value());
-        erro.mensagem(iase.getMessage());
-        erro.timeStamp(System.currentTimeMillis());
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(erro.build());
-    }
-
 }

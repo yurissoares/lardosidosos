@@ -1,5 +1,6 @@
 package com.ufrb.lardosidosos.domain.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,7 +84,7 @@ public class FichaAdmissaoService implements IFichaAdmissaoService {
 		
 		Optional<FichaAdmissao> fichaAdmissaoOptional = this.fichaAdmissaoRepository.findByMoradorId(moradorId);
 		if (!fichaAdmissaoOptional.isPresent()) {
-			throw new NegocioException(NotFoundMsg.NOT_FOUND_FICHA_ADMISSAO.getValor(), HttpStatus.NOT_FOUND);
+			return null;
 		}
 		return fichaAdmissaoOptional.get();
 	}

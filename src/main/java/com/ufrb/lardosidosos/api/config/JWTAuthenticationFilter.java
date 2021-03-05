@@ -1,17 +1,25 @@
 package com.ufrb.lardosidosos.api.config;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ufrb.lardosidosos.domain.exception.NegocioException;
+import io.jsonwebtoken.Claims;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -38,17 +46,23 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Usuario usuario = new ObjectMapper().readValue(request.getInputStream(), Usuario.class);
 			return this.authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(usuario.getNomeResumido(), usuario.getSenha()));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (NegocioException | IOException e) {
+			throw new NegocioException(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
-		String username = ((User) authResult.getPrincipal()).getUsername();
-		String token = Jwts.builder().setSubject(username)
-				.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+		User user = ((User) authResult.getPrincipal());
+		String username = user.getUsername();
+		String roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+		Map<String, Object> claims = new HashMap<>();
+		claims.put("roles", roles);
+		claims.put("sub", username);
+		claims.put("exp", new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME));
+		String token = Jwts.builder()
+				.setClaims(claims)
 				.signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET).compact();
 
 		String bearerToken = SecurityConstants.TOKEN_PREFIX + token;

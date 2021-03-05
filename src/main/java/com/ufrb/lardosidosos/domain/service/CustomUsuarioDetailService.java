@@ -29,11 +29,11 @@ public class CustomUsuarioDetailService implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws InternalAuthenticationServiceException {
+	public UserDetails loadUserByUsername(final String username) throws InternalAuthenticationServiceException {
 		Optional<Usuario> usuario = usuarioRepository.findByNomeResumido(username);
-		if(usuario.isEmpty()) {
-			//TODO: Faltando mapear essa exception corretamente 02-03-2021
-			throw new InternalAuthenticationServiceException(usuario.get().getNomeResumido());
+
+		if(!usuario.isPresent()) {
+			throw new NegocioException("Usuario nao encontrado.", HttpStatus.NOT_FOUND);
 		}
 
 		List<GrantedAuthority> authorityListDiretor = AuthorityUtils.createAuthorityList("ROLE_DIRETOR");
@@ -42,19 +42,16 @@ public class CustomUsuarioDetailService implements UserDetailsService {
 		List<GrantedAuthority> authorityListTecnico = AuthorityUtils.createAuthorityList("ROLE_TECNICO");
 
 		List<GrantedAuthority> userAuthorityList;
-		if(usuario.isPresent()) {
-			if (usuario.get().getTipoUsuario() == TipoUsuario.DIRETOR) {
-				userAuthorityList = authorityListDiretor;
-			} else if (usuario.get().getTipoUsuario() == TipoUsuario.ASSISTENTE_SOCIAL) {
-				userAuthorityList = authorityListAssistenteSocial;
-			} else if (usuario.get().getTipoUsuario() == TipoUsuario.ENFERMEIRO) {
-				userAuthorityList = authorityListEnfermeiro;
-			} else {
-				userAuthorityList = authorityListTecnico;
-			}
+		if (usuario.get().getTipoUsuario() == TipoUsuario.DIRETOR) {
+			userAuthorityList = authorityListDiretor;
+		} else if (usuario.get().getTipoUsuario() == TipoUsuario.ASSISTENTE_SOCIAL) {
+			userAuthorityList = authorityListAssistenteSocial;
+		} else if (usuario.get().getTipoUsuario() == TipoUsuario.ENFERMEIRO) {
+			userAuthorityList = authorityListEnfermeiro;
 		} else {
-			throw new NegocioException("Usuario sem permissões.", HttpStatus.BAD_REQUEST);
+			userAuthorityList = authorityListTecnico;
 		}
+
 		return new org.springframework.security.core.userdetails.User(usuario.get().getNomeResumido(), usuario.get().getSenha(), userAuthorityList);
 	}
 }
