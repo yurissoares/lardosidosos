@@ -1,9 +1,13 @@
 HELP.md
+bin/
 target/
+.mvn/wrapper
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
 der lar dos idosos.mwb
+mvnw
+mvnw.cmd
 
 ### STS ###
 .apt_generated

@@ -27,11 +27,11 @@ import com.ufrb.lardosidosos.doctransfer.exception.FileNotFoundException;
 import com.ufrb.lardosidosos.doctransfer.exception.FileStorageException;
 import com.ufrb.lardosidosos.doctransfer.model.Arquivo;
 import com.ufrb.lardosidosos.doctransfer.repository.IArquivoRepository;
-import com.ufrb.lardosidosos.domain.exception.NegocioException;
-import com.ufrb.lardosidosos.domain.model.DocumentoMorador;
-import com.ufrb.lardosidosos.domain.model.DocumentoRegistroSaude;
-import com.ufrb.lardosidosos.domain.repository.IDocumentoMoradorRepository;
-import com.ufrb.lardosidosos.domain.repository.IDocumentoRegistroSaudeRepository;
+import com.ufrb.lardosidosos.exception.NegocioException;
+import com.ufrb.lardosidosos.entity.DocumentoMorador;
+import com.ufrb.lardosidosos.entity.DocumentoRegistroSaude;
+import com.ufrb.lardosidosos.repository.IDocumentoMoradorRepository;
+import com.ufrb.lardosidosos.repository.IDocumentoRegistroSaudeRepository;
 
 @RestController
 @RequestMapping("/arquivo")

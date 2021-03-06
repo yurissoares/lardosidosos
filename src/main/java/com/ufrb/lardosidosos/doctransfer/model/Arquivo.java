@@ -7,8 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
-import com.ufrb.lardosidosos.domain.model.DocumentoMorador;
-import com.ufrb.lardosidosos.domain.model.DocumentoRegistroSaude;
+import com.ufrb.lardosidosos.entity.DocumentoMorador;
+import com.ufrb.lardosidosos.entity.DocumentoRegistroSaude;
 
 import lombok.Data;
 
